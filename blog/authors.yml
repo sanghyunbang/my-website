@@ -21,3 +21,14 @@ slorber:
     linkedin: sebastienlorber
     github: slorber
     newsletter: https://thisweekinreact.com
+
+Lucas Bang:
+  name: Lucas Sanghyun Bang
+  title: Full-Stack Developer @ My Startup
+  url: https://github.com/sanghyunbang
+  image_url: https://github.com/sanghyunbang.png
+  page: true
+  socials:
+    github: sanghyunbang
+    linkedin: lucasbang
+

@@ -5,8 +5,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: "Sang-hyun's Note",
-  tagline: 'Dinosaurs are cool',
+  title: "Lucas S. Bang's",
+  tagline: 'Humble Beginnings, Bold Futures!',
   favicon: 'img/favicon.png',
 
   // Set the production url of your site here
@@ -40,7 +40,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/sanghyunbang/my-website/tree/main/',
         },
         blog: {
           showReadingTime: true,
@@ -51,7 +51,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/sanghyunbang/my-website/tree/main/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -68,7 +68,7 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: "SANGHYUNBANG",
+      title: "Lucas S. Bang",
       logo: {
         alt: 'My Site Logo',
         src: 'img/logo.png',
@@ -92,7 +92,7 @@ const config: Config = {
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/sanghyunbang/my-website',
           label: 'GitHub',
           position: 'right',
         },
