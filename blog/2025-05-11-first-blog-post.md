@@ -7,7 +7,9 @@ tags: [introduction, docusaurus, blog]
 
 ## 👋 Introduction
 
-Hello, everyone! Welcome to my blog.  
+Hello, everyone! 
+<!-- truncate -->
+Welcome to my blog.  
 I am Lucas Bang, a full-stack developer and aspiring entrepreneur.  
 This blog is the beginning of my journey to share my thoughts, projects, and ideas.  
 I am excited to explore technology, productivity, and my startup journey with you.  
