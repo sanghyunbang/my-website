@@ -27,3 +27,28 @@ blog:
   label: Blog
   permalink: /blog
   description: General blog posts
+
+
+arts-music:
+  label: Arts & Music
+  permalink: /blog/arts-music
+
+athletics:
+  label: Athletics
+  permalink: /blog/athletics
+
+mathematics:
+  label: Mathematics
+  permalink: /blog/mathematics
+
+mindfulness:
+  label: Mindfulness
+  permalink: /blog/mindfulness
+
+philosophy:
+  label: Philosophy
+  permalink: /blog/philosophy
+
+universe:
+  label: Universe
+  permalink: /blog/universe

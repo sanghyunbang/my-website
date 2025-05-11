@@ -1,31 +1,21 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
+import { themes as prismThemes } from 'prism-react-renderer';
+import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
   title: "Lucas S. Bang's",
   tagline: 'Humble Beginnings, Bold Futures!',
   favicon: 'img/favicon.png',
 
-  // Set the production url of your site here
   url: 'https://your-docusaurus-site.example.com',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'sanghyunbang',
+  projectName: 'my-website',
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -36,36 +26,27 @@ const config: Config = {
       'classic',
       {
         docs: {
-          sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/sanghyunbang/my-website/tree/main/',
+          path: 'docs',
+          sidebarPath: require.resolve('./sidebars.ts'),
+          editUrl: 'https://github.com/sanghyunbang/my-website/tree/main/',
         },
         blog: {
+          path: 'blog',
+          routeBasePath: 'blog',
           showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/sanghyunbang/my-website/tree/main/',
-          // Useful options to enforce blogging best practices
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
+          blogSidebarTitle: 'All Posts',
+          blogSidebarCount: 'ALL',
+          include: ['**/*.md', '**/*.mdx'],
+          editUrl: 'https://github.com/sanghyunbang/my-website/tree/main/',
         },
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: require.resolve('./src/css/custom.css'),
         },
       } satisfies Preset.Options,
     ],
   ],
 
   themeConfig: {
-    // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     navbar: {
       title: "Lucas S. Bang",
@@ -74,23 +55,11 @@ const config: Config = {
         src: 'img/logo.png',
       },
       items: [
-        {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
-          label: 'Tutorial1',
-        },{
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
-          label: 'Tutorial2',
-        },{
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
-          label: 'Tutorial3',
-        },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        { to: '/blog', label: 'Blog', position: 'left' },
+        { to: '/docs/algorithms/intro', label: 'Algorithms', position: 'left' },
+        { to: '/docs/projects/intro', label: 'Projects', position: 'left' },
+        { to: '/docs/languages/java', label: 'Languages', position: 'left' },
+        { to: '/docs/concepts/intro', label: 'Concepts', position: 'left' },
         {
           href: 'https://github.com/sanghyunbang/my-website',
           label: 'GitHub',
@@ -105,8 +74,20 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
-              to: '/docs/intro',
+              label: 'Algorithms',
+              to: '/docs/algorithms/intro',
+            },
+            {
+              label: 'Projects',
+              to: '/docs/projects/intro',
+            },
+            {
+              label: 'Languages',
+              to: '/docs/languages/java',
+            },
+            {
+              label: 'Concepts',
+              to: '/docs/concepts/intro',
             },
           ],
         },
@@ -136,12 +117,12 @@ const config: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/sanghyunbang/my-website',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Lucas S. Bang. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
