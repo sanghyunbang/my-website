@@ -61,3 +61,4 @@ In the next parts, **Mindfulness 1-1**, **1-2**, and **1-3**, we will explore pr
 - **How to Deal with Anxiety 1:** Mindfulness and Relaxation  
 - **How to Deal with Anxiety 2:** Cognitive Approaches  
 - **How to Deal with Anxiety 3:** Lifestyle Changes  
+
