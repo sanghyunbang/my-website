@@ -58,8 +58,7 @@ const config: Config = {
         { to: '/blog', label: 'Blog', position: 'left' },
         { to: '/docs/algorithms/intro', label: 'Algorithms', position: 'left' },
         { to: '/docs/projects/intro', label: 'Projects', position: 'left' },
-        { to: '/docs/languages/java', label: 'Languages', position: 'left' },
-        { to: '/docs/concepts/intro', label: 'Concepts', position: 'left' },
+        { to: '/AboutMe', label: 'About Me', position: 'left' },
         {
           href: 'https://github.com/sanghyunbang/my-website',
           label: 'GitHub',
