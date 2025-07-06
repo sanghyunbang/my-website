@@ -3,6 +3,6 @@ id: intro
 title: Projects
 ---
 
-# Projects
+# Algorithms
 
-Explore my past and ongoing projects.
+Welcome to my algorithms collection. Here you will find detailed explanations and implementations.
