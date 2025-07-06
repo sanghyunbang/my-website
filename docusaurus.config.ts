@@ -55,8 +55,8 @@ const config: Config = {
         src: 'img/logo.png',
       },
       items: [
-        { to: '/docs/projects/intro', label: 'Projects', position: 'left' },
-        { to: '/docs/aboutme/intro', label: 'About Me', position: 'left' },
+        { to: '/docs/Projects/intro', label: 'Projects', position: 'left' },
+        { to: '/docs/AboutMe/intro', label: 'About Me', position: 'left' },
         { to: '/blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/sanghyunbang/my-website',
@@ -72,12 +72,12 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'projects',
-              to: '/docs/projects/intro',
+              label: 'Projects',
+              to: '/docs/Projects/intro',
             },
             {
               label: 'About Me',
-              to: '/docs/aboutme/intro',
+              to: '/docs/AboutMe/intro',
             },
           ],
         },
