@@ -23,42 +23,49 @@ const config: Config = {
     locales: ['en'],
   },
 
+  // Preset 설정 : "classic" 프리셋 -> 세부적으로 docs, blog, theme 설정정
   presets: [
     [
       'classic',
       {
         docs: {
-          path: 'docs',
-          sidebarPath: require.resolve('./sidebars.ts'),
-          editUrl: 'https://github.com/sanghyunbang/my-website/tree/main/',
+          path: 'docs', // 문서파일은 docs/폴더에 있음음
+          sidebarPath: require.resolve('./sidebars.ts'), // 사이드 바 설정은 sidebar.ts에서 설정
+          editUrl: 'https://github.com/sanghyunbang/my-website/tree/main/', // Edit This Page 클릭 시 이동할 주소
         },
         blog: {
-          path: 'blog',
-          routeBasePath: 'blog',
-          showReadingTime: true,
-          blogSidebarTitle: 'All Posts',
+          path: 'blog', // 블로그 파일이 있는곳 : blog/ 폴더 안에 있다는 의미미
+          routeBasePath: 'blog', // /blog 주소로 접근
+          showReadingTime: true, // 블로그 읽는 시간 표시
+          blogSidebarTitle: 'All Posts', // 사이드 바에 모든 포스트를 보여줌줌
           blogSidebarCount: 'ALL',
           include: ['**/*.md', '**/*.mdx'],
           editUrl: 'https://github.com/sanghyunbang/my-website/tree/main/',
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: require.resolve('./src/css/custom.css'), // 커스텀 css 파일 -> 디자인 변경 가능능
         },
       } satisfies Preset.Options,
     ],
   ],
 
+  // 테마 및 레이아웃 설정
   themeConfig: {
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/docusaurus-social-card.jpg', // 공유할 때 보여질 이미지
+
+    // 상단 메뉴 바에 표시될 내용
     navbar: {
       title: "Lucas S. Bang",
       logo: {
         alt: 'My Site Logo',
         src: 'img/logo.png',
       },
+
+      // 왼쪽: AboutMe, Projects, Blog 등 <-> 오른쪽: GitHub 링크
       items: [
         { to: '/docs/AboutMe/intro', label: 'About Me', position: 'left' },
         { to: '/docs/Projects/intro', label: 'Projects', position: 'left' },
+        { to: '/docs/TechNotes/intro', label: 'Notes', position: 'left' },
         { to: '/blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/sanghyunbang/my-website',
@@ -67,6 +74,7 @@ const config: Config = {
         },
       ],
     },
+    // 하단 footer 설정
     footer: {
       style: 'dark',
       links: [
