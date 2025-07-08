@@ -1,3 +1,4 @@
+// 코드 블록에 사용할 색상 테마(Prism.js 테마)를 지정.
 import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
@@ -7,9 +8,10 @@ const config: Config = {
   tagline: 'Humble Beginnings, Bold Futures!',
   favicon: 'img/favicon.png',
 
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://betterworldwithlucas.com',
   baseUrl: '/',
 
+  // GitHub 저장소 경로 설정에 사용
   organizationName: 'sanghyunbang',
   projectName: 'my-website',
 
@@ -55,8 +57,8 @@ const config: Config = {
         src: 'img/logo.png',
       },
       items: [
-        { to: '/docs/Projects/intro', label: 'Projects', position: 'left' },
         { to: '/docs/AboutMe/intro', label: 'About Me', position: 'left' },
+        { to: '/docs/Projects/intro', label: 'Projects', position: 'left' },
         { to: '/blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/sanghyunbang/my-website',
