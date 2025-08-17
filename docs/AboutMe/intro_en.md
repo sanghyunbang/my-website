@@ -27,7 +27,7 @@ Entry‑level software developer with hands‑on full‑stack experience (React,
 
 **ML/AI (foundations):** Bandit algorithms, basic LLM ops (local inference on RTX GPU), TTS data preparation
 
-**Languages (human):** Korean (Native), English (Intermediate High – OPIC; IELTS 6.5)
+**Languages (human):** Korean (Native), English (Intermediate High – OPIC; IELTS 7.0)
 
 ---
 
@@ -73,7 +73,7 @@ Entry‑level software developer with hands‑on full‑stack experience (React,
 
 **Investment & Securities Intern**, DAOL Investment & Securities
 
-*YYYY.MM – YYYY.MM* *(fill exact dates)*
+*2022.01 – 2022.02*  
 
 - Assisted with financial data analysis and report drafting.
 - Supported treasury stock price trend analysis and prepared materials for internal reviews.
