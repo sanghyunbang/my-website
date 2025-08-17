@@ -65,6 +65,7 @@ const config: Config = {
       items: [
         { to: '/docs/AboutMe/intro', label: 'About Me (KR)', position: 'left' },
         { to: '/docs/AboutMe/intro-en', label: 'About Me (EN)', position: 'left' },
+        { to: '/docs/Projects/socialHiking', label: 'Projects', position: 'left' },
         { to: '/docs/TechNotes/intro', label: 'Notes', position: 'left' },
         { to: '/blog', label: 'Blog', position: 'left' },
         {

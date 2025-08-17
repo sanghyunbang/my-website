@@ -1,7 +1,6 @@
 ---
-id: intro
 title: Social-Based Hiking Service
-
+slug: /Projects/socialHiking
 ---
 
 [Figma 슬라이드 열기](https://www.figma.com/slides/D1mxNRJgbZa3TRkuRSfGXU/Product-Review?node-id=5-125&t=1QyiKP8VWyh5RoS2-0)
