@@ -1,6 +1,6 @@
 ---
-id: intro
-title: AboutMe(en)
+title: AboutMe (en)
+slug: /AboutMe/intro-en
 ---
 
 # SANGHYUN BANG (방상현)

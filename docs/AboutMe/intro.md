@@ -1,6 +1,6 @@
 ---
-id: intro
-title: AboutMe(한)
+title: AboutMe (kor)
+slug: /AboutMe/intro
 ---
 
 # 방상현 (Sanghyun Bang)

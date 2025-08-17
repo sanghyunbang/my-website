@@ -63,8 +63,8 @@ const config: Config = {
 
       // 왼쪽: AboutMe, Projects, Blog 등 <-> 오른쪽: GitHub 링크
       items: [
-        { to: '/docs/AboutMe/intro', label: 'About Me', position: 'left' },
-        { to: '/docs/Projects/intro', label: 'Projects', position: 'left' },
+        { to: '/docs/AboutMe/intro', label: 'About Me (KR)', position: 'left' },
+        { to: '/docs/AboutMe/intro-en', label: 'About Me (EN)', position: 'left' },
         { to: '/docs/TechNotes/intro', label: 'Notes', position: 'left' },
         { to: '/blog', label: 'Blog', position: 'left' },
         {
