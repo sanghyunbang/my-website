@@ -1,9 +1,6 @@
 ---
 id: intro
 title: AboutMe
-slug: /about
-description: Full-stack developer profile — React, Spring Boot, Flutter, MySQL, MongoDB, Redis, OAuth2/JWT, and more.
-tags: [profile, resume, heattrip, spring-boot, flutter, react]
 ---
 
 # 방상현 (Sanghyun Bang)
@@ -131,4 +128,4 @@ tags: [profile, resume, heattrip, spring-boot, flutter, react]
 
 ## 키워드 (ATS)
 
-`Java`, `Spring Boot`, `JPA`, `MyBatis`, `REST API`, `OAuth2`, `JWT`, `React`, `Flutter`, `MySQL`, `MongoDB`, `Redis`, `Elasticsearch`, `Docker`, `WSL2`, `AWS S3`, `CloudFront`, `Azure SQL`, `Data Modeling`, `Indexing`, `Pagination`, `OAuth Deep Link`, `Kakao Maps`, `Selenium`, `Web Scraping`, `Linux`, `Git`, `CI/CD(basic)`
+`Java`, `Spring Boot`, `JPA`, `MyBatis`, `REST API`, `OAuth2`, `JWT`, `React`, `Flutter`, `MySQL`, `MongoDB`, `Redis`, `Elasticsearch`, `Docker`, `WSL2`, `AWS S3`, `CloudFront`, `Azure SQL`, `Data Modeling`, `Indexing`, `Pagination`, `OAuth Deep Link`, `Kakao Maps`, `Selenium`, `Web Scraping`, `Linux`, `Git`, `CI/CD(basic)
