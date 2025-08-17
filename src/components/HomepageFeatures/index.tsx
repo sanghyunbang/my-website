@@ -9,26 +9,28 @@ type FeatureItem = {
   tags?: string[];        // 뱃지
 };
 
-// 이미지는 자유롭게 바꿀예정
+// 이미지는 자유롭게 바꿀 예정
 const FeatureList: FeatureItem[] = [
   {
-    title: '사용자 경험 중심 프런트엔드',
+    title: '안녕하세요, 방상현입니다',
     imgUrl:
       'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop',
     description: (
       <>
-        React와 Flutter로 반응형·접근성·애니메이션을 갖춘
-        <b> 매끄러운 인터페이스</b>를 만듭니다.
+        React·Flutter로 <b>사용자 경험</b>을 만들고,
+        Spring Boot와 데이터로 <b>문제를 해결</b>합니다.
+        요즘은 작은 실험을 빠르게 돌려
+        <b> 배운 것을 제품에 반영</b>하는 데 관심이 많아요.
       </>
     ),
-    tags: ['Frontend', 'UX'],
+    tags: ['Frontend', 'Backend', 'AI/ML'],
   },
 ];
 
 function FeatureCard({title, imgUrl, description, tags}: FeatureItem) {
-  // a 태그 제거 → 클릭해도 이동하지 않도록 display-only
+  // 링크 비활성 (display-only)
   return (
-    <div className={clsx('col col--4', styles.cardCol)}>
+    <div className={clsx('col col--8 col--offset-2', styles.cardCol)}>
       <div className={styles.card} role="article" aria-label={title}>
         {imgUrl && (
           <div className={styles.thumbWrap}>
@@ -41,9 +43,7 @@ function FeatureCard({title, imgUrl, description, tags}: FeatureItem) {
           {tags && tags.length > 0 && (
             <div className={styles.tags}>
               {tags.map((t) => (
-                <span key={t} className={styles.tag}>
-                  {t}
-                </span>
+                <span key={t} className={styles.tag}>{t}</span>
               ))}
             </div>
           )}
