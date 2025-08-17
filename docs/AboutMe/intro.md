@@ -39,11 +39,14 @@ title: AboutMe
 
 ---
 
-### 산악 기상예보 서비스
+### Oreum - 등산 큐레이팅 서비스
+
 **스택:** Spring Boot · Scheduler · Redis · KMA API
 
 - 기상청 **산악예보 API** 연동, 하루 2회(08:30/17:30) 사전 수집/정규화 후 **Redis 캐시**로 지연 감소
+
 - REST 엔드포인트 제공(예: `/getMountainWeather?base_date=YYYYMMDD&base_time=HHmm&mountainNum=...`)
+
 - 일자별 시간대(09:00/15:00/21:00) 및 일출·일몰 **테이블 뷰** 제공
 
 ---
@@ -128,4 +131,4 @@ title: AboutMe
 
 ## 키워드 (ATS)
 
-`Java`, `Spring Boot`, `JPA`, `MyBatis`, `REST API`, `OAuth2`, `JWT`, `React`, `Flutter`, `MySQL`, `MongoDB`, `Redis`, `Elasticsearch`, `Docker`, `WSL2`, `AWS S3`, `CloudFront`, `Azure SQL`, `Data Modeling`, `Indexing`, `Pagination`, `OAuth Deep Link`, `Kakao Maps`, `Selenium`, `Web Scraping`, `Linux`, `Git`, `CI/CD(basic)
+`Java`, `Spring Boot`, `JPA`, `MyBatis`, `REST API`, `OAuth2`, `JWT`, `React`, `Flutter`, `MySQL`, `MongoDB`, `Redis`, `Elasticsearch`, `Docker`, `WSL2`, `AWS S3`, `CloudFront`, `Azure SQL`, `Data Modeling`, `Indexing`, `Pagination`, `OAuth Deep Link`, `Kakao Maps`, `Selenium`, `Web Scraping`, `Linux`, `Git`, `CI/CD(basic)`
