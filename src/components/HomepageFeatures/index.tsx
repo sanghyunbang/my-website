@@ -12,18 +12,6 @@ type FeatureItem = {
 // 이미지는 자유롭게 바꿀예정
 const FeatureList: FeatureItem[] = [
   {
-    title: '안정적인 백엔드',
-    imgUrl:
-      'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1600&auto=format&fit=crop',
-    description: (
-      <>
-        Spring Boot, JPA, MySQL, Redis로
-        <b> 확장 가능하고 신뢰도 높은</b> API·데이터 파이프라인을 설계합니다.
-      </>
-    ),
-    tags: ['Backend', 'DevOps'],
-  },
-  {
     title: '사용자 경험 중심 프런트엔드',
     imgUrl:
       'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop',
@@ -34,18 +22,6 @@ const FeatureList: FeatureItem[] = [
       </>
     ),
     tags: ['Frontend', 'UX'],
-  },
-  {
-    title: '데이터·AI 실험',
-    imgUrl:
-      'https://images.unsplash.com/photo-1519305122945-7f1519b6e3e1?q=80&w=1600&auto=format&fit=crop',
-    description: (
-      <>
-        Bandit, 랭킹, 임베딩 등으로 실제 서비스에서
-        <b> 가설→측정→개선</b> 사이클을 돌립니다.
-      </>
-    ),
-    tags: ['AI/ML', 'MLOps'],
   },
 ];
 
