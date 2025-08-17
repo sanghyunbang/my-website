@@ -1,6 +1,6 @@
 ---
 id: intro
-title: AboutMe
+title: AboutMe(한)
 ---
 
 # 방상현 (Sanghyun Bang)
@@ -22,7 +22,7 @@ title: AboutMe
 - **데이터/인프라:** MySQL 8 · MongoDB · Redis · AWS S3 + CloudFront · Elasticsearch(설계/도입) · Docker · WSL2 · REST API · OAuth2 · JWT  
 - **클라우드/도구:** Azure(SQL/DP-300 트랙) · VS Code · Postman · Jupyter · Selenium/BeautifulSoup · Linux/zsh  
 - **ML/AI(기초):** 밴딧 알고리즘 · 로컬 LLM 추론(RTX GPU) · 한국어 TTS 데이터 준비  
-- **언어능력:** 한국어(원어민) · 영어(Intermediate High – OPIC; IELTS 6.5)
+- **언어능력:** 한국어(원어민) · 영어(Intermediate High – OPIC; IELTS 7.0)
 
 ---
 
