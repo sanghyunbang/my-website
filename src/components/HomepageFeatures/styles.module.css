@@ -12,13 +12,11 @@
 
 .featuresSection {
   padding: 3.5rem 0 4.5rem;
-  background: linear-gradient(180deg, var(--ifm-color-primary) 0%, #1d6e5c 0%, #0a0f0f 100%);
-  /* 위의 히어로 색과 자연스럽게 이어지는 어두운 그라데이션 느낌 */
+  /* 필요하면 아래 그라데이션을 단색으로 교체. */
+  background: linear-gradient(180deg, #0f2f27 0%, #0a0f0f 100%);
 }
 
-.cardCol {
-  margin-bottom: 1.25rem;
-}
+.cardCol { margin-bottom: 1.25rem; }
 
 .card {
   display: block;
@@ -38,52 +36,13 @@
   box-shadow: 0 16px 30px rgba(0,0,0,0.22);
 }
 
-.thumbWrap {
-  position: relative;
-  width: 100%;
-  padding-top: 52%; /* 16:9 약간 세로 여유 */
-  overflow: hidden;
-}
+.thumbWrap { position: relative; width: 100%; padding-top: 52%; overflow: hidden; }
+.thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
-.thumb {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: saturate(1.05);
-}
+.body { padding: 18px 18px 16px; }
+.title { margin: 0 0 6px; font-size: 1.15rem; font-weight: 800; }
+.desc { margin: 0 0 12px; color: var(--ifm-color-emphasis-700); line-height: 1.5; min-height: 2.6em; }
 
-.body {
-  padding: 18px 18px 16px;
-}
-
-.title {
-  margin: 0 0 6px;
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-}
-
-.desc {
-  margin: 0 0 12px;
-  color: var(--ifm-color-emphasis-700);
-  line-height: 1.5;
-  min-height: 2.6em; /* 두 줄 높이 확보 */
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.tag {
-  font-size: .75rem;
-  font-weight: 700;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: var(--ifm-color-primary);
-  color: white;
-  letter-spacing: .02em;
-}
+.tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { font-size: .75rem; font-weight: 700; padding: 6px 10px; border-radius: 999px;
+       background: var(--ifm-color-primary); color: white; letter-spacing: .02em; }
