@@ -59,8 +59,6 @@ Entry‑level software developer with hands‑on full‑stack experience (React,
 
 - Implemented robust scrapers for dynamic, scroll‑loaded content (e.g., Nate Pann). Extracted titles and bodies via tag inspection; logged and retried failures for stability.
 
-> More projects & code samples: <GitHub/Portfolio link>
-> 
 
 ---
 
