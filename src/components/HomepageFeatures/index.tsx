@@ -9,7 +9,7 @@ type FeatureItem = {
   tags?: string[];        // 뱃지
 };
 
-// 👉 이미지는 자유롭게 바꾸세요.
+// 이미지는 자유롭게 바꿀예정
 const FeatureList: FeatureItem[] = [
   {
     title: '안정적인 백엔드',
