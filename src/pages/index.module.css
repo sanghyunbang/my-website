@@ -1,23 +1,172 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
-.heroBanner {
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+.page {
+  min-height: calc(100vh - var(--ifm-navbar-height));
+  background:
+    radial-gradient(circle at top left, rgba(210, 118, 54, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(36, 94, 122, 0.22), transparent 32%),
+    linear-gradient(180deg, #f7efe5 0%, #efe1cf 48%, #e5d3bf 100%);
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
+.hero {
+  padding: 6.5rem 1.5rem 2.5rem;
+}
+
+.heroInner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  margin: 0 0 0.9rem;
+  color: #8a4b2a;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  color: #1f1d1a;
+  font-size: clamp(3.3rem, 8vw, 6.8rem);
+  line-height: 0.94;
+  letter-spacing: -0.06em;
+}
+
+.description {
+  max-width: 620px;
+  margin: 1.35rem 0 0;
+  color: rgba(31, 29, 26, 0.75);
+  font-size: 1.08rem;
+  line-height: 1.75;
+}
+
+.linksSection {
+  padding: 1.25rem 1.5rem 5.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.35rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+  min-height: 252px;
+  padding: 1.7rem;
+  border: 1px solid rgba(31, 29, 26, 0.08);
+  border-radius: 28px;
+  background: rgba(255, 249, 240, 0.72);
+  box-shadow: 0 20px 50px rgba(89, 52, 24, 0.1);
+  color: #1f1d1a;
+  text-decoration: none;
+  backdrop-filter: blur(14px);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(138, 75, 42, 0.28);
+  box-shadow: 0 28px 70px rgba(89, 52, 24, 0.14);
+  color: #1f1d1a;
+  text-decoration: none;
+}
+
+.badge {
+  align-self: flex-start;
+  padding: 0.38rem 0.7rem;
+  border-radius: 999px;
+  background: #1f1d1a;
+  color: #fff8f0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.8rem;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.cardSubtitle {
+  margin: 0;
+  color: #8a4b2a;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.cardDescription {
+  margin: 0;
+  color: rgba(31, 29, 26, 0.72);
+  line-height: 1.68;
+}
+
+.cardAction {
+  margin-top: auto;
+  color: #245e7a;
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 996px) {
+  .hero {
+    padding: 4.5rem 1.1rem 1.4rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .linksSection {
+    padding: 0.75rem 1.1rem 4rem;
+  }
+
+  .card {
+    min-height: 0;
+    padding: 1.35rem;
+    border-radius: 22px;
+  }
+
+  .title {
+    font-size: clamp(2.6rem, 14vw, 4.2rem);
+    line-height: 0.98;
+  }
+
+  .description {
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+
+  .cardTitle {
+    font-size: 1.5rem;
+  }
+
+  .cardSubtitle {
+    font-size: 0.95rem;
+  }
+
+  .cardAction {
+    font-size: 0.82rem;
   }
 }
 
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@media (min-width: 997px) {
+  .heroInner,
+  .grid {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
 }

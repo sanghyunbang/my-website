@@ -1,17 +1,15 @@
-// 코드 블록에 사용할 색상 테마(Prism.js 테마)를 지정.
-import { themes as prismThemes } from 'prism-react-renderer';
-import type { Config } from '@docusaurus/types';
+import {themes as prismThemes} from 'prism-react-renderer';
+import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: "Lucas S. Bang's",
-  tagline: 'Humble Beginnings, Bold Futures!',
+  title: 'SangHyun Bang',
+  tagline: 'Links to resume, portfolio, GitHub, and live service',
   favicon: 'img/favicon.png',
 
   url: 'https://betterworldwithlucas.com',
   baseUrl: '/',
 
-  // GitHub 저장소 경로 설정에 사용
   organizationName: 'sanghyunbang',
   projectName: 'my-website',
 
@@ -23,107 +21,54 @@ const config: Config = {
     locales: ['en'],
   },
 
-  // Preset 설정 : "classic" 프리셋 -> 세부적으로 docs, blog, theme 설정정
   presets: [
     [
       'classic',
       {
-        docs: {
-          path: 'docs', // 문서파일은 docs/폴더에 있음음
-          sidebarPath: require.resolve('./sidebars.ts'), // 사이드 바 설정은 sidebar.ts에서 설정
-          editUrl: 'https://github.com/sanghyunbang/my-website/tree/main/', // Edit This Page 클릭 시 이동할 주소
-        },
-        blog: {
-          path: 'blog', // 블로그 파일이 있는곳 : blog/ 폴더 안에 있다는 의미미
-          routeBasePath: 'blog', // /blog 주소로 접근
-          showReadingTime: true, // 블로그 읽는 시간 표시
-          blogSidebarTitle: 'All Posts', // 사이드 바에 모든 포스트를 보여줌줌
-          blogSidebarCount: 'ALL',
-          include: ['**/*.md', '**/*.mdx'],
-          editUrl: 'https://github.com/sanghyunbang/my-website/tree/main/',
-        },
+        docs: false,
+        blog: false,
         theme: {
-          customCss: require.resolve('./src/css/custom.css'), // 커스텀 css 파일 -> 디자인 변경 가능능
+          customCss: require.resolve('./src/css/custom.css'),
         },
       } satisfies Preset.Options,
     ],
   ],
 
-  // 테마 및 레이아웃 설정
   themeConfig: {
-    image: 'img/docusaurus-social-card.jpg', // 공유할 때 보여질 이미지
-
-    // 상단 메뉴 바에 표시될 내용
+    image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: "Lucas S. Bang",
+      title: 'SangHyun Bang',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'SangHyun Bang Logo',
         src: 'img/logo.png',
       },
-
-      // 왼쪽: AboutMe, Projects, Blog 등 <-> 오른쪽: GitHub 링크
       items: [
-        { to: '/docs/AboutMe/intro', label: 'About Me (KR)', position: 'left' },
-        { to: '/docs/AboutMe/intro-en', label: 'About Me (EN)', position: 'left' },
-        { to: '/docs/Projects/intro', label: 'Projects', position: 'left' },
-        { to: '/docs/TechNotes/intro', label: 'Notes', position: 'left' },
-        { to: '/blog', label: 'Blog', position: 'left' },
         {
-          href: 'https://github.com/sanghyunbang/my-website',
+          href: 'https://www.notion.so/Hi-I-m-SangHyun-321b82bc8b718076951af8d8979005ff?source=copy_link',
+          label: 'Resume',
+          position: 'right',
+        },
+        {
+          href: 'https://www.figma.com/deck/lm0luFHjvmFkrk9ILnaKHZ/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4?node-id=1-259&t=QONEdD7IQrzUUc2f-1',
+          label: 'Portfolio',
+          position: 'right',
+        },
+        {
+          href: 'https://github.com/sanghyunbang',
           label: 'GitHub',
+          position: 'right',
+        },
+        {
+          href: 'https://m.onestore.co.kr/v2/ko-kr/app/0001002340',
+          label: 'App',
           position: 'right',
         },
       ],
     },
-    // 하단 footer 설정
     footer: {
-      style: 'dark',
-      links: [
-        {
-          title: 'Docs',
-          items: [
-            {
-              label: 'Projects',
-              to: '/docs/Projects/intro',
-            },
-            {
-              label: 'About Me',
-              to: '/docs/AboutMe/intro',
-            },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
-            {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/sanghyunbang/my-website',
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} Lucas S. Bang. Built with Docusaurus.`,
+      style: 'light',
+      links: [],
+      copyright: `Copyright © ${new Date().getFullYear()} SangHyun Bang`,
     },
     prism: {
       theme: prismThemes.github,
