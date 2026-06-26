@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// 호버 시 우측에 뜨는 키워드 (나를 나타내는 단어)
-const keywords = ['구조적 사고', '데이터 기반', '끈질긴 디버깅', '안정적인 운영', '끝까지 책임'];
+// 호버 시 우측에 뜨는 키워드 (나를 나타내는 해시태그)
+const keywords = ['#구조적사고', '#데이터기반', '#집요한디버깅', '#끝까지책임', '#계속만든다'];
 
 // 개발 교육·프로젝트 중심 여정 (최근순)
 const journey = [
@@ -68,14 +68,14 @@ const contacts = [
         class="h-64 w-64 rounded-3xl object-cover transition-all duration-500 group-hover:scale-[1.02] group-hover:grayscale sm:h-72 sm:w-72"
       />
       <ul
-        class="pointer-events-none absolute left-full top-1/2 ml-10 hidden -translate-y-1/2 space-y-2.5 font-mono text-base text-ink lg:block"
+        class="font-impact pointer-events-none absolute left-full top-1/2 ml-10 hidden -translate-y-1/2 space-y-1.5 text-2xl leading-tight text-ink lg:block xl:text-3xl"
       >
         {keywords.map((k, i) => (
           <li
-            class="whitespace-nowrap translate-x-3 opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100"
-            style={`transition-delay:${i * 70}ms`}
+            class="whitespace-nowrap translate-x-4 opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100"
+            style={`transition-delay:${i * 80}ms`}
           >
-            {k}
+            <span class="text-accent">#</span>{k.slice(1)}
           </li>
         ))}
       </ul>

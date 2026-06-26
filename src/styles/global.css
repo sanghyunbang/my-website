@@ -53,6 +53,13 @@ body {
   letter-spacing: 0;
 }
 
+/* Impact display (hover keywords) */
+.font-impact {
+  font-family: "Black Han Sans", var(--font-sans);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
 /* Full-bleed section that escapes the centered container */
 .full-bleed {
   width: 100vw;

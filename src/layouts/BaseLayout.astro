@@ -11,7 +11,7 @@ interface Props {
 
 const {
   title = 'SangHyun Bang',
-  description = 'SangHyun Bang — Backend Software Engineer. Java/Spring, MSA, 데이터 기반 성능 최적화.',
+  description = 'SangHyun Bang — Software Engineer. Spring 백엔드부터 Flutter 앱까지 제품이 되는 소프트웨어를 만듭니다.',
   canonical,
 } = Astro.props;
 
@@ -25,7 +25,7 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/png" href="/img/favicon.png" />
+    <link rel="icon" type="image/png" href="/img/cat_profile.png" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -35,7 +35,7 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
     />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Kaushan+Script&display=swap"
     />
     <link rel="canonical" href={canonicalUrl} />
     <title>{fullTitle}</title>
