@@ -1,0 +1,42 @@
+---
+type Kind = 'problem' | 'goal' | 'solution' | 'result';
+interface Props {
+  kind: Kind;
+}
+const { kind } = Astro.props;
+
+const meta: Record<Kind, { label: string; icon: string; cls: string; dot: string }> = {
+  problem: { label: '문제', icon: '!', cls: 'border-amber-300 bg-amber-50/60', dot: 'bg-amber-500' },
+  goal: { label: '목표', icon: '◎', cls: 'border-line bg-surface', dot: 'bg-ink' },
+  solution: { label: '해결', icon: '→', cls: 'border-blue-200 bg-blue-50/50', dot: 'bg-accent' },
+  result: { label: '결과', icon: '✓', cls: 'border-emerald-200 bg-emerald-50/50', dot: 'bg-emerald-500' },
+};
+const m = meta[kind];
+---
+
+<div class={`my-4 rounded-xl border ${m.cls} p-4 sm:p-5`}>
+  <div class="mb-2 flex items-center gap-2">
+    <span class={`flex h-5 w-5 items-center justify-center rounded-full ${m.dot} text-[11px] font-bold text-white`}>
+      {m.icon}
+    </span>
+    <span class="text-sm font-bold text-ink">{m.label}</span>
+  </div>
+  <div class="callout-body text-[15px] leading-relaxed text-ink-soft">
+    <slot />
+  </div>
+</div>
+
+<style is:global>
+  .callout-body > :first-child { margin-top: 0; }
+  .callout-body > :last-child { margin-bottom: 0; }
+  .callout-body p { margin: 0.5rem 0; }
+  .callout-body code {
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    background: rgba(0,0,0,0.05);
+    color: #b3261e;
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+  }
+  .callout-body strong { color: var(--color-ink); font-weight: 700; }
+</style>

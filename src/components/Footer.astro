@@ -1,0 +1,30 @@
+---
+const year = new Date().getFullYear();
+const links = [
+  { href: 'https://github.com/sanghyunbang', label: 'GitHub' },
+  { href: '/resume', label: 'Resume' },
+  {
+    href: 'https://www.figma.com/deck/lm0luFHjvmFkrk9ILnaKHZ/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4?node-id=1-259&t=QONEdD7IQrzUUc2f-1',
+    label: 'Portfolio',
+  },
+];
+const isExternal = (href: string) => href.startsWith('http');
+---
+
+<footer class="no-print mt-32 border-t border-line">
+  <div class="mx-auto flex max-w-4xl flex-col items-center justify-between gap-4 px-6 py-10 sm:flex-row">
+    <p class="text-sm text-muted">© {year} SangHyun Bang</p>
+    <div class="flex gap-5">
+      {links.map((l) => (
+        <a
+          href={l.href}
+          target={isExternal(l.href) ? '_blank' : undefined}
+          rel={isExternal(l.href) ? 'noreferrer' : undefined}
+          class="text-sm text-muted transition-colors hover:text-ink"
+        >
+          {l.label}
+        </a>
+      ))}
+    </div>
+  </div>
+</footer>

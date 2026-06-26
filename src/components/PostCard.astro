@@ -1,0 +1,66 @@
+---
+interface Props {
+  title: string;
+  slug: string;
+  description: string;
+  date: Date;
+  series?: string;
+  seriesOrder?: number;
+  tags?: string[];
+  cover?: string;
+  index?: number;
+}
+const { title, slug, description, date, tags = [], cover, index = 0 } = Astro.props;
+const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '. ');
+const category = tags[0] ?? 'Post';
+
+const gradients = [
+  'from-blue-500 via-indigo-500 to-violet-600',
+  'from-sky-500 via-cyan-500 to-teal-500',
+  'from-violet-500 via-purple-500 to-fuchsia-600',
+  'from-rose-500 via-orange-500 to-amber-500',
+];
+const grad = gradients[index % gradients.length];
+---
+
+<a
+  href={`/blog/${slug}`}
+  class="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.18)]"
+>
+  {/* thumbnail */}
+  <div class="relative aspect-[16/10] overflow-hidden border-b border-line">
+    {cover ? (
+      <img
+        src={cover}
+        alt={title}
+        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        loading="lazy"
+      />
+    ) : (
+      <div
+        class:list={[
+          'flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br transition-transform duration-500 group-hover:scale-105',
+          grad,
+        ]}
+      >
+        <span class="font-mono text-3xl text-white/90">&lt;/&gt;</span>
+        <span class="rounded-full bg-white/20 px-3 py-0.5 text-xs font-semibold text-white backdrop-blur-sm">
+          {category}
+        </span>
+      </div>
+    )}
+  </div>
+
+  {/* body */}
+  <div class="flex flex-1 flex-col p-5">
+    <h3 class="text-base font-bold leading-snug text-ink transition-colors group-hover:text-accent-ink">
+      {title}
+    </h3>
+    <p class="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-muted">
+      {description}
+    </p>
+    <p class="mt-4 font-mono text-xs text-muted">
+      {dateStr} · {category}
+    </p>
+  </div>
+</a>

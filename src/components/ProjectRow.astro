@@ -1,0 +1,82 @@
+---
+import TechBadge from './TechBadge.astro';
+
+interface Props {
+  title: string;
+  slug: string;
+  summary: string;
+  tech: string[];
+  highlight?: string;
+  award?: string;
+  cover?: string;
+  coverAlt?: string;
+  index?: number;
+}
+const { title, slug, summary, tech, highlight, award, cover, coverAlt, index = 0 } =
+  Astro.props;
+
+const gradients = [
+  'from-blue-500 via-indigo-500 to-violet-600',
+  'from-sky-500 via-cyan-500 to-teal-600',
+  'from-indigo-500 via-purple-500 to-fuchsia-600',
+];
+const grad = gradients[index % gradients.length];
+const monogram = title.trim().charAt(0).toUpperCase();
+---
+
+<a
+  href={`/projects/${slug}`}
+  class="group grid items-stretch gap-7 sm:grid-cols-[300px_1fr]"
+>
+  {/* thumbnail — tall enough to match content */}
+  <div class="relative aspect-square overflow-hidden rounded-2xl border border-line sm:aspect-auto sm:min-h-[280px]">
+    {cover ? (
+      <img
+        src={cover}
+        alt={coverAlt ?? title}
+        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        loading="lazy"
+      />
+    ) : (
+      <div
+        class:list={[
+          'flex h-full w-full items-center justify-center bg-gradient-to-br transition-transform duration-500 group-hover:scale-105',
+          grad,
+        ]}
+      >
+        <span class="display text-7xl text-white/95">{monogram}</span>
+      </div>
+    )}
+    {award && (
+      <span class="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-amber-700 backdrop-blur">
+        🏆 수상
+      </span>
+    )}
+  </div>
+
+  {/* content */}
+  <div class="flex flex-col justify-center py-1">
+    <h3 class="text-2xl font-bold tracking-tight text-ink transition-colors group-hover:text-accent-ink">
+      {title}
+    </h3>
+    <p class="mt-2 max-w-xl text-[15px] leading-relaxed text-ink-soft">{summary}</p>
+    {highlight && (
+      <p class="mt-3 border-l-2 border-accent pl-3 text-sm font-medium text-accent-ink">
+        {highlight}
+      </p>
+    )}
+    <div class="mt-4 flex flex-wrap gap-1.5">
+      {tech.slice(0, 6).map((t) => (
+        <TechBadge label={t} />
+      ))}
+      {tech.length > 6 && (
+        <span class="inline-flex items-center rounded-lg border border-line px-2.5 py-1 text-xs font-medium text-muted">
+          +{tech.length - 6}
+        </span>
+      )}
+    </div>
+    <span class="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-ink transition-all duration-300 group-hover:gap-2">
+      자세히 보기 <span class="text-accent">→</span>
+    </span>
+  </div>
+</a>

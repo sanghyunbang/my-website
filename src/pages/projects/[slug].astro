@@ -1,0 +1,115 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Metric from '../../components/Metric.astro';
+import RoleBar from '../../components/RoleBar.astro';
+import TechBadge from '../../components/TechBadge.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((p) => ({
+    params: { slug: p.id },
+    props: { project: p },
+  }));
+}
+
+const { project } = Astro.props;
+const { data } = project;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={data.title} description={data.summary}>
+  <article class="py-14">
+    <a
+      href="/projects"
+      class="font-mono text-sm text-muted transition-colors hover:text-ink"
+    >
+      ← Projects
+    </a>
+
+    <header class="mt-6 border-b border-line pb-10">
+      {data.award && (
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+          🏆 {data.award}
+        </span>
+      )}
+      <h1 class="display mt-4 text-5xl text-ink sm:text-6xl">{data.title}</h1>
+      <p class="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">{data.summary}</p>
+
+      <div class="mt-7 flex flex-wrap gap-x-10 gap-y-3">
+        {data.role && (
+          <div>
+            <p class="font-mono text-xs uppercase tracking-wider text-muted">Role</p>
+            <p class="mt-0.5 text-sm font-medium text-ink">{data.role}</p>
+          </div>
+        )}
+        {data.period && (
+          <div>
+            <p class="font-mono text-xs uppercase tracking-wider text-muted">Period</p>
+            <p class="mt-0.5 text-sm font-medium text-ink">{data.period}</p>
+          </div>
+        )}
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-2">
+        {data.tech.map((t) => (
+          <TechBadge label={t} />
+        ))}
+      </div>
+
+      {data.links.length > 0 && (
+        <div class="mt-6 flex flex-wrap gap-4">
+          {data.links.map((l) => (
+            <a
+              href={l.href}
+              target="_blank"
+              rel="noreferrer"
+              class="link-underline text-sm font-semibold text-accent-ink"
+            >
+              {l.label} ↗
+            </a>
+          ))}
+        </div>
+      )}
+    </header>
+
+    {data.cover && (
+      <img
+        src={data.cover}
+        alt={data.coverAlt ?? data.title}
+        class="mt-10 w-full rounded-2xl border border-line object-cover"
+        style="aspect-ratio:16/7"
+      />
+    )}
+
+    {data.metrics.length > 0 && (
+      <div class="mt-10 grid gap-4 sm:grid-cols-3">
+        {data.metrics.map((m) => (
+          <Metric value={m.value} label={m.label} note={m.note} />
+        ))}
+      </div>
+    )}
+
+    {data.roleBreakdown.length > 0 && (
+      <div class="mt-10 rounded-2xl border border-line bg-surface p-6 sm:p-7">
+        <h2 class="font-mono text-sm text-muted">역할 분담</h2>
+        <div class="mt-5 max-w-lg">
+          <RoleBar items={data.roleBreakdown} />
+        </div>
+      </div>
+    )}
+
+    <div class="prose mt-12 max-w-2xl">
+      <Content />
+    </div>
+
+    <div class="mt-16 border-t border-line pt-6">
+      <a
+        href="/projects"
+        class="inline-flex items-center gap-1 text-sm font-semibold text-ink transition-all hover:gap-2"
+      >
+        <span class="text-accent">←</span> 다른 프로젝트 보기
+      </a>
+    </div>
+  </article>
+</BaseLayout>

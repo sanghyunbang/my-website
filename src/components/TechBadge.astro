@@ -1,0 +1,50 @@
+---
+interface Props {
+  label: string;
+}
+const { label } = Astro.props;
+
+// 브랜드 색상 (점/틴트에 사용, 텍스트는 잉크로 고정해 가독성 유지)
+const COLORS: Record<string, string> = {
+  Java: '#e76f00',
+  'Java 21': '#e76f00',
+  Kotlin: '#7f52ff',
+  Spring: '#6db33f',
+  'Spring Boot': '#6db33f',
+  'Spring Boot 3.5': '#6db33f',
+  'Spring Security': '#6db33f',
+  'Spring Cloud Gateway': '#6db33f',
+  JPA: '#59666c',
+  'JPA / Hibernate': '#59666c',
+  Hibernate: '#59666c',
+  MySQL: '#4479a1',
+  'MySQL 8': '#4479a1',
+  'MySQL 8.0': '#4479a1',
+  'FULLTEXT Index': '#4479a1',
+  Redis: '#d82c20',
+  Kafka: '#231f20',
+  OPA: '#7d4698',
+  Docker: '#2496ed',
+  JWT: '#5b4bdb',
+  'OAuth2 / JWT': '#5b4bdb',
+  OAuth2: '#5b4bdb',
+  OpenAI: '#10a37f',
+  'OpenAI API': '#10a37f',
+  LLM: '#10a37f',
+  'AWS S3': '#ff9900',
+  'AWS S3 / CloudFront': '#ff9900',
+  Python: '#3776ab',
+  MSA: '#0ea5e9',
+  React: '#0ea5e9',
+  TypeScript: '#3178c6',
+};
+const c = COLORS[label] ?? '#64748b';
+---
+
+<span
+  class="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold text-ink"
+  style={`background:${c}12; border-color:${c}33;`}
+>
+  <span class="h-1.5 w-1.5 rounded-full" style={`background:${c}`}></span>
+  {label}
+</span>

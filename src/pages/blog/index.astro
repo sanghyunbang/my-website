@@ -1,0 +1,167 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const counts = new Map<string, number>();
+for (const p of posts) {
+  for (const t of p.data.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
+}
+const filters = [
+  { key: 'all', label: '전체', count: posts.length },
+  ...[...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, count]) => ({ key: label, label, count })),
+];
+---
+
+<BaseLayout title="Blog" description="SangHyun Bang의 개발 블로그 — Java/Spring 리팩토링, 성능, 단위 테스트.">
+  <section class="pt-28 pb-8 sm:pt-32">
+    <p class="font-mono text-sm text-accent-ink">Blog</p>
+    <h1 class="display mt-3 text-5xl text-ink sm:text-6xl">개발 블로그</h1>
+    <p class="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">
+      velog에 쓰던 글을 이곳으로 차츰 옮기고 있습니다. 프로젝트를 리팩토링하며
+      파고든 Java/Spring 개념들을 정리합니다.
+    </p>
+
+    <div class="mt-8 flex flex-wrap gap-2">
+      {filters.map((f, i) => (
+        <button
+          type="button"
+          class="filter-pill rounded-full border border-line px-4 py-1.5 text-sm font-medium text-ink-soft transition-colors hover:border-line-strong"
+          data-filter={f.key}
+          data-active={i === 0 ? 'true' : 'false'}
+        >
+          {f.label} <span class="font-mono text-xs opacity-70">({f.count})</span>
+        </button>
+      ))}
+    </div>
+  </section>
+
+  <section
+    id="post-grid"
+    class="grid grid-cols-1 gap-6 pb-4 sm:grid-cols-2 lg:grid-cols-3"
+  >
+    {posts.map((p, i) => (
+      <div class="post-item" data-tags={p.data.tags.join('|')}>
+        <PostCard
+          title={p.data.title}
+          slug={p.id}
+          description={p.data.description}
+          date={p.data.date}
+          tags={p.data.tags}
+          index={i}
+        />
+      </div>
+    ))}
+  </section>
+
+  <p id="empty-msg" class="hidden py-12 text-center text-sm text-muted">
+    해당 카테고리의 글이 아직 없습니다.
+  </p>
+
+  <nav id="pager" class="flex items-center justify-center gap-1.5 py-12"></nav>
+</BaseLayout>
+
+<style>
+  .filter-pill[data-active='true'] {
+    background: var(--color-accent);
+    border-color: transparent;
+    color: #fff;
+  }
+  .pager-btn {
+    min-width: 2.25rem;
+    height: 2.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+    transition: background 0.15s, color 0.15s;
+  }
+  .pager-btn:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.05);
+  }
+  .pager-btn[data-current='true'] {
+    background: var(--color-accent);
+    color: #fff;
+  }
+  .pager-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+</style>
+
+<script>
+  const PAGE_SIZE = 9;
+  const pills = document.querySelectorAll<HTMLButtonElement>('.filter-pill');
+  const items = [...document.querySelectorAll<HTMLElement>('.post-item')];
+  const empty = document.getElementById('empty-msg');
+  const pager = document.getElementById('pager');
+
+  let filter = 'all';
+  let page = 1;
+
+  const matches = (item: HTMLElement) =>
+    filter === 'all' || (item.dataset.tags ?? '').split('|').includes(filter);
+
+  function render() {
+    const visible = items.filter(matches);
+    const pages = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
+    if (page > pages) page = pages;
+
+    const start = (page - 1) * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    items.forEach((it) => (it.style.display = 'none'));
+    visible.slice(start, end).forEach((it) => (it.style.display = ''));
+
+    if (empty) empty.classList.toggle('hidden', visible.length !== 0);
+    renderPager(pages);
+  }
+
+  function renderPager(pages: number) {
+    if (!pager) return;
+    pager.innerHTML = '';
+    if (pages <= 1) return;
+
+    const mk = (label: string, opts: { page?: number; disabled?: boolean; current?: boolean }) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pager-btn';
+      b.textContent = label;
+      if (opts.disabled) b.disabled = true;
+      if (opts.current) b.setAttribute('data-current', 'true');
+      if (opts.page && !opts.disabled && !opts.current)
+        b.addEventListener('click', () => {
+          page = opts.page!;
+          render();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      return b;
+    };
+
+    pager.appendChild(mk('‹', { page: page - 1, disabled: page === 1 }));
+    for (let i = 1; i <= pages; i++)
+      pager.appendChild(mk(String(i), { page: i, current: i === page }));
+    pager.appendChild(mk('›', { page: page + 1, disabled: page === pages }));
+  }
+
+  pills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      filter = pill.dataset.filter ?? 'all';
+      page = 1;
+      pills.forEach((p) =>
+        p.setAttribute('data-active', p === pill ? 'true' : 'false')
+      );
+      render();
+    });
+  });
+
+  render();
+</script>
