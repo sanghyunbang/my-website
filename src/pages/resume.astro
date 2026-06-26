@@ -48,6 +48,19 @@ const projects = [
   },
 ];
 
+const training = [
+  {
+    name: '프로그래머스 데브코스 · MSA 기반 Spring AI 심화 캠프',
+    detail: 'Spring Cloud · Spring AI · MSA 백엔드 — BARO FARM 프로젝트',
+    period: '2025.12 – 2026.01',
+  },
+  {
+    name: '강남 하이미디어 · KDT 풀스택 캠프',
+    detail: 'Spring · React · Flutter 풀스택 — 졸업 프로젝트 우수상 (HeatTrip)',
+    period: '2025.01 – 2025.07',
+  },
+];
+
 const education = [
   { school: '학점은행제 (4년제)', detail: '컴퓨터공학 · 졸업 예정 (4.02 / 4.5)', period: '2025.07 – 2026.08' },
   { school: '서강대학교', detail: '경영학 / 경제학 복수전공 (3.75 / 4.3)', period: '2015.03 – 2022.05' },
@@ -146,6 +159,22 @@ const Section = 'grid gap-2 border-t border-line pt-6 sm:grid-cols-[130px_1fr]';
               <ul class="mt-1.5 list-disc space-y-1 pl-4 text-sm leading-relaxed text-ink-soft">
                 {p.bullets.map((b) => <li>{b}</li>)}
               </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Training */}
+      <section class={Section}>
+        <h2 class="font-mono text-xs uppercase tracking-wider text-muted">Training</h2>
+        <div class="space-y-3">
+          {training.map((t) => (
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+              <div>
+                <p class="font-semibold text-ink">{t.name}</p>
+                <p class="text-sm text-ink-soft">{t.detail}</p>
+              </div>
+              <span class="font-mono text-xs text-muted">{t.period}</span>
             </div>
           ))}
         </div>
