@@ -1,20 +1,29 @@
 ---
+import { getLang, localize, altLangPath, useT } from '../i18n';
+
+const lang = getLang(Astro.url);
+const t = useT(lang);
+
 const links = [
-  { href: '/about', label: 'About' },
-  { href: '/projects', label: 'Work' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/resume', label: 'Resume' },
+  { href: localize('/about', lang), label: t('nav.about'), match: '/about' },
+  { href: localize('/projects', lang), label: t('nav.work'), match: '/projects' },
+  { href: '/blog', label: t('nav.blog'), match: '/blog' }, // 블로그는 한국어만
+  { href: localize('/resume', lang), label: t('nav.resume'), match: '/resume' },
 ];
-const path = Astro.url.pathname;
-const isActive = (href: string) =>
-  href === '/' ? path === '/' : path.startsWith(href);
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const bare = path === '/en' || path.startsWith('/en/') ? path.replace(/^\/en/, '') || '/' : path;
+const isActive = (m: string) => bare === m || bare.startsWith(m + '/');
+
+const koHref = altLangPath(Astro.url, 'ko');
+const enHref = altLangPath(Astro.url, 'en');
 ---
 
 <div class="no-print pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-4 py-4">
   <nav
     class="pointer-events-auto flex items-center gap-1 rounded-full border border-black/5 bg-white/80 p-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md"
   >
-    <a href="/" class="flex items-center gap-2 rounded-full py-1 pl-1.5 pr-2.5">
+    <a href={localize('/', lang)} class="flex items-center gap-2 rounded-full py-1 pl-1.5 pr-2.5">
       <img
         src="/img/cat_profile.png"
         alt="SangHyun"
@@ -28,14 +37,24 @@ const isActive = (href: string) =>
       <a
         href={l.href}
         class:list={[
-          'rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors',
-          isActive(l.href)
-            ? 'bg-ink text-white'
-            : 'text-ink-soft hover:bg-black/5',
+          'rounded-full px-3 py-1.5 text-sm font-semibold transition-colors',
+          isActive(l.match) ? 'bg-ink text-white' : 'text-ink-soft hover:bg-black/5',
         ]}
       >
         {l.label}
       </a>
     ))}
+
+    {/* 한/영 토글 */}
+    <div class="ml-1 flex items-center rounded-full bg-black/[0.04] p-0.5 text-xs font-bold">
+      <a
+        href={koHref}
+        class:list={['rounded-full px-2 py-1 transition-colors', lang === 'ko' ? 'bg-ink text-white' : 'text-muted hover:text-ink']}
+      >KO</a>
+      <a
+        href={enHref}
+        class:list={['rounded-full px-2 py-1 transition-colors', lang === 'en' ? 'bg-ink text-white' : 'text-muted hover:text-ink']}
+      >EN</a>
+    </div>
   </nav>
 </div>

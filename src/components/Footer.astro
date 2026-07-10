@@ -1,8 +1,10 @@
 ---
+import { getLang, localize } from '../i18n';
+const lang = getLang(Astro.url);
 const year = new Date().getFullYear();
 const links = [
   { href: 'https://github.com/sanghyunbang', label: 'GitHub' },
-  { href: '/resume', label: 'Resume' },
+  { href: localize('/resume', lang), label: 'Resume' },
   {
     href: 'https://www.figma.com/deck/lm0luFHjvmFkrk9ILnaKHZ/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4?node-id=1-259&t=QONEdD7IQrzUUc2f-1',
     label: 'Portfolio',

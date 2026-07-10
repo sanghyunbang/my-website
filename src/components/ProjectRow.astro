@@ -1,5 +1,6 @@
 ---
 import TechBadge from './TechBadge.astro';
+import { localize, type Lang } from '../i18n';
 
 interface Props {
   title: string;
@@ -11,9 +12,12 @@ interface Props {
   cover?: string;
   coverAlt?: string;
   index?: number;
+  lang?: Lang;
+  cta?: string;
 }
-const { title, slug, summary, tech, highlight, award, cover, coverAlt, index = 0 } =
+const { title, slug, summary, tech, highlight, award, cover, coverAlt, index = 0, lang = 'ko', cta = '자세히 보기' } =
   Astro.props;
+const href = localize(`/projects/${slug}`, lang);
 
 const gradients = [
   'from-blue-500 via-indigo-500 to-violet-600',
@@ -25,7 +29,7 @@ const monogram = title.trim().charAt(0).toUpperCase();
 ---
 
 <a
-  href={`/projects/${slug}`}
+  href={href}
   class="group grid items-stretch gap-7 sm:grid-cols-[300px_1fr]"
 >
   {/* thumbnail — tall enough to match content */}
@@ -76,7 +80,7 @@ const monogram = title.trim().charAt(0).toUpperCase();
       )}
     </div>
     <span class="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-ink transition-all duration-300 group-hover:gap-2">
-      자세히 보기 <span class="text-accent">→</span>
+      {cta} <span class="text-accent">→</span>
     </span>
   </div>
 </a>

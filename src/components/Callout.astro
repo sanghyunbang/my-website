@@ -1,17 +1,23 @@
 ---
+import { getLang } from '../i18n';
 type Kind = 'problem' | 'goal' | 'solution' | 'result';
 interface Props {
   kind: Kind;
 }
 const { kind } = Astro.props;
+const lang = getLang(Astro.url);
 
-const meta: Record<Kind, { label: string; icon: string; cls: string; dot: string }> = {
-  problem: { label: '문제', icon: '!', cls: 'border-amber-300 bg-amber-50/60', dot: 'bg-amber-500' },
-  goal: { label: '목표', icon: '◎', cls: 'border-line bg-surface', dot: 'bg-ink' },
-  solution: { label: '해결', icon: '→', cls: 'border-blue-200 bg-blue-50/50', dot: 'bg-accent' },
-  result: { label: '결과', icon: '✓', cls: 'border-emerald-200 bg-emerald-50/50', dot: 'bg-emerald-500' },
+const labels: Record<'ko' | 'en', Record<Kind, string>> = {
+  ko: { problem: '문제', goal: '목표', solution: '해결', result: '결과' },
+  en: { problem: 'Problem', goal: 'Goal', solution: 'Solution', result: 'Result' },
 };
-const m = meta[kind];
+const style: Record<Kind, { icon: string; cls: string; dot: string }> = {
+  problem: { icon: '!', cls: 'border-amber-300 bg-amber-50/60', dot: 'bg-amber-500' },
+  goal: { icon: '◎', cls: 'border-line bg-surface', dot: 'bg-ink' },
+  solution: { icon: '→', cls: 'border-blue-200 bg-blue-50/50', dot: 'bg-accent' },
+  result: { icon: '✓', cls: 'border-emerald-200 bg-emerald-50/50', dot: 'bg-emerald-500' },
+};
+const m = { ...style[kind], label: labels[lang][kind] };
 ---
 
 <div class={`my-4 rounded-xl border ${m.cls} p-4 sm:p-5`}>

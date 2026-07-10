@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectRow from '../ProjectRow.astro';
+import { useT, type Lang } from '../../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+
+const projects = (await getCollection('projects'))
+  .filter((p) => p.id.startsWith(`${lang}/`))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title={t('projects.title')} description={t('projects.sub')}>
+  <section class="pt-28 pb-12 sm:pt-32">
+    <p class="font-mono text-sm text-accent-ink">{t('projects.eyebrow')}</p>
+    <h1 class="display mt-3 text-5xl text-ink sm:text-6xl">{t('projects.title')}</h1>
+    <p class="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">{t('projects.sub')}</p>
+  </section>
+
+  <div class="space-y-14 border-t border-line pt-12">
+    {projects.map((p, i) => (
+      <ProjectRow
+        title={p.data.title}
+        slug={p.id.split('/').pop()!}
+        summary={p.data.summary}
+        tech={p.data.tech}
+        highlight={p.data.highlight}
+        award={p.data.award}
+        cover={p.data.cover}
+        coverAlt={p.data.coverAlt}
+        index={i}
+        lang={lang}
+        cta={t('proj.viewmore')}
+      />
+    ))}
+  </div>
+</BaseLayout>

@@ -1,5 +1,10 @@
 ---
 // HeatTrip 시스템 아키텍처 — 인라인 SVG (테마 색상 연동)
+import { getLang } from '../i18n';
+const lang = getLang(Astro.url);
+const L = lang === 'en'
+  ? { cdn: 'Image CDN', tour: 'Tourism / Location', slack: 'Slack alerts', cross: 'Cross-cutting', caption: 'HeatTrip backend architecture' }
+  : { cdn: '이미지 CDN', tour: '관광/위치 데이터', slack: 'Slack 알림', cross: 'Cross-cutting', caption: 'HeatTrip 백엔드 아키텍처' };
 ---
 
 <figure class="my-8 not-prose">
@@ -61,7 +66,7 @@
 
       <!-- cross-cutting -->
       <line x1="320" y1="262" x2="570" y2="262" stroke="#e7e7e7" stroke-width="1" />
-      <text class="sub" x="320" y="284">Cross-cutting</text>
+      <text class="sub" x="320" y="284">{L.cross}</text>
       <g>
         <rect class="chip" x="320" y="296" width="80" height="26" rx="8" />
         <text class="chiptxt" x="360" y="313" text-anchor="middle">JWT</text>
@@ -74,7 +79,7 @@
         <rect class="chip" x="320" y="328" width="120" height="26" rx="8" />
         <text class="chiptxt" x="380" y="345" text-anchor="middle">correlation id</text>
         <rect class="chip" x="448" y="328" width="122" height="26" rx="8" />
-        <text class="chiptxt" x="509" y="345" text-anchor="middle">Slack 알림</text>
+        <text class="chiptxt" x="509" y="345" text-anchor="middle">{L.slack}</text>
       </g>
       <text class="sub" x="320" y="378">Port / Adapter · Docker Compose</text>
 
@@ -85,11 +90,11 @@
 
       <rect class="box" x="700" y="132" width="180" height="56" rx="12" />
       <text class="lbl" x="790" y="156" text-anchor="middle">S3 · CloudFront</text>
-      <text class="sub" x="790" y="174" text-anchor="middle">이미지 CDN</text>
+      <text class="sub" x="790" y="174" text-anchor="middle">{L.cdn}</text>
 
       <rect class="box" x="700" y="202" width="180" height="56" rx="12" />
       <text class="lbl" x="790" y="226" text-anchor="middle">Tour · Kakao API</text>
-      <text class="sub" x="790" y="244" text-anchor="middle">관광/위치 데이터</text>
+      <text class="sub" x="790" y="244" text-anchor="middle">{L.tour}</text>
 
       <rect class="box" x="700" y="272" width="180" height="56" rx="12" />
       <text class="lbl" x="790" y="296" text-anchor="middle">Google·Kakao·Naver</text>
@@ -115,6 +120,6 @@
     </svg>
   </div>
   <figcaption class="mt-3 text-center font-mono text-xs text-muted">
-    HeatTrip 백엔드 아키텍처
+    {L.caption}
   </figcaption>
 </figure>

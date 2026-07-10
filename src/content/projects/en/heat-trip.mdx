@@ -1,0 +1,147 @@
+---
+title: HeatTrip
+summary: An emotion-centered mobile travel service that recommends destinations based on the user's emotional state and connects itineraries, emotion diaries and retrospectives. I staged the LLM recommendation for cost/failure isolation and designed search, pagination and observability myself.
+role: Team Lead · Backend-focused
+period: 2025 · Korea Tourism Data Utilization Competition (team of 3)
+tech: [Java 21, Spring Boot 3.5, Spring Security, JPA, MySQL 8, OAuth2 / JWT, OpenAI API, AWS S3 / CloudFront, Docker]
+highlight: Staged the LLM recommendation to isolate cost/failure propagation — Excellence Award at the Korea Tourism competition
+featured: true
+order: 1
+award: Excellence Award, Korea Tourism Data Utilization Competition (2025)
+roleBreakdown:
+  - { area: "Backend (auth·search·recommendation·diary)", pct: 85 }
+  - { area: "Infra · Deploy (full FE/BE)", pct: 100 }
+  - { area: "ML / AI (crawling·LLM·prompting)", pct: 100 }
+  - { area: "Frontend (home·search·recommend·diary)", pct: 65 }
+metrics:
+  - value: Award
+    label: Korea Tourism Data Competition
+    note: "2025"
+  - value: 0 re-calls
+    label: On repeated same-condition requests
+    note: cat3Filter reuse → no LLM call
+  - value: Offset + Cursor
+    label: Split pagination strategy
+    note: createdtime + contentid composite key
+links:
+  - label: Backend (Spring Boot)
+    href: https://github.com/sanghyunbang/Heat_Trip_Spring_Boot_BE
+  - label: LLM recommender (Python)
+    href: https://github.com/sanghyunbang/heattrip_rec_py
+  - label: Frontend (Flutter)
+    href: https://github.com/sanghyunbang/heat_trip_flutter
+---
+import Callout from '../../../components/Callout.astro';
+import Figure from '../../../components/Figure.astro';
+import ArchitectureHeatTrip from '../../../components/ArchitectureHeatTrip.astro';
+
+As **team lead**, I designed and built the emotion-based recommendation logic, the LLM recommender integration, place search & pagination, operational observability, and the auth/security structure. Below is not "I added features" but **what problem I solved, on what basis, and how**.
+
+<Figure
+  placeholder="Drop a real HeatTrip app screenshot (e.g. heat.png) here — upload it to public/img/ and set the cover path."
+  caption="App screens · demo"
+  ratio="16/9"
+/>
+
+## System architecture
+
+A Flutter client talks to the Spring Boot backend over REST, and the backend communicates with MySQL, S3/CloudFront and external APIs. The **LLM recommendation — expensive and failure-prone — is split into a Python server** and connected via a Port/Adapter.
+
+<ArchitectureHeatTrip />
+
+## Contribution 1 — Staging the LLM recommendation to isolate cost & failure
+
+<Callout kind="problem">
+
+I wanted to recommend places with an LLM, but the simplest approach (sending user input + all place data straight to the LLM) would require feeding the **tens of thousands of places** from the Korea Tourism API as input tokens — impossible due to **context limits and cost**.
+
+</Callout>
+
+<Callout kind="goal">
+
+Keep the LLM's natural-language recommendation ability, but build a structure that is **feasible at a realistic cost**.
+
+</Callout>
+
+<Callout kind="solution">
+
+I **staged** the recommendation. The LLM only recommends a first-pass **category (`cat3`)**, while detailed ranking is handled by a Spring-side algorithm — separating responsibilities.
+
+- Convert the LLM's category label into the Tour API's internal `cat3` code
+- Filter actual places by `cat3`, then rank on the backend by combining **emotion features · popularity · distance scores**
+- The frontend reuses the initial `cat3` result as a `cat3Filter` → **on repeated requests with the same condition, no LLM call is made — only ranking runs**
+
+</Callout>
+
+<Callout kind="result">
+
+Personalized recommendations while the staged split **reduced response latency, failure propagation and cost risk together.** Next improvements I'm considering: Redis caching (same-input LLM output) and a VectorDB-based RAG approach.
+
+</Callout>
+
+## Contribution 2 — Splitting two pagination patterns
+
+<Callout kind="problem">
+
+The place list had two different usage patterns: **regular page browsing** and **mobile infinite scroll**. Using offset alone would degrade performance and cause duplicate/missing rows in infinite scroll as data grows.
+
+</Callout>
+
+<Callout kind="solution">
+
+I split the strategy. **Regular lists use Offset Pagination**, while **infinite scroll uses Cursor Pagination with `createdtime` + `contentid` as a composite sort key**. The cursor is Base64-encoded, and I fetch `size + 1` rows to decide whether a next page exists.
+
+</Callout>
+
+<Callout kind="result">
+
+Infinite scroll gets stable next-page fetching, and even with identical `createdtime` values, the `contentid` tiebreaker **fixes the order**, preventing duplicates/omissions.
+
+</Callout>
+
+## Contribution 3 — A read model + FULLTEXT for search
+
+<Callout kind="problem">
+
+In the raw Tour API data, place names, categories and descriptions were spread across multiple tables — joining them on every search inflated query cost and complexity.
+
+</Callout>
+
+<Callout kind="solution">
+
+I **denormalized** place name, category name and description text into a `search_text` column and applied MySQL **FULLTEXT ngram** search. I also added `place_trait_snapshots` for fast lookup of `cat3`-based descriptions/tags.
+
+</Callout>
+
+<Callout kind="result">
+
+Separating the source storage from a search/display **read model** made the search API's responsibility clear.
+
+</Callout>
+
+## Contribution 4 — Building a quality & observability foundation
+
+<Callout kind="problem">
+
+External APIs, the LLM server, image uploads and auth were all failure-prone, and the recommendation/auth flows were core paths prone to regression on change. I needed **fast detection during development and root-cause tracing in production**.
+
+</Callout>
+
+<Callout kind="solution">
+
+- **Unit tests** for recommendation orchestration, LLM-response DTO deserialization, and the auth service
+- **JaCoCo** coverage reports + **Qodana** wired into GitHub Actions for static-analysis visibility
+- Collected controller latency & exceptions via **AOP**; errors are **deduplicated by fingerprint** then sent to **Slack**
+- Sensitive-data masking + a `correlation id` for both log traceability and security
+
+</Callout>
+
+<Callout kind="result">
+
+Core flows (recommendation · LLM DTO · auth) are guarded against regression by tests, and production errors can be noticed and traced faster via Slack alerts and `correlation id`. Qodana/JaCoCo are still at the visibility stage, but they're a starting point for tightening quality gates around core packages.
+
+</Callout>
+
+---
+
+I'm documenting what I learned refactoring this project from Java to Kotlin as a series on my [blog](/blog) (Korean).
