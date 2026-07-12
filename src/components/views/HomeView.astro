@@ -4,7 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import LinkCard from '../LinkCard.astro';
 import ProjectRow from '../ProjectRow.astro';
 import PostCard from '../PostCard.astro';
-import { useT, localize, type Lang } from '../../i18n';
+import { useT, localize, GITHUB_URL, PORTFOLIO_URL, type Lang } from '../../i18n';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -14,14 +14,14 @@ const skills = ['Java', 'Spring', 'MSA', 'JPA', 'Kafka', 'Redis', 'Flutter'];
 
 const linkCards = {
   ko: [
+    { title: 'Portfolio', href: PORTFOLIO_URL, description: 'Notion 포트폴리오 — 프로젝트 상세와 과정', badge: 'Notion' },
     { title: 'Resume', href: localize('/resume', lang), description: '경력 · 기술 스택 · 프로젝트 이력서', badge: 'Resume' },
-    { title: 'Portfolio', href: 'https://www.figma.com/deck/lm0luFHjvmFkrk9ILnaKHZ/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4?node-id=1-259&t=QONEdD7IQrzUUc2f-1', description: 'Figma 슬라이드 포트폴리오', badge: 'Figma' },
-    { title: 'GitHub', href: 'https://github.com/sanghyunbang', description: '코드 · 실험 프로젝트 · 저장소', badge: 'Code' },
+    { title: 'GitHub', href: GITHUB_URL, description: '코드 · 실험 프로젝트 · 저장소', badge: 'Code' },
   ],
   en: [
+    { title: 'Portfolio', href: PORTFOLIO_URL, description: 'Notion portfolio — project details & process', badge: 'Notion' },
     { title: 'Resume', href: localize('/resume', lang), description: 'Experience · stack · projects', badge: 'Resume' },
-    { title: 'Portfolio', href: 'https://www.figma.com/deck/lm0luFHjvmFkrk9ILnaKHZ/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4?node-id=1-259&t=QONEdD7IQrzUUc2f-1', description: 'Figma slide portfolio', badge: 'Figma' },
-    { title: 'GitHub', href: 'https://github.com/sanghyunbang', description: 'Code · experiments · repositories', badge: 'Code' },
+    { title: 'GitHub', href: GITHUB_URL, description: 'Code · experiments · repositories', badge: 'Code' },
   ],
 }[lang];
 

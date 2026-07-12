@@ -2,6 +2,11 @@ export type Lang = 'ko' | 'en';
 export const DEFAULT_LANG: Lang = 'ko';
 export const LANGS: Lang[] = ['ko', 'en'];
 
+/** 외부 링크 (한 곳에서 관리) */
+export const GITHUB_URL = 'https://github.com/sanghyunbang';
+export const PORTFOLIO_URL =
+  'https://app.notion.com/p/Hi-I-m-SangHyun-321b82bc8b718076951af8d8979005ff?source=copy_link';
+
 /** 현재 URL에서 언어 판별 */
 export function getLang(url: URL): Lang {
   const seg = url.pathname.split('/')[1];

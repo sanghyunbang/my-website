@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useT, localize, type Lang } from '../../i18n';
+import { useT, localize, GITHUB_URL, PORTFOLIO_URL, type Lang } from '../../i18n';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -49,9 +49,9 @@ const education = {
 }[lang];
 
 const contacts = [
-  { label: 'GitHub', href: 'https://github.com/sanghyunbang' },
+  { label: 'GitHub', href: GITHUB_URL },
+  { label: 'Portfolio', href: PORTFOLIO_URL },
   { label: 'Resume', href: localize('/resume', lang) },
-  { label: 'Portfolio', href: 'https://www.figma.com/deck/lm0luFHjvmFkrk9ILnaKHZ/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4?node-id=1-259&t=QONEdD7IQrzUUc2f-1' },
 ];
 ---
 
