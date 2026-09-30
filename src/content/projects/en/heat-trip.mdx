@@ -1,13 +1,13 @@
 ---
 title: HeatTrip
-summary: An emotion-centered mobile travel service that recommends destinations based on the user's emotional state and connects itineraries, emotion diaries and retrospectives. I staged the LLM recommendation for cost/failure isolation and designed search, pagination and observability myself.
+summary: An emotion-centered mobile travel service that recommends destinations based on the user's emotional state and connects itineraries, emotion diaries and retrospectives. As team lead I handled most of the backend (about 85% of commits) and deployment, and split roles so that for place recommendation the LLM picks only categories (cat3) and Spring does the ranking. In a later solo refactoring I redesigned the search query based on execution plans and added observability.
 role: Team Lead · Backend-focused
-period: 2025 · Korea Tourism Data Utilization Competition (team of 3)
+period: 2025.07–11 competition (team of 3) · 2026.03–06 solo refactoring
 tech: [Java 21, Spring Boot 3.5, Spring Security, JPA, MySQL 8, OAuth2 / JWT, OpenAI API, AWS S3 / CloudFront, Docker]
-highlight: Staged the LLM recommendation to isolate cost/failure propagation — Excellence Award at the Korea Tourism competition
+highlight: Kept tens of thousands of places out of the LLM — it picks categories (cat3) only; Excellence Award at the Korea Tourism Data Utilization Competition
 featured: true
 order: 1
-award: Excellence Award, Korea Tourism Data Utilization Competition (2025)
+award: Excellence Award, Korea Tourism Data Utilization Competition (2025.12)
 roleBreakdown:
   - { area: "Backend (auth·search·recommendation·diary)", pct: 85 }
   - { area: "Infra · Deploy (full FE/BE)", pct: 100 }
@@ -15,41 +15,32 @@ roleBreakdown:
   - { area: "Frontend (home·search·recommend·diary)", pct: 65 }
 metrics:
   - value: Award
-    label: Korea Tourism Data Competition
-    note: "2025"
-  - value: 0 re-calls
-    label: On repeated same-condition requests
-    note: cat3Filter reuse → no LLM call
+    label: Korea Tourism Data Utilization Competition
+    note: "2025.12"
+  - value: Scoped LLM role
+    label: Picks categories (cat3), not places
+    note: ranking in Spring (emotion · popularity · distance)
   - value: Offset + Cursor
     label: Split pagination strategy
     note: createdtime + contentid composite key
 links:
   - label: Backend (Spring Boot)
     href: https://github.com/sanghyunbang/Heat_Trip_Spring_Boot_BE
-  - label: LLM recommender (Python)
-    href: https://github.com/sanghyunbang/heattrip_rec_py
   - label: Frontend (Flutter)
     href: https://github.com/sanghyunbang/heat_trip_flutter
 ---
 import Callout from '../../../components/Callout.astro';
-import Figure from '../../../components/Figure.astro';
 import ArchitectureHeatTrip from '../../../components/ArchitectureHeatTrip.astro';
 
 As **team lead**, I designed and built the emotion-based recommendation logic, the LLM recommender integration, place search & pagination, operational observability, and the auth/security structure. Below is not "I added features" but **what problem I solved, on what basis, and how**.
 
-<Figure
-  placeholder="Drop a real HeatTrip app screenshot (e.g. heat.png) here — upload it to public/img/ and set the cover path."
-  caption="App screens · demo"
-  ratio="16/9"
-/>
-
 ## System architecture
 
-A Flutter client talks to the Spring Boot backend over REST, and the backend communicates with MySQL, S3/CloudFront and external APIs. The **LLM recommendation — expensive and failure-prone — is split into a Python server** and connected via a Port/Adapter.
+A Flutter client talks to the Spring Boot backend over REST, and the backend communicates with MySQL, S3/CloudFront and external APIs. The **LLM recommendation is split into a Python server** and connected via a Port/Adapter.
 
 <ArchitectureHeatTrip />
 
-## Contribution 1 — Staging the LLM recommendation to isolate cost & failure
+## Contribution 1 — Not feeding tens of thousands of places to the LLM: it recommends categories (cat3) only
 
 <Callout kind="problem">
 
@@ -65,17 +56,19 @@ Keep the LLM's natural-language recommendation ability, but build a structure th
 
 <Callout kind="solution">
 
-I **staged** the recommendation. The LLM only recommends a first-pass **category (`cat3`)**, while detailed ranking is handled by a Spring-side algorithm — separating responsibilities.
+I split responsibilities between the LLM and Spring. The LLM recommends only a **category (`cat3`)**, and ranking of actual places happens inside Spring.
 
 - Convert the LLM's category label into the Tour API's internal `cat3` code
 - Filter actual places by `cat3`, then rank on the backend by combining **emotion features · popularity · distance scores**
-- The frontend reuses the initial `cat3` result as a `cat3Filter` → **on repeated requests with the same condition, no LLM call is made — only ranking runs**
+- When the frontend sends back the initial `cat3` code as `cat3Filter`, **the LLM step is skipped and only ranking runs**
 
 </Callout>
 
 <Callout kind="result">
 
-Personalized recommendations while the staged split **reduced response latency, failure propagation and cost risk together.** Next improvements I'm considering: Redis caching (same-input LLM output) and a VectorDB-based RAG approach.
+Emotion-based personalized recommendations became possible without feeding tens of thousands of places into the LLM.
+
+**Limitation:** there is no fallback response when the LLM call fails, and a long timeout applies to every retry. The next step is to shorten the timeout and add a rule-based fallback so request threads aren't held up. Redis caching (same-input LLM output) and a VectorDB-based RAG approach are further improvements I'm considering.
 
 </Callout>
 
@@ -99,38 +92,44 @@ Infinite scroll gets stable next-page fetching, and even with identical `created
 
 </Callout>
 
-## Contribution 3 — A read model + FULLTEXT for search
+## Contribution 3 (solo refactoring) — Finding the bottleneck with execution plans and restructuring place search
 
 <Callout kind="problem">
 
-In the raw Tour API data, place names, categories and descriptions were spread across multiple tables — joining them on every search inflated query cost and complexity.
+Over roughly 49k places, a text search such as `q=카페` ("cafe") was implemented as four `LOWER(col) LIKE '%카페%'` conditions plus an `EXISTS` correlated subquery to match category names.
+
+`EXPLAIN ANALYZE` showed the real bottleneck was not the list query but the **count query**: a full table scan with the subquery repeated about 49k times, taking **about 755ms**. Because of the leading wildcard and `LOWER()`, adding a B-Tree index could not fix the text-search path.
 
 </Callout>
 
 <Callout kind="solution">
 
-I **denormalized** place name, category name and description text into a `search_text` column and applied MySQL **FULLTEXT ngram** search. I also added `place_trait_snapshots` for fast lookup of `cat3`-based descriptions/tags.
+I **denormalized** place name, category and category name into a `search_text` column and switched to `FULLTEXT INDEX … WITH PARSER ngram` + `MATCH … AGAINST`.
 
 </Callout>
 
 <Callout kind="result">
 
-Separating the source storage from a search/display **read model** made the search API's responsibility clear.
+After the change, the list query finds candidates (about 3,468 rows) directly from the fulltext index, **about 4.9ms** end to end, and the count query no longer does a full scan or repeats the subquery.
+
+Caveat: 755ms (count, before) and 4.9ms (list, after) measure different queries. Comparing only the old `LIMIT 20` list query in isolation can make the old approach look faster, so since the API runs both list and count, I judged by the whole search path rather than a single number. I documented the migration steps, SQL-log tests and before/after execution plans in [8 documents](https://github.com/sanghyunbang/Heat_Trip_Spring_Boot_BE/tree/main/docs/database/sql-query-optimization-search) (Korean).
+
+**Limitation:** FULLTEXT results are not identical to `LIKE` (single-character and special-character queries). I treat this as a trade-off between performance and search semantics; finishing result comparisons for short queries and condition combinations is the next step.
 
 </Callout>
 
-## Contribution 4 — Building a quality & observability foundation
+## Contribution 4 (solo refactoring) — Building a quality & observability foundation
 
 <Callout kind="problem">
 
-External APIs, the LLM server, image uploads and auth were all failure-prone, and the recommendation/auth flows were core paths prone to regression on change. I needed **fast detection during development and root-cause tracing in production**.
+External APIs, the LLM server, image uploads and auth were all failure-prone, and the recommendation/auth flows were core paths prone to regression on change. I needed **fast detection during development and a way to trace causes in production**.
 
 </Callout>
 
 <Callout kind="solution">
 
 - **Unit tests** for recommendation orchestration, LLM-response DTO deserialization, and the auth service
-- **JaCoCo** coverage reports + **Qodana** wired into GitHub Actions for static-analysis visibility
+- **JaCoCo** coverage reports (generated in the build) · **Qodana** static analysis (GitHub Actions)
 - Collected controller latency & exceptions via **AOP**; errors are **deduplicated by fingerprint** then sent to **Slack**
 - Sensitive-data masking + a `correlation id` for both log traceability and security
 
@@ -144,4 +143,4 @@ Core flows (recommendation · LLM DTO · auth) are guarded against regression by
 
 ---
 
-I'm documenting what I learned refactoring this project from Java to Kotlin as a series on my [blog](/blog) (Korean).
+I'm documenting what I learned during the post-competition refactoring (unit tests, partial Kotlin migration of the LLM integration layer) as a series on my [blog](/blog) (Korean).
