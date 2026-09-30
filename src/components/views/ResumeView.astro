@@ -16,14 +16,14 @@ const D = {
     ],
     training: [
       { name: '프로그래머스 데브코스 · MSA 기반 Spring AI 심화 캠프', detail: 'Spring Cloud · Spring AI · MSA 백엔드 — BARO FARM 프로젝트', period: '2025.11 – 2026.01' },
-      { name: '강남 하이미디어 · KDT 풀스택 캠프', detail: 'Spring · React · Flutter 풀스택 — 졸업 프로젝트 우수상 (HeatTrip)', period: '2025.01 – 2025.07' },
+      { name: '강남 하이미디어 · KDT 풀스택 캠프', detail: 'Spring · React · Flutter 풀스택 — 졸업 프로젝트 우수상 (오름 · 등산 커뮤니티)', period: '2025.01 – 2025.07' },
     ],
     projects: [
       { name: 'HeatTrip — 감정 기반 여행지 추천 서비스 (팀 리드)', period: '2025.07–11 공모전(3인, 우수상) · 2026.03–06 개인 리팩토링', bullets: ['LLM 역할 한정 — 장소 추천에서 LLM은 카테고리(cat3)만 고르고, 실제 장소는 cat3로 거른 뒤 감정 특성·인기도·거리 점수로 Spring 안에서 랭킹. 프론트가 cat3Filter를 넘기면 LLM 단계를 건너뜀', '장소 목록 조회를 Offset / Cursor 페이지네이션으로 분리 (createdtime + contentid 복합 키, Base64 cursor, size+1로 hasNext 판단)', '(개인 리팩토링) 장소 검색 — EXPLAIN ANALYZE로 병목이 count 쿼리(전체 스캔 + 상관 서브쿼리 반복, 약 755ms)임을 확인, search_text 반정규화 + FULLTEXT(ngram) + MATCH…AGAINST로 전환해 count 전체 스캔 제거, 목록 약 4.9ms', '(개인 리팩토링) 관측성 구축 — AOP 요청/예외 수집, fingerprint 중복 억제 후 Slack 알림, correlation id, JaCoCo 커버리지 리포트 · Qodana(GitHub Actions)', 'Java 21 / Spring Boot 3.5 / Spring Security·OAuth2·JWT / JPA / MySQL 8 / AWS S3·CloudFront / Docker Compose'] },
       { name: 'BARO FARM — MSA 커머스 백엔드 (회원·인증, Gateway, OPA 인가)', period: '2025.11.29–2026.01.27 · 팀 프로젝트', bullets: ['Spring Cloud Gateway·Redis·Kafka·OPA 기반 MSA에서 회원·인증 서비스, Gateway, OPA 인가 담당', '간헐적 403을 게이트웨이 오류가 아닌 "JWT 권한과 사용자 상태 불일치" 구조 문제로 진단', 'Kafka hotlist 이벤트로 상태 변경을 전파하고 OPA 번들 갱신과 연결해, 권한 반영 시차를 OPA 폴링 주기(10~60초) 안으로 줄임', '회원탈퇴는 같은 트랜잭션의 outbox + 스케줄러 발행(5회 실패 시 FAILED)으로 구현, (이후 개인 리팩토링 2026.02–03) 판매자 승인은 커밋 후 OPA 전파를 비동기로 분리 — 유실 비용 기준으로 구분하고 ADR 작성'] },
     ],
     education: [
-      { school: '학점은행제 (4년제)', detail: '컴퓨터공학 · 졸업 예정 (4.02 / 4.5)', period: '2025.07 – 2026.08' },
+      { school: '학점은행제 (4년제)', detail: '컴퓨터공학 학사 (4.05 / 4.5)', period: '2025.07 – 2026.08' },
       { school: '서강대학교', detail: '경영학 / 경제학 복수전공 (3.75 / 4.3)', period: '2015.03 – 2022.05' },
       { school: '중앙대학교 대학원', detail: 'AI학과 석사과정 (휴학)', period: '2022.09 –' },
     ],
@@ -41,14 +41,14 @@ const D = {
     ],
     training: [
       { name: 'Programmers Dev Course · MSA Spring AI Intensive', detail: 'Spring Cloud · Spring AI · MSA backend — BARO FARM project', period: '2025.11 – 2026.01' },
-      { name: 'Gangnam HiMedia · KDT Full-stack Bootcamp', detail: 'Spring · React · Flutter — Excellence Award (HeatTrip)', period: '2025.01 – 2025.07' },
+      { name: 'Gangnam HiMedia · KDT Full-stack Bootcamp', detail: 'Spring · React · Flutter — Excellence Award for the graduation project (OREUM, hiking community)', period: '2025.01 – 2025.07' },
     ],
     projects: [
       { name: 'HeatTrip — Emotion-based travel recommendation (Team Lead)', period: '2025.07–11 competition (team of 3, Excellence Award) · 2026.03–06 solo refactoring', bullets: ['Scoped the LLM role — for place recommendation the LLM picks only the category (cat3); actual places are filtered by cat3 and ranked inside Spring by emotion-feature, popularity and distance scores. When the frontend sends cat3Filter, the LLM step is skipped', 'Split place-list pagination into Offset / Cursor (createdtime + contentid composite key, Base64 cursor, size+1 for hasNext)', '(Solo refactoring) Place search — EXPLAIN ANALYZE showed the bottleneck was the count query (full scan + repeated correlated subquery, ~755ms); switched to search_text denormalization + FULLTEXT (ngram) + MATCH…AGAINST, removing the count full scan; list ~4.9ms', '(Solo refactoring) Built observability — AOP request/exception collection, fingerprint dedup → Slack alerts, correlation id, JaCoCo coverage reports · Qodana (GitHub Actions)', 'Java 21 / Spring Boot 3.5 / Spring Security·OAuth2·JWT / JPA / MySQL 8 / AWS S3·CloudFront / Docker Compose'] },
       { name: 'BARO FARM — MSA commerce backend (member/auth, Gateway, OPA authorization)', period: '2025.11.29–2026.01.27 · team project', bullets: ['Owned the member/auth service, the Gateway and OPA authorization in an MSA on Spring Cloud Gateway·Redis·Kafka·OPA', 'Diagnosed intermittent 403s as a structural "JWT permission vs user-state mismatch," not a gateway error', 'Propagated state changes via Kafka hotlist events wired to OPA bundle refresh, reducing the permission lag to within the OPA polling interval (10–60s)', 'Implemented member withdrawal with an outbox event in the same transaction, published by a scheduler (FAILED after 5 failures); (later solo refactoring, 2026.02–03) seller approval commits first and propagates to OPA asynchronously — split by the cost of losing each event, recorded in an ADR'] },
     ],
     education: [
-      { school: 'Credit Bank System (4-yr)', detail: 'Computer Science · expected graduation (4.02 / 4.5)', period: '2025.07 – 2026.08' },
+      { school: 'Credit Bank System (4-yr)', detail: 'B.S. in Computer Science (4.05 / 4.5)', period: '2025.07 – 2026.08' },
       { school: 'Sogang University', detail: 'Business & Economics, double major (3.75 / 4.3)', period: '2015.03 – 2022.05' },
       { school: 'Chung-Ang Univ. Graduate School', detail: 'M.S. in AI (on leave)', period: '2022.09 –' },
     ],
