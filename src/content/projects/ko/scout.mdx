@@ -1,0 +1,80 @@
+---
+# 짧은 상세 페이지(case). 공개 범위: _site-refresh/project-briefs.md §1, 본문·캡션: _site-refresh/captures/scout.md §1·§3
+# 레포 링크·종목명·수치·지표·호스팅 정보는 싣지 않는다. 이미지는 가린 판(captures/scout/web)만 쓴다(raw/는 게시 금지).
+# 기간·이력서 한 줄은 src/data/profile.ts(resumeProjects.scout)
+kind: case
+title: SCOUT
+summary: 공개된 가치평가 방법론(다모다란식 DCF와 몬테카를로 시뮬레이션)으로 종목의 적정가치를 범위와 분포로 보여 주는 서비스를 혼자 기획하고 개발하고 있습니다(출시 전, AI 코딩 에이전트와 함께 작성하고 커밋에 공저 표기). 사업화를 준비 중인 비공개 프로젝트라 소스와 모델 파라미터는 공개하지 않습니다.
+role: 1인 개발 — 기획, 엔진, 백엔드, 앱, 운영 콘솔
+tech: [Kotlin, Spring Boot, PostgreSQL, Flyway, Testcontainers, Flutter, React, Next.js]
+highlight: 모델 입력값은 승인 관문을 통과해야만 바뀌고, LLM 자문도 관문에 제안만 할 수 있는 구조
+featured: false
+order: 4
+cover: /img/projects/scout/architecture.svg
+coverWidth: 1200
+coverHeight: 700
+coverAlt: "SCOUT 시스템 구조도: 앱·웹·콘솔 → Spring Boot API → Kotlin 엔진·PostgreSQL, 입력값은 승인 관문을 거쳐 반영"
+ogImage: /img/projects/scout/og.jpg
+links: []
+---
+import Figure from '../../../components/Figure.astro';
+import Gallery from '../../../components/Gallery.astro';
+
+SCOUT는 공개된 가치평가 방법론(다모다란식 DCF와 몬테카를로 시뮬레이션)으로 종목의 적정가치를 계산하는 서비스입니다. 적정가치는 숫자 하나가 아니라 범위와 분포로 보여 줍니다. 혼자 기획하고 개발하고 있으며, 지금은 출시 전 점검 단계입니다.
+
+가치평가 엔진은 Spring에 의존하지 않는 순수 Kotlin 모듈로 분리했습니다. 그 위에 Spring Boot API, Flutter 앱, React 운영 콘솔, Next.js 웹을 올렸습니다. 모델 입력값은 공시 수집, 최신성 판정, 갱신 제안을 차례로 거친 뒤 승인 관문을 통과해야 바뀝니다. LLM 자문도 이 관문에 제안만 할 수 있습니다.
+
+앱은 안전마진으로 "지금 사도 되는 가격인지"를 보여 주고, 추격매수를 하려는 순간에는 멈춤 질문으로 개입합니다.
+
+## 앱 화면
+
+<Gallery
+  caption="로컬 시드 DB로 띄운 앱(Flutter 웹 빌드) · 종목명, 가격, 적정가, 괴리율, 시나리오 서사는 가렸습니다"
+  cols={3}
+  ratio="739/1600"
+  frameBg="#0d1210"
+  position="top"
+  images={[
+    { src: '/img/projects/scout/app-home.webp', alt: '앱 홈. 매수 검토, 매도 검토, 마음 다잡기로 들어가는 입구가 있다.', caption: '1 · 앱 홈', width: 1018, height: 1600 },
+    { src: '/img/projects/scout/app-report.webp', alt: '종목 리포트(PRO, 간단 모드). 약세에서 강세까지 이어지는 시나리오 사다리에서 시나리오를 고른다.', caption: '2 · 종목 리포트', width: 872, height: 1600 },
+    { src: '/img/projects/scout/app-fomo-intervention.webp', alt: '매수 검토. 판단 가격이 적정가보다 높은 종목을 사려고 하면 “잠깐, 멈춰볼까요?”가 뜨고, 조급함, 적정가 초과, 남의 속도를 묻는 세 가지 자기 점검 질문이 나온다.', caption: '3 · 매수 검토', width: 739, height: 1600 },
+  ]}
+/>
+
+1. **앱 홈.** 매수 검토, 매도 검토, 마음 다잡기로 들어가는 입구가 있습니다. 거시 지표(스냅숏 값)와 오늘의 마음 신호, 관심 종목의 적정가 대비 괴리율도 보입니다. 종목명, 가격, 괴리율은 가렸습니다.
+2. **종목 리포트(PRO, 간단 모드).** 약세에서 강세까지 이어지는 시나리오 사다리에서 시나리오를 고릅니다. ★은 추천 시나리오, ◎은 판단에 쓴 가격과 가장 가까운 시나리오입니다. 안전마진 칩을 누르면 진입가가 바로 바뀝니다. 시나리오별 적정가와 서사는 가렸습니다.
+3. **매수 검토.** 판단 가격이 적정가보다 높은 종목을 사려고 하면 "잠깐, 멈춰볼까요?"가 뜨고, 조급함, 적정가 초과, 남의 속도를 묻는 세 가지 자기 점검 질문이 나옵니다. 수치는 가렸습니다.
+
+## 운영 콘솔
+
+콘솔 화면은 목(mock) 데이터로 띄운 화면입니다(화면 오른쪽 위 `MOCK` 배지). 종목은 `종목 A·B…`로 바꾸고 수치는 가렸습니다.
+
+<Figure
+  src="/img/projects/scout/console-workbench.webp"
+  width={1475}
+  height={1600}
+  alt="운영 콘솔의 종목 워크벤치. 시나리오별 P25–P75 범위 사다리와, 선택한 시나리오의 몬테카를로 주당가치 분포가 나온다."
+  caption="종목 워크벤치 — 시나리오별 P25–P75 범위 사다리와, 선택한 시나리오의 몬테카를로 주당가치 분포. 오른쪽은 회사, 시나리오, 퀀트 노트. 종목, 수치, 노트 본문은 모두 가렸습니다(목 데이터)."
+/>
+
+<Figure
+  src="/img/projects/scout/console-freshness.webp"
+  width={1600}
+  height={880}
+  alt="데이터 신선도. 프리셋 기준 분기와 최신 공시 분기의 차이로 “뒤짐(제안 대상)”, “기준 미상”, “수집 없음”, “최신”을 판정한다."
+  caption="데이터 신선도 — 프리셋 기준 분기와 최신 공시 분기의 차이로 “뒤짐(제안 대상)”, “기준 미상”, “수집 없음”, “최신”을 판정합니다. 수집기 적재 상태는 결손과 미적재를 구분해 표시합니다."
+/>
+
+<Figure
+  src="/img/projects/scout/console-param-gate.webp"
+  width={1600}
+  height={1240}
+  alt="파라미터 관문. 수동, 수집 자동, LLM, 기준 데이터 출처의 제안이 모두 이 대기열을 지나간다."
+  caption="파라미터 관문 — 수동, 수집 자동, LLM, 기준 데이터 출처의 제안이 모두 이 대기열을 지나갑니다. 결과는 승인(반영 완료), 반려(사유 필수), 자동 반영, 자동 반영 보류로 남습니다."
+/>
+
+---
+
+소스와 모델 파라미터는 비공개입니다. 요청하시면 설계 문서(ADR)와 시연을 보여 드립니다.
+
+투자 자문이 아닙니다.

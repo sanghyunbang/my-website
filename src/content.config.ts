@@ -33,6 +33,8 @@ const projects = defineCollection({
     /** public 절대경로 (예: /img/projects/<slug>/cover.webp), 16:9 권장 */
     cover: z.string().optional(),
     coverAlt: z.string().optional(),
+    /** 상세 페이지 커버 아래 한 줄 캡션 (예: 화면이 어느 단계·빌드인지) */
+    coverCaption: z.string().optional(),
     /** cover의 실제 픽셀 크기 (img width/height 속성 — 레이아웃 이동 방지) */
     coverWidth: z.number().int().positive().optional(),
     coverHeight: z.number().int().positive().optional(),

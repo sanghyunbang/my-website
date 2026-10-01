@@ -24,6 +24,8 @@
 /* ── Base ── */
 html {
   scroll-behavior: smooth;
+  /* 라이트 전용 사이트: OS가 다크여도 SVG 이미지(예: SCOUT 구조도)·폼 컨트롤이 라이트로 그려지게 */
+  color-scheme: light;
 }
 
 body {

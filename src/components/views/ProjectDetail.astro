@@ -5,7 +5,7 @@ import Metric from '../Metric.astro';
 import RoleBar from '../RoleBar.astro';
 import TechBadge from '../TechBadge.astro';
 import { useT, localize, type Lang } from '../../i18n';
-import { getAward, formatAward, formatDate, storeLinksFor } from '../../data/profile';
+import { getAward, formatAward, formatDate, storeLinksFor, resumeProjects, formatProjectPeriods } from '../../data/profile';
 import { getProjects, projectSlug } from '../../lib/content';
 
 interface Props {
@@ -29,6 +29,10 @@ const metrics = [
 
 // 링크: frontmatter + profile.ts의 스토어 링크
 const links = [...data.links, ...storeLinksFor(slug, lang)];
+
+// 기간: frontmatter period가 없으면 profile.ts resumeProjects(같은 id)의 기간 (ProjectBrief와 같은 규칙)
+const rp = resumeProjects.find((p) => p.id === slug);
+const periodText = data.period ?? (rp ? formatProjectPeriods(rp, lang) : undefined);
 
 // 다른 언어판이 있을 때만 hreflang
 const other: Lang = lang === 'ko' ? 'en' : 'ko';
@@ -57,10 +61,10 @@ const hasOther = (await getProjects(other, 'case')).some((p) => projectSlug(p) =
             <p class="mt-0.5 text-sm font-medium text-ink">{data.role}</p>
           </div>
         )}
-        {data.period && (
+        {periodText && (
           <div>
             <p class="font-mono text-xs uppercase tracking-wider text-muted">{t('proj.detail.period')}</p>
-            <p class="mt-0.5 text-sm font-medium text-ink">{data.period}</p>
+            <p class="mt-0.5 text-sm font-medium text-ink">{periodText}</p>
           </div>
         )}
       </div>
@@ -81,16 +85,24 @@ const hasOther = (await getProjects(other, 'case')).some((p) => projectSlug(p) =
     </header>
 
     {data.cover && (
-      <img
-        src={data.cover}
-        alt={data.coverAlt ?? data.title}
-        width={data.coverWidth}
-        height={data.coverHeight}
-        class="mt-10 aspect-video w-full rounded-2xl border border-line bg-neutral-100 object-contain"
-        loading="eager"
-        decoding="async"
-        fetchpriority="high"
-      />
+      <figure class="mt-10">
+        {/* Figure와 같이 원본 파일로 가는 링크 — 구조도처럼 작은 글씨가 있는 커버를 원본 크기로 볼 수 있게 */}
+        <a href={data.cover} target="_blank" rel="noopener" title={lang === 'en' ? 'Open full size in a new tab' : '새 탭에서 원본 크기로 보기'} class="block cursor-zoom-in">
+          <img
+            src={data.cover}
+            alt={data.coverAlt ?? data.title}
+            width={data.coverWidth}
+            height={data.coverHeight}
+            class="aspect-video w-full rounded-2xl border border-line bg-neutral-100 object-contain"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+          />
+        </a>
+        {data.coverCaption && (
+          <figcaption class="mt-2 text-center font-mono text-xs text-muted">{data.coverCaption}</figcaption>
+        )}
+      </figure>
     )}
 
     {metrics.length > 0 && (

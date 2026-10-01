@@ -26,6 +26,7 @@ import {
   formatAward,
   getAward,
   getApp,
+  appStatusSuffix,
 } from '../../data/profile';
 
 interface Props { lang: Lang }
@@ -102,7 +103,7 @@ const H2 = 'font-mono text-xs uppercase tracking-wider text-muted';
                       ))}
                     </span>
                     {p.slug && <a href={abs(`/projects/${p.slug}`)} class="text-accent-ink hover:underline">{t('resume.casestudy')} ↗</a>}
-                    {app && <a href={app.href} target="_blank" rel="noreferrer" class="text-accent-ink hover:underline">{app.store[lang]} ↗</a>}
+                    {app && <a href={app.href} target="_blank" rel="noreferrer" class="text-accent-ink hover:underline">{app.store[lang]}{app.status && <span class="font-sans">{appStatusSuffix(app, lang)}</span>} ↗</a>}
                     {p.note && <span class="font-sans">{p.note[lang]}</span>}
                   </p>
                 </div>

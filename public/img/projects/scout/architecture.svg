@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" role="img" aria-labelledby="t d">
+  <title id="t">SCOUT 시스템 구조</title>
+  <desc id="d">Flutter 앱, Next.js 웹, React 운영 콘솔이 Spring Boot API를 호출한다. API는 순수 Kotlin 가치평가 엔진과 PostgreSQL을 쓴다. 모델 입력값은 공시 수집, 최신성 판정, 갱신 제안을 거쳐 승인 관문을 통과해야 PostgreSQL의 파라미터 정본에 반영된다. LLM 자문은 관문에 제안만 한다.</desc>
+  <style>
+    .bg{fill:#f7f4ed}
+    .card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+    .core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+    .gate{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+    .soft{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+    .dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+    .llm{fill:#ffffff;stroke:#9a6b12;stroke-width:1.5;stroke-dasharray:5 4}
+    .h{font:700 17px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .hs{font:700 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .b{font:500 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+    .s{font:500 12px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+    .acc{fill:#9a6b12}
+    .title{font:800 22px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .chipr{fill:#f1ece1}
+    .ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+    .lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+    .ah{fill:#6b6457}
+    .ahg{fill:#9a6b12}
+    @media (prefers-color-scheme: dark){
+      .bg{fill:#141614}
+      .card,.core{fill:#1d201e}
+      .card{stroke:#3d413d}
+      .core{stroke:#e8e2d4}
+      .gate{fill:#2a2416;stroke:#d9a441}
+      .soft,.chipr{fill:#232622}
+      .soft{stroke:#3d413d}
+      .llm{fill:#1d201e;stroke:#d9a441}
+      .dash{stroke:#4a4e49}
+      .h,.hs,.title{fill:#eee8da}
+      .b{fill:#bdb6a6}
+      .s{fill:#9c9585}
+      .acc{fill:#d9a441}
+      .ln{stroke:#a59e8f}
+      .lg{stroke:#d9a441}
+      .ah{fill:#a59e8f}
+      .ahg{fill:#d9a441}
+    }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="700" rx="18"/>
+  <text class="title" x="40" y="48">SCOUT 시스템 구조</text>
+  <text class="s" x="40" y="70">공개용 개요 · 소스, 모델 파라미터, 종목 데이터는 넣지 않았습니다</text>
+
+  <!-- clients -->
+  <rect class="card" x="40" y="96" width="260" height="84" rx="12"/>
+  <text class="h" x="60" y="126">Flutter 앱</text>
+  <text class="b" x="60" y="148">Android · iOS · 웹</text>
+  <text class="s" x="60" y="167">리포트 · 준칙 · 일지 · 커뮤니티</text>
+
+  <rect class="card" x="320" y="96" width="260" height="84" rx="12"/>
+  <text class="h" x="340" y="126">Next.js 웹</text>
+  <text class="b" x="340" y="148">결과 중심 무료 미리보기</text>
+  <text class="s" x="340" y="167">리포트 미리보기 · 요금제</text>
+
+  <rect class="card" x="600" y="96" width="260" height="84" rx="12"/>
+  <text class="h" x="620" y="126">React 운영 콘솔</text>
+  <text class="b" x="620" y="148">Vite · TanStack</text>
+  <text class="s" x="620" y="167">커버리지 · 신선도 · 파라미터 관문</text>
+
+  <path class="ln" d="M170 180 V236" marker-end="url(#a)"/>
+  <path class="ln" d="M450 180 V236" marker-end="url(#a)"/>
+  <path class="ln" d="M730 180 V236" marker-end="url(#a)"/>
+  <text class="s" x="462" y="214">REST · JSON</text>
+
+  <!-- API -->
+  <rect class="core" x="40" y="240" width="820" height="118" rx="14"/>
+  <text class="h" x="62" y="272">Spring Boot API</text>
+  <text class="b" x="200" y="272">Kotlin · JDK 21 · 모듈러 모놀리스</text>
+  <text class="s" x="62" y="296">커밋된 OpenAPI 계약(드리프트 테스트) · 공개 / 인증 / 관리자 경계를 실제 요청 테스트로 고정</text>
+  <g>
+    <rect class="chipr" x="62" y="312" width="78" height="28" rx="14"/><text class="s" x="80" y="331">가치평가</text>
+    <rect class="chipr" x="148" y="312" width="78" height="28" rx="14"/><text class="s" x="166" y="331">공시 수집</text>
+    <rect class="chipr" x="234" y="312" width="78" height="28" rx="14"/><text class="s" x="252" y="331">준칙 · 일지</text>
+    <rect class="chipr" x="320" y="312" width="78" height="28" rx="14"/><text class="s" x="338" y="331">커뮤니티</text>
+    <rect class="chipr" x="406" y="312" width="64" height="28" rx="14"/><text class="s" x="424" y="331">구독</text>
+    <rect class="chipr" x="478" y="312" width="64" height="28" rx="14"/><text class="s" x="496" y="331">인증</text>
+    <text class="s" x="556" y="331">…</text>
+  </g>
+
+  <path class="ln" d="M235 358 V416" marker-end="url(#a)"/>
+  <text class="s" x="246" y="392">계산 요청</text>
+  <path class="ln" d="M665 358 V416" marker-end="url(#a)"/>
+  <text class="s" x="676" y="392">읽기 · 쓰기</text>
+
+  <!-- engine -->
+  <rect class="soft" x="40" y="420" width="350" height="112" rx="14"/>
+  <text class="h" x="62" y="452">가치평가 엔진</text>
+  <text class="b" x="62" y="476">순수 Kotlin 모듈 · Spring 의존 없음</text>
+  <text class="s" x="62" y="498">DCF(3단계 성장) · 몬테카를로 · SOTP</text>
+  <text class="s" x="62" y="518">속성 기반 테스트 + 릴리즈 스냅샷 비교</text>
+
+  <!-- db -->
+  <rect class="soft" x="470" y="420" width="390" height="112" rx="14"/>
+  <text class="h" x="492" y="452">PostgreSQL 16</text>
+  <text class="b" x="492" y="476">Flyway 마이그레이션 · 모델 입력값 정본</text>
+  <text class="s" x="492" y="498">값은 관문을 거쳐서만 바뀜 · 변경 이력 보존</text>
+  <text class="s" x="492" y="518">통합 테스트도 실제 PostgreSQL(Testcontainers)</text>
+
+  <path class="ln" d="M470 476 H396" marker-end="url(#a)"/>
+  <text class="s" x="401" y="466">입력값</text>
+
+  <!-- update pipeline -->
+  <rect class="dash" x="900" y="88" width="270" height="470" rx="16"/>
+  <text class="s" x="918" y="112">모델 입력값 갱신 흐름</text>
+
+  <rect class="card" x="918" y="124" width="234" height="52" rx="10"/>
+  <text class="hs" x="934" y="148">공시 수집</text>
+  <text class="s" x="934" y="166">국내 DART · 미국 EDGAR (설정으로 켬)</text>
+  <path class="ln" d="M1035 176 V194" marker-end="url(#a)"/>
+
+  <rect class="card" x="918" y="198" width="234" height="44" rx="10"/>
+  <text class="hs" x="934" y="226">최신성 판정</text>
+  <text class="s" x="1030" y="226">기준 분기 vs 최신 공시</text>
+  <path class="ln" d="M1035 242 V260" marker-end="url(#a)"/>
+
+  <rect class="card" x="918" y="264" width="234" height="44" rx="10"/>
+  <text class="hs" x="934" y="292">갱신 제안</text>
+  <text class="s" x="1010" y="292">경로 · 현재 값 → 제안 값</text>
+
+  <rect class="llm" x="960" y="334" width="192" height="50" rx="10"/>
+  <text class="hs" x="976" y="356">LLM 자문</text>
+  <text class="s" x="976" y="374">포트·어댑터 · 값을 직접 못 바꿈</text>
+  <path class="lg" d="M1056 334 V312" marker-end="url(#g)"/>
+  <text class="s acc" x="1066" y="328">제안만</text>
+
+  <path class="lg" d="M934 308 V420" marker-end="url(#g)"/>
+
+  <rect class="gate" x="918" y="424" width="234" height="120" rx="12"/>
+  <text class="h acc" x="934" y="454">승인 관문</text>
+  <text class="b" x="934" y="478">관리자 승인 · 반려(사유 필수)</text>
+  <text class="s" x="934" y="498">승인 = 새 revision 반영 · 재계산</text>
+  <text class="s" x="934" y="516">일부 기계 갱신은 보호 조건 안에서</text>
+  <text class="s" x="934" y="534">자동 반영, 한도를 넘으면 사람 대기</text>
+
+  <path class="lg" d="M918 476 H866" marker-end="url(#g)"/>
+  <text class="s acc" x="878" y="466">반영</text>
+
+  <!-- footer -->
+  <line x1="40" y1="594" x2="1160" y2="594" stroke="#cdc4b2" stroke-width="1"/>
+  <text class="s" x="40" y="622">1인 개발 · 출시 전. 가치평가 방법론(DCF · 몬테카를로)은 공개 지식이고, 사업 IP인 파라미터 · 캘리브레이션 · 데이터 파이프라인 세부는 비공개입니다.</text>
+  <text class="s" x="40" y="644">정보 · 교육 목적의 가치평가 도구이며 투자 자문이 아닙니다.</text>
+</svg>

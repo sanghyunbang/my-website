@@ -1,0 +1,80 @@
+---
+# Short detail page (case). Disclosure limits: _site-refresh/project-briefs.md §1; text and captions: _site-refresh/captures/scout.md §1·§3
+# No repo link, ticker names, figures, metrics or hosting details. Images are the masked set only (captures/scout/web; never raw/).
+# Period comes from src/data/profile.ts (resumeProjects.scout)
+kind: case
+title: SCOUT
+summary: A valuation service I am planning and building alone (pre-launch; written with an AI coding agent and marked as co-authored in the commits). It shows a stock's fair value as a range and a distribution, using public methodology — Damodaran-style DCF and Monte Carlo simulation. The project is being prepared as a business, so the source code and model parameters are private.
+role: Solo — planning, engine, backend, app, admin console
+tech: [Kotlin, Spring Boot, PostgreSQL, Flyway, Testcontainers, Flutter, React, Next.js]
+highlight: Model inputs change only after passing an approval gate, and the LLM advisor can only submit proposals to that gate
+featured: false
+order: 4
+cover: /img/projects/scout/architecture.svg
+coverWidth: 1200
+coverHeight: 700
+coverAlt: "SCOUT system diagram (labels in Korean): app, web and console → Spring Boot API → Kotlin engine and PostgreSQL; model inputs change only through the approval gate"
+ogImage: /img/projects/scout/og.jpg
+links: []
+---
+import Figure from '../../../components/Figure.astro';
+import Gallery from '../../../components/Gallery.astro';
+
+SCOUT is a valuation service built on public methodology: Damodaran-style DCF and Monte Carlo simulation. It shows a stock's fair value as a range and a distribution instead of a single number. It is a solo project and has not launched yet.
+
+The valuation engine is a pure Kotlin module with no Spring dependency. A Spring Boot API, a Flutter app, a React operations console and a Next.js web front sit on top of it. Model inputs change only after filing ingestion, a freshness check and an update proposal, and then only if the proposal passes an approval gate. The LLM advisor can submit proposals to that gate but cannot change values itself.
+
+In the app, a margin-of-safety view shows whether a price is worth acting on, and a pause prompt steps in when the user is about to chase a stock.
+
+## App screens
+
+<Gallery
+  caption="App run against a local seeded database (Flutter web build, Korean UI) · stock names, prices, fair values, gaps and scenario theses are masked"
+  cols={3}
+  ratio="739/1600"
+  frameBg="#0d1210"
+  position="top"
+  images={[
+    { src: '/img/projects/scout/app-home.webp', alt: "App home: entry points for buy review, sell review and a calm-down check, plus macro indicators (snapshot), today's mood signal and the watchlist's gap to fair value (masked).", caption: '1 · App home', width: 1018, height: 1600 },
+    { src: '/img/projects/scout/app-report.webp', alt: 'Stock report (PRO, simple mode): pick a scenario on a bear-to-bull ladder.', caption: '2 · Stock report', width: 872, height: 1600 },
+    { src: '/img/projects/scout/app-fomo-intervention.webp', alt: 'Buy review: when the price is above fair value, the app pauses the user with three self-check questions about urgency, paying above fair value and following others’ pace.', caption: '3 · Buy review', width: 739, height: 1600 },
+  ]}
+/>
+
+1. **App home.** Entry points for buy review, sell review and a calm-down check, plus macro indicators (snapshot), today's mood signal and the watchlist's gap to fair value (masked).
+2. **Stock report (PRO, simple mode).** Pick a scenario on a bear-to-bull ladder. ★ marks the recommended scenario and ◎ the one nearest the reference price. The margin-of-safety chips update the entry price instantly. Per-scenario values and theses are masked.
+3. **Buy review.** When the price is above fair value, the app pauses the user with three self-check questions about urgency, paying above fair value and following others' pace. Figures masked.
+
+## Operations console
+
+The console screens run on mock data (note the `MOCK` badge at the top right). Stocks are replaced with `종목 A·B…` ("Stock A, B…") labels and figures are masked.
+
+<Figure
+  src="/img/projects/scout/console-workbench.webp"
+  width={1475}
+  height={1600}
+  alt="Operations console, stock workbench: P25–P75 ranges per scenario and the Monte Carlo per-share value distribution for the selected scenario (Korean UI)."
+  caption="Stock workbench — P25–P75 ranges per scenario and the Monte Carlo per-share value distribution for the selected scenario, with company, scenario and quant notes. Stock, figures and notes masked (mock data, Korean UI)."
+/>
+
+<Figure
+  src="/img/projects/scout/console-freshness.webp"
+  width={1600}
+  height={880}
+  alt="Data freshness: each stock is judged by the gap between the parameter's base quarter and the latest filed quarter (Korean UI)."
+  caption="Data freshness — each stock is judged by the gap between the parameter's base quarter and the latest filed quarter (behind, unknown, not collected, fresh). Ingestion status separates missing data from not-yet-loaded data (Korean UI)."
+/>
+
+<Figure
+  src="/img/projects/scout/console-param-gate.webp"
+  width={1600}
+  height={1240}
+  alt="Parameter gate: proposals from manual edits, automatic ingestion, the LLM advisor and reference data all pass through one queue (Korean UI)."
+  caption="Parameter gate — proposals from manual edits, automatic ingestion, the LLM advisor and reference data all pass through one queue. Each ends as approved and applied, rejected with a reason, auto-applied, or held for a person (Korean UI)."
+/>
+
+---
+
+The source code and model parameters are private. On request, I can share the design records (ADRs) and a demo.
+
+Not investment advice.

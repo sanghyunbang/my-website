@@ -139,6 +139,11 @@ export interface StoreApp {
   versionDate: DateStr;
   /** 연결되는 프로젝트 slug (src/content/projects/{lang}/<slug>) */
   project: string;
+  /**
+   * 링크 라벨 뒤 괄호에 붙는 상태 (예: 등록 기록 · 현재 서버 운영 종료).
+   * 프로젝트 상세 링크와 이력서(PDF) 링크가 같은 문구를 쓴다.
+   */
+  status?: L10n;
 }
 
 const apps: StoreApp[] = [
@@ -159,6 +164,8 @@ const apps: StoreApp[] = [
     version: '1.0.0',
     versionDate: '2025-09',
     project: 'heat-trip',
+    // 리스팅은 남아 있지만 운영 API가 내려가 있다(2026-10-01 HTTP 530). 지금 받아도 앱이 동작하지 않는다.
+    status: { ko: '등록 기록 · 현재 서버 운영 종료', en: 'listing record · server no longer running' },
   },
 ];
 
@@ -180,11 +187,16 @@ export function getApp(id: AppId): StoreApp {
   return a;
 }
 
+/** ' (등록 기록 · 현재 서버 운영 종료)' — status가 없으면 빈 문자열 */
+export function appStatusSuffix(a: StoreApp, lang: Lang): string {
+  return a.status ? ` (${a.status[lang]})` : '';
+}
+
 /** 프로젝트 slug에 연결된 스토어 링크 (프로젝트 상세에서 frontmatter links 뒤에 붙인다) */
 export function storeLinksFor(slug: string, lang: Lang): { label: string; href: string }[] {
   return links.apps
     .filter((a) => a.project === slug)
-    .map((a) => ({ label: `${a.store[lang]} — ${a.name[lang]}`, href: a.href }));
+    .map((a) => ({ label: `${a.store[lang]} — ${a.name[lang]}${appStatusSuffix(a, lang)}`, href: a.href }));
 }
 
 /* ───────────────────────── experience ───────────────────────── */
