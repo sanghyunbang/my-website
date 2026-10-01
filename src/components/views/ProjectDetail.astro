@@ -6,7 +6,7 @@ import RoleBar from '../RoleBar.astro';
 import TechBadge from '../TechBadge.astro';
 import StatusBadge from '../StatusBadge.astro';
 import { useT, localize, type Lang } from '../../i18n';
-import { getAward, formatAward, formatDate, storeLinksFor, resumeProjects, formatProjectPeriods } from '../../data/profile';
+import { getAward, formatAward, storeLinksFor, resumeProjects, formatProjectPeriods } from '../../data/profile';
 import { getProjects, projectSlug } from '../../lib/content';
 
 interface Props {
@@ -19,14 +19,11 @@ const slug = projectSlug(project);
 const { Content } = await render(project);
 const t = useT(lang);
 
-// 수상: 명칭·날짜는 profile.ts 한 곳에서
+// 수상: 명칭·날짜는 profile.ts 한 곳에서. 수상은 머리의 칩에만 보여 준다(지표 칸에 다시 넣지 않는다, concept §2)
 const award = data.award ? getAward(data.award) : undefined;
-const metrics = [
-  ...(award
-    ? [{ value: award.prize[lang], label: award.event[lang], note: [award.issuer?.[lang], formatDate(award.date)].filter(Boolean).join(' · ') }]
-    : []),
-  ...data.metrics,
-];
+const metrics = data.metrics;
+// 지표 칸 수에 맞춰 열 수를 정한다(2칸이면 2열 — 3열 줄에 빈 칸이 남지 않게)
+const metricCols = metrics.length >= 3 ? 'sm:grid-cols-3' : metrics.length === 2 ? 'sm:grid-cols-2' : '';
 
 // 링크: frontmatter + profile.ts의 스토어 링크
 const links = [...data.links, ...storeLinksFor(slug, lang)];
@@ -41,7 +38,7 @@ const hasOther = (await getProjects(other, 'case')).some((p) => projectSlug(p) =
 ---
 
 <BaseLayout title={data.title} description={data.summary} image={data.ogImage ?? data.cover} imageAlt={data.coverAlt} alternates={hasOther} type="article">
-  <article class="pt-28 pb-14 sm:pt-32">
+  <article class="project-detail pt-28 pb-14 sm:pt-32">
     <a href={localize('/projects', lang)} class="font-mono text-sm text-muted transition-colors hover:text-ink">
       {t('proj.detail.back')}
     </a>
@@ -89,7 +86,7 @@ const hasOther = (await getProjects(other, 'case')).some((p) => projectSlug(p) =
     </header>
 
     {data.cover && (
-      <figure class="mt-10">
+      <figure id="cover" class="mt-10 scroll-mt-24">
         {/* Figure와 같이 원본 파일로 가는 링크 — 구조도처럼 작은 글씨가 있는 커버를 원본 크기로 볼 수 있게 */}
         <a href={data.cover} target="_blank" rel="noopener" title={lang === 'en' ? 'Open full size in a new tab' : '새 탭에서 원본 크기로 보기'} class="block cursor-zoom-in">
           <img
@@ -110,7 +107,7 @@ const hasOther = (await getProjects(other, 'case')).some((p) => projectSlug(p) =
     )}
 
     {metrics.length > 0 && (
-      <div class="mt-10 grid gap-4 sm:grid-cols-3">
+      <div class:list={['mt-10 grid gap-4', metricCols]}>
         {metrics.map((m) => <Metric value={m.value} label={m.label} note={m.note} />)}
       </div>
     )}
@@ -135,3 +132,8 @@ const hasOther = (await getProjects(other, 'case')).some((p) => projectSlug(p) =
     </div>
   </article>
 </BaseLayout>
+
+<style>
+  /* 본문의 넓은 그림(Figure wide)이 이 폭(100cqi)까지 펴진다 */
+  .project-detail { container-type: inline-size; }
+</style>

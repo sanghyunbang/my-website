@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 676" width="1000" height="676" role="img" aria-labelledby="t d">
+  <title id="t">회원·인증 데이터</title>
+  <desc id="d">회원·인증 서비스의 주요 표입니다. users를 중심으로 auth_credential(1:1, 이메일 가입자만), oauth_account(1:N), refresh_token(1:1, 사용자당 1개)이 JPA 연관 없이 user_id 컬럼으로, outbox_event가 aggregate_id(사용자 id 문자열)로 이어지고, email_verification은 사용자와 연결되지 않습니다. 오른쪽은 발표 시점 별도 서비스였던 seller-service의 seller(users와 1:1, hotlist 이벤트로 동기화)와 팀원이 맡은 farm, 그리고 표가 아닌 OPA 번들 데이터입니다.</desc>
+  <style>
+    .bg{fill:#f7f4ed}
+    .card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+    .core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+    .mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+    .part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+    .band{fill:#9a6b12}
+    .team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+    .unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+    .y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+    .dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+    .chipr{fill:#f1ece1}
+    .chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+    .chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+    .pill{fill:#f7f4ed}
+    .title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .b{font:500 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+    .s{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+    .mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+    .acc{fill:#9a6b12}
+    .acc2{fill:#2f7d74}
+    .ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+    .lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+    .ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+    .lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+    .lt{stroke:#2f7d74;stroke-width:2;fill:none}
+    .ah{fill:#6b6457}
+    .ahg{fill:#9a6b12}
+    .aht{fill:#2f7d74}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+    <marker id="t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="aht"/></marker>
+    <clipPath id="c0"><rect x="694" y="128" width="262" height="202" rx="10"/></clipPath>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1000" height="676" rx="18"/>
+  <text class="title" x="40" y="48">회원·인증 데이터</text>
+  <text class="s" x="40" y="72">기준: 78eaa987 · 주요 표만 · 회원·인증 표 사이는 JPA 연관 없이 user_id(BINARY(16) UUID)로 잇는 논리 관계</text>
+  <rect class="mine" x="487.2" y="37.0" width="22" height="12" rx="3" style="stroke-width:1.5"/>
+  <text class="s" x="515.2" y="48">본인 담당</text>
+  <rect class="part" x="594.1" y="37.0" width="22" height="12" rx="3" style="stroke-width:1.5"/>
+  <rect class="band" x="594.1" y="37.0" width="5" height="12" rx="1.5"/>
+  <text class="s" x="622.1" y="48">일부 본인</text>
+  <rect class="team" x="701.0" y="37.0" width="22" height="12" rx="3"/>
+  <text class="s" x="729.0" y="48">팀원 담당</text>
+  <path class="ld" d="M807.9 43.0 H829.9" style="stroke-dasharray:4 3"/>
+  <text class="s" x="835.9" y="48">논리 참조</text>
+  <path class="ln" d="M914.8 43.0 H936.8"/>
+  <text class="s" x="942.8" y="48">FK</text>
+  <rect class="mine" x="30" y="104" width="250" height="162" rx="10"/>
+  <line x1="30" y1="134" x2="280" y2="134" stroke="#9a6b12" stroke-width="1.2"/>
+  <text class="hs" x="44" y="125">auth_credential</text>
+  <text class="mono" x="44" y="155">id  PK</text>
+  <text class="mono" x="44" y="175">user_id</text>
+  <text class="mono" x="44" y="195">login_email</text>
+  <text class="mono" x="44" y="215">password_hash</text>
+  <text class="mono" x="44" y="235">salt (64)</text>
+  <text class="s" x="44" y="255">이메일로 가입한 사용자만</text>
+  <rect class="mine" x="30" y="282" width="250" height="142" rx="10"/>
+  <line x1="30" y1="312" x2="280" y2="312" stroke="#9a6b12" stroke-width="1.2"/>
+  <text class="hs" x="44" y="303">oauth_account</text>
+  <text class="mono" x="44" y="333">id  PK</text>
+  <text class="mono" x="44" y="353">user_id</text>
+  <text class="mono" x="44" y="373">provider (NAVER·KAKAO)</text>
+  <text class="mono" x="44" y="393">provider_user_id</text>
+  <text class="s" x="44" y="413">UK: provider + provider_user_id</text>
+  <rect class="mine" x="30" y="440" width="250" height="102" rx="10"/>
+  <line x1="30" y1="470" x2="280" y2="470" stroke="#9a6b12" stroke-width="1.2"/>
+  <text class="hs" x="44" y="461">refresh_token</text>
+  <text class="s" x="268" y="461" text-anchor="end">사용자당 1개</text>
+  <text class="mono" x="44" y="491">user_id  PK</text>
+  <text class="mono" x="44" y="511">token  UK</text>
+  <text class="mono" x="44" y="531">expires_at · revoked</text>
+  <rect class="mine" x="340" y="104" width="300" height="122" rx="10"/>
+  <line x1="340" y1="134" x2="640" y2="134" stroke="#9a6b12" stroke-width="1.2"/>
+  <text class="hs" x="354" y="125">outbox_event</text>
+  <text class="mono" x="354" y="155">aggregate_id</text>
+  <text class="s" x="466" y="155">사용자 id 문자열</text>
+  <text class="mono" x="354" y="175">event_type</text>
+  <text class="s" x="449" y="175">USER_WITHDRAWN</text>
+  <text class="mono" x="354" y="195">status</text>
+  <text class="s" x="415" y="195">PENDING·PUBLISHED·FAILED</text>
+  <text class="mono" x="354" y="215">attempt_count</text>
+  <rect class="mine" x="340" y="258" width="300" height="162" rx="10"/>
+  <line x1="340" y1="288" x2="640" y2="288" stroke="#9a6b12" stroke-width="1.2"/>
+  <text class="hs" x="354" y="279">users</text>
+  <text class="mono" x="354" y="309">id  BINARY(16)  PK</text>
+  <text class="mono" x="354" y="329">email  UK</text>
+  <text class="mono" x="354" y="349">user_type</text>
+  <text class="s" x="440" y="349">CUSTOMER·SELLER·ADMIN</text>
+  <text class="mono" x="354" y="369">user_state</text>
+  <text class="s" x="449" y="369">ACTIVE · SUSPENDED</text>
+  <text class="s" x="449" y="389">BLOCKED · WITHDRAWN</text>
+  <text class="mono" x="354" y="409">last_login_at</text>
+  <rect class="mine" x="340" y="446" width="300" height="142" rx="10"/>
+  <line x1="340" y1="476" x2="640" y2="476" stroke="#9a6b12" stroke-width="1.2"/>
+  <text class="hs" x="354" y="467">email_verification</text>
+  <text class="mono" x="354" y="497">id  PK</text>
+  <text class="mono" x="354" y="517">email</text>
+  <text class="mono" x="354" y="537">code · expires_at</text>
+  <text class="mono" x="354" y="557">verified</text>
+  <text class="s" x="354" y="577">사용자와 연결 없음(이메일 기준)</text>
+  <rect class="dash" x="680" y="96" width="290" height="354" rx="16"/>
+  <text class="s" x="696" y="116">seller-service DB(발표 시점 다른 서비스)</text>
+  <rect class="part" x="694" y="128" width="262" height="202" rx="10"/>
+  <rect class="band" x="694" y="128" width="8" height="202" clip-path="url(#c0)"/>
+  <line x1="702" y1="158" x2="956" y2="158" stroke="#9a6b12" stroke-width="1.2"/>
+  <text class="hs" x="712" y="149">seller</text>
+  <text class="s" x="944" y="149" text-anchor="end">일부 본인</text>
+  <text class="mono" x="712" y="179">user_id  PK</text>
+  <text class="s" x="807" y="179">= users.id</text>
+  <text class="mono" x="712" y="199">store_name</text>
+  <text class="mono" x="712" y="219">business_reg_no</text>
+  <text class="mono" x="712" y="239">settlement_account</text>
+  <text class="mono" x="712" y="259">seller_status</text>
+  <text class="s" x="712" y="279">   PENDING · APPROVED ·</text>
+  <text class="s" x="712" y="299">   REJECTED · SUSPENDED</text>
+  <text class="s" x="712" y="319">users와 1:1 · hotlist 이벤트로 동기화</text>
+  <rect class="team" x="694" y="352" width="262" height="82" rx="10"/>
+  <line x1="694" y1="382" x2="956" y2="382" stroke="#cdc4b2" stroke-width="1.2"/>
+  <text class="hs" x="708" y="373">farm</text>
+  <text class="s" x="944" y="373" text-anchor="end">팀원 담당</text>
+  <text class="mono" x="708" y="403">id  PK</text>
+  <text class="mono" x="708" y="423">seller_id  FK</text>
+  <rect class="mine" x="680" y="466" width="290" height="142" rx="10" style="stroke-dasharray:6 5"/>
+  <line x1="680" y1="496" x2="970" y2="496" stroke="#9a6b12" stroke-width="1.2"/>
+  <text class="hs" x="694" y="487">OPA 번들 데이터</text>
+  <text class="s" x="958" y="487" text-anchor="end">표 아님 · data.*</text>
+  <text class="mono" x="694" y="517">hotlist.users[id]</text>
+  <text class="s" x="848" y="517">status, flags</text>
+  <text class="mono" x="694" y="537">hotlist.sellers[id]</text>
+  <text class="s" x="865" y="537">status</text>
+  <text class="mono" x="694" y="557">&lt;service&gt;.&lt;role&gt;</text>
+  <text class="mono" x="694" y="577">  .rules_by_id</text>
+  <text class="mono" x="694" y="597">  .index.method</text>
+  <path class="ld" d="M280 185 H310 V290 H340" marker-end="url(#a)"/>
+  <rect class="pill" x="292.9" y="227.0" width="34.2" height="22" rx="11"/>
+  <text class="s" x="310.0" y="243.0" text-anchor="middle">1:1</text>
+  <path class="ld" d="M280 353 H340" marker-end="url(#a)"/>
+  <rect class="pill" x="291.8" y="342.0" width="36.5" height="22" rx="11"/>
+  <text class="s" x="310.0" y="358.0" text-anchor="middle">1:N</text>
+  <path class="ld" d="M280 491 H310 V410 H340" marker-end="url(#a)"/>
+  <rect class="pill" x="292.9" y="441.0" width="34.2" height="22" rx="11"/>
+  <text class="s" x="310.0" y="457.0" text-anchor="middle">1:1</text>
+  <path class="ld" d="M490 226 V258" marker-end="url(#a)"/>
+  <rect class="pill" x="439.6" y="231.0" width="100.9" height="22" rx="11"/>
+  <text class="s" x="490.0" y="247.0" text-anchor="middle">aggregate_id</text>
+  <path class="lgd" d="M694 170 H662 V300 H640" marker-end="url(#g)"/>
+  <rect class="pill" x="644.9" y="224.0" width="34.2" height="22" rx="11"/>
+  <text class="s" x="662.0" y="240.0" text-anchor="middle">1:1</text>
+  <path class="ln" d="M825 352 V330" marker-end="url(#a)"/>
+  <text class="s" x="835" y="346">N:1</text>
+  <line x1="40" y1="630" x2="960" y2="630" stroke="#cdc4b2" stroke-width="1"/>
+  <text class="s" x="40" y="654">email_verification을 뺀 모든 표에 created_at·updated_at이 있습니다 · 2026-02 이후 main에서는 seller가 baro-user 안에 있습니다</text>
+</svg>

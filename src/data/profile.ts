@@ -306,8 +306,8 @@ export const training: TrainingItem[] = [
       en: 'Programmers Dev Course · MSA Spring AI Intensive',
     },
     detail: {
-      ko: 'Spring Cloud · Spring AI · MSA 백엔드 — BARO FARM 프로젝트',
-      en: 'Spring Cloud · Spring AI · MSA backend — BARO FARM project',
+      ko: 'Spring Cloud · MSA 백엔드 — BARO FARM(인증·인가 담당)',
+      en: 'Spring Cloud · MSA backend — BARO FARM (auth boundary)',
     },
     start: '2025-11',
     end: '2026-01',
@@ -579,8 +579,10 @@ export interface ResumeProject {
 
 export const resumeProjects: ResumeProject[] = [
   {
-    // 문장 근거: project-briefs.md §3 (14장이 '반대 증거'로 판정한 PDF 문장은 쓰지 않음:
-    // "UPDATE와 SELECT 사이 끼어듦", "잠금 순서로 교착 회피", "통합 테스트 112", "되돌리면 실패", "App Store 심사 중")
+    // 문장 근거: _site-refresh/refresh4/specs/pawloop.md §6, 팩트 시트 refresh4/facts/pawloop.md (GitHub main b0f89f6)
+    // 쓰지 않는 것: "UPDATE와 SELECT 사이 끼어듦", "잠금 순서로 교착 회피", "통합 테스트 112", "되돌리면 실패",
+    // App Store·iOS 출시, "처음부터 새로", 웹소켓 채팅, CI/CD·자동 배포, 운영 모니터링
+    // 2번 불릿은 코드 사실만 쓴다(원스토어 빌드의 UPLOAD_LOCATION 값은 본인 기억 없음, 2026-10-01)
     id: 'pawloop',
     slug: 'pawloop',
     name: {
@@ -593,22 +595,16 @@ export const resumeProjects: ResumeProject[] = [
     note: { ko: '소스 비공개 · 요청 시 시연', en: 'Source is private · demo on request' },
     bullets: {
       ko: [
-        '기획, Flutter 앱, Spring Boot 서버, AWS 배포 담당 · 원스토어 출시 (2026.09)',
-        '채팅 방별 순번 — 방을 읽고 +1 해서 쓰는 방식은 두 요청이 같은 값을 읽을 수 있어 방별 순번 유니크 제약에 걸림. 증가와 "내 번호 받기"를 UPDATE … SET last_seq = LAST_INSERT_ID(last_seq + 1)로 묶어, 요청은 UPDATE의 행 잠금으로 한 줄로 서고 증가한 값은 세션에 남아 행을 다시 읽지 않고 받음',
-        '실제 MySQL(Testcontainers)에서 스레드 20개가 같은 방에 동시에 보내 순번 1–20이 각각 한 번씩 나오는지 테스트로 고정(커넥션 풀 10 — 동시 트랜잭션은 최대 10). 재전송 멱등은 (room_id, sender_user_id, client_msg_id) 유니크 제약으로 두고 같은 ID 중복 / 다른 멤버의 같은 키 / 키 없음 세 경우를 테스트로 고정',
-        '첫 운영 배포(2026.09.17)에서 Caddy가 설정 파싱 오류로 종료돼 80·443이 응답하지 않음 — Caddyfile 문자열만 검사하던 테스트가 틀린 설정도 통과시킨 것이 원인. 운영과 같은 Caddy 이미지를 Testcontainers로 띄워 caddy validate를 실제로 실행하는 테스트로 교체',
-        'Spring Modulith 기반 모듈러 모놀리스 — 경계 검사를 나중에 들여 위반을 620건에서 107건으로 줄이고, 늘면 실패하는 래칫 테스트로 고정. 모듈 간 순환 의존 0',
-        '백엔드 테스트 전체 1,994건 실패 0 (2026-09-30 기준). 커밋의 약 81%(445/550)는 AI 코딩 에이전트와 함께 작성했고 커밋 트레일러로 표기',
-        'Java 21 / Spring Boot 3.5 / Spring Modulith / JPA / MySQL 8 / Testcontainers / Docker Compose · Caddy / AWS EC2 · Terraform / Flutter',
+        '1인 개발 — 기획·설계 문서(ADR 23건), Flutter 앱, Spring Boot 서버, AWS 인프라(Terraform), 원스토어 출시(2026.09)·운영. 커밋 약 81%는 AI 코딩 에이전트와 함께 작성(트레일러 표기)',
+        '좌표가 기기를 떠나는 9곳을 정책 하나(컴파일 타임 상수)로 모으고, 주변 장소는 전국 카탈로그를 받아 기기에서 거리 계산(위치기반서비스사업 신고 전)',
+        '채팅은 가족·크루 공용 방 + HTTP 전송·ETag 폴링(3→30초), 방별 순번을 LAST_INSERT_ID(last_seq + 1)로 원자 발급하고 실제 MySQL 20스레드 테스트로 고정',
+        'EC2 1대 운영(Caddy 단일 진입점, DB 데이터 EBS 분리, 설정 SSM, CI는 테스트·문서 드리프트, 배포 수동). 첫 운영 부팅의 Caddy 설정 오류 뒤 운영 이미지로 caddy validate를 실행하는 테스트로 교체 · 백엔드 테스트 1,994건 실패 0(2026-09-30)',
       ],
       en: [
-        'Planning, Flutter app, Spring Boot server and AWS deployment · released on ONE store (2026.09)',
-        'Per-room chat sequence — reading the room and writing +1 lets two requests read the same value and hit the per-room unique constraint. Bundled the increment and "get my number" into UPDATE … SET last_seq = LAST_INSERT_ID(last_seq + 1): the UPDATE’s row lock serializes the requests, and the incremented value stays in the session, so the number comes back without re-reading the row',
-        'Pinned with a test on real MySQL (Testcontainers): 20 threads sending to the same room get sequence numbers 1–20 exactly once each (connection pool of 10, so at most 10 concurrent transactions). Resend idempotency uses a (room_id, sender_user_id, client_msg_id) unique constraint, with three cases fixed by tests: same ID duplicated / same key from another member / no key',
-        'First production deploy (2026.09.17): Caddy exited on a config parse error and ports 80/443 did not respond — the test guarding the config only checked Caddyfile strings and passed a broken config. Replaced it with a test that runs caddy validate in the production Caddy image via Testcontainers',
-        'Modular monolith on Spring Modulith — introduced boundary checks after the fact, cut violations from 620 to 107 and locked them with a ratchet test that fails if they grow; zero dependency cycles between modules',
-        'Full backend test run: 1,994 tests, 0 failures (as of 2026-09-30). About 81% of commits (445/550) were written with an AI coding agent and are marked with commit trailers',
-        'Java 21 / Spring Boot 3.5 / Spring Modulith / JPA / MySQL 8 / Testcontainers / Docker Compose · Caddy / AWS EC2 · Terraform / Flutter',
+        'Solo — planning and design docs (23 ADRs), Flutter app, Spring Boot server, AWS infrastructure (Terraform), ONE store release (2026.09) and operation; about 81% of commits written with an AI coding agent (marked by trailers)',
+        'Gathered the nine places where coordinates can leave the device into one compile-time policy, and computed nearby places on the device from a nationwide catalog (no location-based service business filing has been made)',
+        'Chat: shared rooms for family and crews, HTTP send with ETag polling (3→30 s), per-room sequence issued atomically with LAST_INSERT_ID(last_seq + 1) and pinned by a 20-thread test on real MySQL',
+        'Single-EC2 production (Caddy as the only entry, DB data on separate EBS, config in SSM, CI runs tests and doc-drift checks, manual deploy). After a Caddy config error on first boot, replaced the string check with a test that runs caddy validate in the production image · 1,994 backend tests, 0 failures (2026-09-30)',
       ],
     },
   },
@@ -626,35 +622,42 @@ export const resumeProjects: ResumeProject[] = [
     disclaimer: { ko: '투자 자문이 아닙니다.', en: 'Not investment advice.' },
   },
   {
+    // 문장 근거: _site-refresh/refresh4/specs/baro-farm.md §6, 팩트 시트 refresh4/facts/baro-farm.md (발표 시점 78eaa987).
+    // 쓰지 않는 것: 403 사건 서사, "(이후 개인 리팩토링 2026.02–03)" 불릿(BF §J1·J11), Spring AI·SAGA·재고·K8s(§J12·J13)
     id: 'baro-farm',
     slug: 'baro-farm',
     name: {
-      ko: 'BARO FARM — MSA 커머스 백엔드 (회원·인증, Gateway, OPA 인가)',
-      en: 'BARO FARM — MSA commerce backend (member/auth, Gateway, OPA authorization)',
+      ko: 'BARO FARM — MSA 커머스 백엔드, 인증·인가 경계 (5인 팀)',
+      en: 'BARO FARM — MSA commerce backend, auth boundary (team of 5)',
     },
     periods: [{ start: '2025-11-29', end: '2026-01-27', label: { ko: '팀 프로젝트', en: 'team project' } }],
     size: 'full',
     bullets: {
       ko: [
-        'Spring Cloud Gateway·Redis·Kafka·OPA 기반 MSA에서 회원·인증 서비스, Gateway, OPA 인가 담당',
-        '간헐적 403을 게이트웨이 오류가 아닌 "JWT 권한과 사용자 상태 불일치" 구조 문제로 진단하고, Kafka hotlist 이벤트 → OPA 번들 갱신으로 권한 반영 시차를 폴링 주기(10~60초) 안으로 줄이는 경로를 설계·구현',
-        '회원탈퇴 이벤트를 탈퇴 트랜잭션 안에서 outbox에 적재하고 스케줄러로 발행(5회 실패 시 FAILED)',
-        '(이후 개인 리팩토링 2026.02–03) 판매자 승인의 관리자 경로를 커밋 후 비동기 전파로 분리하고 결정을 ADR로 기록',
+        '5인 팀 Spring Cloud MSA에서 인증·인가 경계 담당 — 회원·인증 서비스, Gateway 인증·인가 필터, OPA 정책·번들 서비스',
+        'Gateway에서 쿠키 JWT를 검증해 사용자 헤더를 다시 쓰고, 인가는 OPA에 질의(서비스·역할별 경로 규칙). OPA 오류·지연 시 503으로 닫음(서킷브레이커·벌크헤드·2초)',
+        '정지·탈퇴·판매자 승인을 Kafka hotlist 이벤트로 발행하고, 번들 서비스가 정책 번들을 다시 만들어 OPA가 10–60초 주기로 가져가도록 설계·구현. 같은 토픽으로 판매자 서비스 상태 동기화',
+        'HttpOnly·Secure·SameSite=Strict 쿠키, 리프레시 토큰 회전·폐기, 카카오·네이버 OAuth 계정 연결, 회원탈퇴 outbox(같은 트랜잭션 적재, 5회 실패 시 FAILED)',
       ],
       en: [
-        'Worked on the member/auth service, Gateway and OPA authorization in an MSA on Spring Cloud Gateway·Redis·Kafka·OPA',
-        'Diagnosed intermittent 403s as a structural "JWT permission vs user-state mismatch," not a gateway error, and designed and implemented a Kafka hotlist event → OPA bundle refresh path to cut the permission lag to within the polling interval (10–60s)',
-        'Wrote the member-withdrawal event to an outbox inside the withdrawal transaction, published by a scheduler (FAILED after 5 failures)',
-        '(Later solo refactoring, 2026.02–03) Split the admin seller-approval path into commit-then-async propagation and recorded the decision in an ADR',
+        'Owned the auth boundary of a five-person Spring Cloud MSA — member/auth service, gateway auth filters, OPA policy and bundle service',
+        'Gateway validates the cookie JWT and rewrites user headers; authorization is an OPA query over per-service, per-role path rules, failing closed with 503 on OPA errors or delay (circuit breaker, bulkhead, 2 s)',
+        'Designed and built the path that publishes suspensions, withdrawals and seller approvals as Kafka hotlist events; a bundle service rebuilds the policy bundle and OPA pulls it every 10–60 s; the seller service syncs from the same topic',
+        'HttpOnly/Secure/SameSite=Strict cookies, refresh-token rotation and revocation, Kakao/Naver OAuth account linking, a withdrawal outbox (written in the same transaction, FAILED after 5 attempts)',
       ],
     },
   },
   {
+    // 상세 페이지: src/content/projects/{ko,en}/heat-trip.mdx. 불릿은 그 페이지와 같은 사실만 쓴다.
+    // 문장 근거: _site-refresh/refresh4/specs/heat-trip.md §6, 팩트 시트 refresh4/facts/heat-trip.md
+    // (백엔드 47d161f·034c3dc, 앱 스토어 빌드 5313bc7). Python 추천 서버는 비공개 — 링크 없음.
+    // "팀 리드"는 제출 PDF 표기(p.1·p.5). 쓰지 않는 것: "85%", 커밋·줄 비율, "팀 리드로 PR·리뷰 운영",
+    // "LLM이 장소/cat3를 고른다", "755ms → 4.9ms 개선"(서로 다른 쿼리), 테스트·관측성 성과, 부하 테스트
     id: 'heat-trip',
     slug: 'heat-trip',
     name: {
-      ko: 'HeatTrip — 감정 기반 여행지 추천 서비스 (팀 리드)',
-      en: 'HeatTrip — Emotion-based travel recommendation (Team Lead)',
+      ko: 'HeatTrip — 감정 기반 여행지 추천 서비스 (3인 팀 리드)',
+      en: 'HeatTrip — Emotion-based travel recommendation (Team Lead, team of 3)',
     },
     periods: [
       { start: '2025-07', end: '2025-11', label: { ko: '공모전 · 팀 Hit다Heat, 3인', en: 'competition · team Hit다Heat, 3 people' } },
@@ -665,24 +668,23 @@ export const resumeProjects: ResumeProject[] = [
     size: 'full',
     bullets: {
       ko: [
-        'LLM 역할 한정 — 수만 건의 장소를 LLM에 넣지 않고, LLM은 카테고리(cat3)만 고르게 한 뒤 실제 장소는 cat3로 걸러 Spring 안의 점수 함수로 랭킹',
-        '장소 목록 조회를 Offset / Cursor 페이지네이션으로 분리 (createdtime + contentid 복합 키, Base64 cursor, size+1로 hasNext 판단)',
-        '(개인 리팩토링) 장소 검색 — EXPLAIN ANALYZE로 병목이 count 쿼리(전체 스캔 + 상관 서브쿼리 반복, 약 755ms)임을 확인, search_text 반정규화 + FULLTEXT(ngram) + MATCH…AGAINST로 전환. 문서의 실행 계획 기준 count 전체 스캔이 사라졌고, 목록은 약 4.9ms(\'카페\' 1회 측정)',
-        '(개인 리팩토링) 단위 테스트와 관측성 코드 추가 — AOP 요청/예외 수집, fingerprint 중복 억제 후 Slack 알림, correlation id. JaCoCo 커버리지 리포트 · Qodana(GitHub Actions)',
-        'Java 21 / Spring Boot 3.5 / Spring Security·OAuth2·JWT / JPA / MySQL 8 / AWS S3·CloudFront / Docker Compose',
+        '3인 공모전 팀 리드(기획) — 백엔드(장소 수집·탐색·추천·미디어·인증), Python 추천 서버, 앱 추천·탐색 화면, 배포·원스토어 출시',
+        'LLM에는 장소 대신 95개 카테고리 이름만 주고(그룹 2개), Spring이 라벨을 cat3 코드로 바꿔 장소를 거르고 점수식으로 순위를 매김',
+        '관광공사 장소 약 5만 곳 수집·정제 뒤 Kakao 링크·좌표 보강과 카테고리 특성 스냅숏 생성. 무한 스크롤은 (createdtime, contentid) 커서 + size+1',
+        '(2026 개인) 추천 API 인증·경로별 레이트 리밋·비밀 스캔으로 공개 운영 정비. 검색은 EXPLAIN ANALYZE로 count 전체 스캔을 확인하고 search_text + FULLTEXT(ngram)로 전환(변경 전 count 약 755ms, 변경 후 목록 약 4.9ms — 서로 다른 쿼리, 1회 측정)',
       ],
       en: [
-        'Scoped the LLM role — instead of feeding tens of thousands of places to the LLM, it picks only the category (cat3); actual places are filtered by cat3 and ranked by a scoring function inside Spring',
-        'Split place-list pagination into Offset / Cursor (createdtime + contentid composite key, Base64 cursor, size+1 for hasNext)',
-        '(Solo refactoring) Place search — EXPLAIN ANALYZE showed the bottleneck was the count query (full scan + repeated correlated subquery, ~755ms); switched to search_text denormalization + FULLTEXT (ngram) + MATCH…AGAINST. Per the documented plan the count full scan is gone; list ~4.9ms (single measurement for \'카페\')',
-        '(Solo refactoring) Added unit tests and observability code — AOP request/exception collection, fingerprint dedup → Slack alerts, correlation id. JaCoCo coverage reports · Qodana (GitHub Actions)',
-        'Java 21 / Spring Boot 3.5 / Spring Security·OAuth2·JWT / JPA / MySQL 8 / AWS S3·CloudFront / Docker Compose',
+        'Team lead (planning) of a three-person contest team — backend (place collection, explore, recommendation, media, auth), Python recommendation server, app recommendation & explore screens, deployment and ONE store release',
+        'Gave the LLM 95 category names instead of places (two groups chosen); Spring maps labels to cat3 codes, filters places and ranks them with its own scoring',
+        'Collected and cleaned ~50,000 Tourism Organization places, then backfilled Kakao links & coordinates and built category trait snapshots; infinite scroll uses a (createdtime, contentid) cursor with size+1',
+        '(2026, solo) Prepared for public operation with auth on the recommendation API, per-path rate limits and secret scanning; for search, found the count query\'s full scan with EXPLAIN ANALYZE and switched to search_text + FULLTEXT (ngram) (count ~755 ms before, list ~4.9 ms after — different queries, single measurement)',
       ],
     },
   },
   {
     // 상세 페이지: src/content/projects/{ko,en}/oreum.mdx. 불릿은 그 페이지와 같은 사실만 쓴다.
-    // 근거: _site-refresh/refresh3/oreum-site-draft.md, interview-prep/05-oreum(백엔드 ec805ca, 프론트 c663906).
+    // 근거: _site-refresh/refresh4/specs/oreum.md §6, facts/oreum.md §A, interview-prep/05-oreum(백엔드 ec805ca, 프론트 c663906).
+    // "팀장"은 쓰지 않는다(코드로 확인 불가, 덱 기록뿐).
     // 레포는 비공개 팀 레포라 링크 없음. 4인 팀은 팀 발표 자료(팀 구성 슬라이드)로 확인.
     // 2026-10-01 본인이 키 폐기 완료를 알려 와 게시.
     id: 'oreum',
@@ -696,11 +698,13 @@ export const resumeProjects: ResumeProject[] = [
     size: 'full',
     bullets: {
       ko: [
+        '백엔드·프론트 두 레포의 초기 구조(Spring Boot, React 라우트·Redux·개발 프록시)와 서버 설정·빌드 파일 관리',
         '지도(산 검색 · 산악 예보 · 등산로), 큐레이션 글, 소셜 로그인(OAuth2 · JWT) · S3 업로드의 백엔드와 프론트 담당 (Spring Boot · React)',
         '산악 예보는 산 153곳을 묶어 수집해 Redis(TTL 12시간)에 두고, 지도 API는 Redis만 읽게 분리 (최종 코드는 자동 갱신 꺼짐)',
         '큐레이션 글은 공통 정보를 MySQL에, 경로 구간(GeoJSON 좌표)을 MongoDB에 두고 postId로 연결해 지도 위에 경로 표시',
       ],
       en: [
+        'Set up the initial structure of both backend and frontend repositories (Spring Boot; React routes, Redux, dev proxy) and managed server configuration and build files',
         'Backend and frontend for the map (mountain search · mountain forecast · trails), curation posts, social login (OAuth2 · JWT) and S3 upload (Spring Boot · React)',
         'Forecasts for 153 mountains collected in batches and kept in Redis (12-hour TTL); the map’s forecast API reads only from Redis (the automatic refresh trigger is off in the final code)',
         'Curation posts keep post metadata in MySQL and route segments (GeoJSON coordinates) in MongoDB, linked by postId and drawn as a route on the map',

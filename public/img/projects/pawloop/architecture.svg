@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1046" width="1000" height="1046" role="img" aria-labelledby="t d">
+<title id="t">Pawloop 시스템 구성</title>
+<desc id="d">Flutter 앱은 HTTPS 443으로 Caddy에 붙고, Caddy가 같은 EC2의 Spring Boot 앱으로 넘긴다. Spring Boot는 같은 EC2의 MySQL 컨테이너(데이터는 별도 EBS), S3, SES, FCM, 소셜 로그인 공급자, 공공데이터 API를 쓴다. 운영 설정은 부팅 때 SSM에서 받는다. CI는 배포하지 않고, 배포는 SSH로 수동이다.</desc>
+<style>
+.bg{fill:#f7f4ed}
+.card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+.core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+.mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+.part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+.band{fill:#9a6b12}
+.team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+.unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+.dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.chipr{fill:#f1ece1}
+.chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+.chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+.pill{fill:#f7f4ed}
+.title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.b{font:500 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+.s{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+.mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+.acc{fill:#9a6b12}
+.acc2{fill:#2f7d74}
+.ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+.lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+.ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+.lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+.lt{stroke:#2f7d74;stroke-width:2;fill:none}
+.ah{fill:#6b6457}
+.ahg{fill:#9a6b12}
+.aht{fill:#2f7d74}
+</style>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+<marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+<marker id="t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="aht"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1000" height="1046" rx="18"/>
+<!-- groups -->
+<rect class="dash" x="24" y="88" width="952" height="132" rx="16"/>
+<rect class="dash" x="24" y="292" width="632" height="528" rx="16"/>
+<rect class="dash" x="248" y="328" width="392" height="476" rx="16"/>
+<rect class="dash" x="688" y="292" width="288" height="528" rx="16"/>
+<path d="M40 926 H960" stroke="#cdc4b2" stroke-width="1"/>
+<!-- lines -->
+<path class="ln" d="M716 158 H778" marker-end="url(#a)"/>
+<path class="ln" d="M520 206 V362" marker-end="url(#a)"/>
+<path class="ld" d="M576 206 V362" marker-end="url(#a)"/>
+<path class="ln" d="M64 206 V494" marker-end="url(#a)"/>
+<path class="ln" d="M520 456 V494" marker-end="url(#a)"/>
+<path class="ln" d="M520 670 V708" marker-end="url(#a)"/>
+<path class="ln" d="M264 542 H222" marker-end="url(#a)"/>
+<path class="ln" d="M264 642 H222" marker-end="url(#a)"/>
+<path class="ld" d="M220 750 H246" marker-end="url(#a)"/>
+<path class="ln" d="M624 583 H672"/>
+<path class="ln" d="M672 383 V627"/>
+<path class="ln" d="M672 627 V749"/>
+<path class="ln" d="M672 383 H702" marker-end="url(#a)"/>
+<path class="ln" d="M672 505 H702" marker-end="url(#a)"/>
+<path class="ln" d="M672 627 H702" marker-end="url(#a)"/>
+<path class="ln" d="M672 749 H702" marker-end="url(#a)"/>
+<path class="ln" d="M300 834 V806" marker-end="url(#a)"/>
+<!-- boxes -->
+<rect class="core" x="40" y="118" width="676" height="88" rx="12"/>
+<rect class="chipm" x="92" y="160" width="210" height="30" rx="14"/>
+<rect class="chipr" x="310" y="160" width="197" height="30" rx="14"/>
+<rect class="chipr" x="515" y="160" width="173" height="30" rx="14"/>
+<rect class="card" x="780" y="118" width="180" height="88" rx="12"/>
+<rect class="core" x="264" y="364" width="360" height="92" rx="12"/>
+<rect class="core" x="264" y="496" width="360" height="174" rx="12"/>
+<rect class="chipr" x="284" y="562" width="100" height="30" rx="14"/>
+<rect class="chipr" x="392" y="562" width="100" height="30" rx="14"/>
+<rect class="chipr" x="500" y="562" width="100" height="30" rx="14"/>
+<rect class="chipr" x="284" y="600" width="100" height="30" rx="14"/>
+<rect class="chipr" x="392" y="600" width="100" height="30" rx="14"/>
+<rect class="chipr" x="500" y="600" width="100" height="30" rx="14"/>
+<rect class="core" x="264" y="710" width="360" height="76" rx="12"/>
+<rect class="card" x="40" y="496" width="180" height="92" rx="12"/>
+<rect class="card" x="40" y="604" width="180" height="76" rx="12"/>
+<rect class="card" x="40" y="696" width="180" height="108" rx="12"/>
+<rect class="card" x="704" y="328" width="256" height="110" rx="12"/>
+<rect class="card" x="704" y="450" width="256" height="110" rx="12"/>
+<rect class="card" x="704" y="572" width="256" height="110" rx="12"/>
+<rect class="unk" x="704" y="694" width="256" height="110" rx="12"/>
+<rect class="card" x="24" y="836" width="336" height="72" rx="12"/>
+<rect class="card" x="376" y="836" width="600" height="72" rx="12"/>
+<!-- labels -->
+<circle class="mine" cx="72" cy="175" r="12"/>
+<text class="hs acc" x="72" y="181" text-anchor="middle">③</text>
+<rect class="pill" x="728.2" y="135" width="37.6" height="20" rx="6"/>
+<text class="s" x="747" y="150" text-anchor="middle">SDK</text>
+<circle class="mine" cx="616" cy="366" r="12"/>
+<text class="hs acc" x="616" y="372" text-anchor="middle">①</text>
+<circle class="mine" cx="869.640625" cy="594" r="12"/>
+<text class="hs acc" x="869.640625" y="600" text-anchor="middle">②</text>
+<rect class="card" x="460" y="278" width="180" height="28" rx="14"/>
+<text class="s" x="550" y="297" text-anchor="middle">Route 53 → Elastic IP</text>
+<rect class="pill" x="384.0" y="227" width="129.0" height="20" rx="6"/>
+<text class="s" x="508" y="242" text-anchor="end">HTTPS 443 · REST</text>
+<rect class="pill" x="381.5" y="249" width="131.5" height="20" rx="6"/>
+<text class="s" x="508" y="264" text-anchor="end">openapi.yaml 계약</text>
+<rect class="pill" x="583.0" y="227" width="103.8" height="20" rx="6"/>
+<text class="s" x="588" y="242">채팅 수신 폴링</text>
+<rect class="pill" x="583.0" y="249" width="80.1" height="20" rx="6"/>
+<text class="s" x="588" y="264">없으면 304</text>
+<rect class="pill" x="71.0" y="415" width="137.1" height="20" rx="6"/>
+<text class="s" x="76" y="430">영상: 서명 PUT 직접</text>
+<rect class="pill" x="368.6" y="466" width="144.4" height="20" rx="6"/>
+<text class="s" x="508" y="481" text-anchor="end">app:8080 · X-Real-IP</text>
+<rect class="pill" x="467.1" y="680" width="45.9" height="20" rx="6"/>
+<text class="s" x="508" y="695" text-anchor="end">JDBC</text>
+<rect class="unk" x="222.0084375" y="1013" width="26" height="16" rx="4"/>
+<path class="ld" d="M487.7 1021 H515.7"/>
+<!-- text -->
+<text class="title" x="40" y="48">Pawloop 시스템 구성</text>
+<text class="s" x="40" y="72">기준: GitHub main b0f89f6 (2026-09-26) · 호스트 이름·계정 정보는 넣지 않았습니다</text>
+<text class="s" x="40" y="108">기기</text>
+<text class="h" x="60" y="146">Flutter 앱</text>
+<text class="b" x="155.796875" y="146">Android(원스토어 배포) · iOS</text>
+<text class="s" x="104" y="180">좌표 전송: 정책 한 곳</text>
+<text class="s" x="322" y="180">산책 초안 큐 · 재전송</text>
+<text class="s" x="527" y="180">채팅 수신 폴링 3→30초</text>
+<text class="h" x="796" y="146">네이버 지도 SDK</text>
+<text class="b" x="796" y="170">타일·마커를</text>
+<text class="b" x="796" y="192">앱이 직접 그림</text>
+<text class="s" x="80" y="314">AWS · Terraform envs/prod: EC2·EIP·EBS·SES</text>
+<text class="s" x="264" y="350">EC2 1대 · Docker Compose</text>
+<text class="s" x="704" y="314">외부 서비스</text>
+<text class="h" x="284" y="392">Caddy 2.10 — 유일한 진입점</text>
+<text class="b" x="284" y="416">443·80 · TLS 자동 발급 · /actuator는 health만</text>
+<text class="s" x="284" y="438">약관·개인정보처리방침 정적 사이트</text>
+<text class="h" x="284" y="524">Spring Boot · Java 21</text>
+<text class="b" x="284" y="548">모듈러 모놀리스 · 최상위 모듈 22개</text>
+<text class="s" x="284" y="656">호스트에는 127.0.0.1:8080만 게시</text>
+<text class="s" x="334" y="582" text-anchor="middle">반려·산책</text>
+<text class="s" x="442" y="582" text-anchor="middle">가족·일정</text>
+<text class="s" x="550" y="582" text-anchor="middle">소통</text>
+<text class="s" x="334" y="620" text-anchor="middle">장소</text>
+<text class="s" x="442" y="620" text-anchor="middle">계정</text>
+<text class="s" x="550" y="620" text-anchor="middle">공통</text>
+<text class="h" x="284" y="738">MySQL 8.0 컨테이너</text>
+<text class="b" x="284" y="762">데이터는 별도 EBS (prevent_destroy)</text>
+<text class="h" x="60" y="524">S3</text>
+<text class="b" x="60" y="548">사진·영상</text>
+<text class="s" x="60" y="570">영상: HEAD로 확인</text>
+<text class="h" x="60" y="632">SES</text>
+<text class="b" x="60" y="656">가입·재설정 메일</text>
+<text class="h" x="60" y="724">SSM</text>
+<text class="b" x="60" y="748">Parameter Store</text>
+<text class="s" x="60" y="770">.env · 배포 키</text>
+<text class="s" x="60" y="792">부팅 때 받음</text>
+<text class="h" x="724" y="356">FCM</text>
+<text class="b" x="724" y="380">앱으로 푸시</text>
+<text class="s" x="724" y="402">채팅 · 일정 배정</text>
+<text class="s" x="724" y="424">커밋 뒤 비동기 발송</text>
+<text class="h" x="724" y="478">소셜 로그인</text>
+<text class="b" x="724" y="502">카카오 · 구글 · 애플</text>
+<text class="s" x="724" y="524">코드 교환은 서버</text>
+<text class="s" x="724" y="546">앱엔 60초 1회용 코드</text>
+<text class="h" x="724" y="600">공공데이터 API</text>
+<text class="s" x="724" y="624">관광공사 · 두루누비</text>
+<text class="s" x="724" y="646">인허가 · 기상청 · 에어코리아</text>
+<text class="s" x="724" y="668">서버가 대신 호출 · 일일 예산</text>
+<text class="h" x="724" y="722">OpenAI · ORS · Slack</text>
+<text class="b" x="724" y="746">ORS = OpenRouteService</text>
+<text class="s" x="724" y="768">주간 요약 · 코스 · 신고 알림</text>
+<text class="s" x="724" y="790">운영 설정 미확인</text>
+<text class="h" x="44" y="864">배포(수동)</text>
+<text class="b" x="44" y="888">SSH → git pull → compose up --build</text>
+<text class="h" x="396" y="864">GitHub Actions CI — 배포는 하지 않음</text>
+<text class="b" x="396" y="888">백엔드 테스트·JaCoCo · flutter analyze·test · 문서 드리프트</text>
+<text class="hs acc" x="40" y="953">①</text>
+<text class="s" x="64" y="952">인터넷 전체에 열린 문은 Caddy(443·80) 하나 — SSH는 지정한 IP만, 앱 포트는 127.0.0.1, DB는 밖에 열지 않음</text>
+<text class="hs acc" x="40" y="977">②</text>
+<text class="s" x="64" y="976">공공데이터·AI 키는 서버에만 — 앱은 서버를 거쳐 받는다</text>
+<text class="hs acc" x="40" y="1001">③</text>
+<text class="s" x="64" y="1000">좌표가 기기를 떠나는 자리는 정책 하나(컴파일 타임 상수, 기본 꺼짐)</text>
+<text class="s" x="40" y="1026">모든 구성 요소 1인 개발</text>
+<text class="s" x="256.0084375" y="1026">코드에 있으나 운영 설정 미확인</text>
+<text class="s" x="523.7465625" y="1026">폴링·부팅 시 수신</text>
+<text class="s" x="661.98" y="1026">운영 메트릭 수집기는 없음</text>
+</svg>

@@ -1,198 +1,147 @@
 ---
+# Detail page (case). Spec: _site-refresh/refresh4/specs/heat-trip.md §2·§3, skeleton: specs/00-portfolio-concept.md §2·§3, decisions: specs/00-debate-log.md §4
+# Evidence: _site-refresh/refresh4/facts/heat-trip.md (HF). Code basis: backend 47d161f (end of 2025 team) · 034c3dc (2026), app store build 5313bc7 (1.0.0(3)).
+# Backend and app repos are public. The Python recommendation server is private — no link. Frontend link pinned to 5313bc7 (main does not compile; switch to main after PR #9 is merged).
+# Teammates are only "Teammate A" (schedules, diary) and "Teammate B" (bookmarks, profile). No commit or line ratios (debate C3).
+# "Team Lead" follows the submitted PDF (p.1, p.5 "3인 팀 리드"). Do not write "ran PRs/reviews as team lead" (no merges in the team period).
+# The award stays in the award chip only (not in highlight). The contest submission (2025-09-19) was v1 without an LLM; LLM v2 arrived on 2025-10-18.
+# Do not write: "85%", "did it all alone", "the LLM recommends places", "the LLM picks cat3 codes", "Read Model", port/adapter as the 2025 recommendation design,
+#   "offers social login", "improved 755 ms → 4.9 ms" (pairing different queries), "tests that fail on revert", load testing/Terraform/Grafana,
+#   "caught incidents with observability", "migrated to a modular monolith", the star-rating data source, teammates' names, production domains/tunnel IDs/hosts.
+# Figures: architecture.en.svg (1000×924), recommend.en.svg (1000×938), data.en.svg (1000×912) — spec §4. Generators: refresh4/diagram-drafts/ht/{arch,rec,data}.py
+# Review fixes (2026-10-01): the captures from the team's contest feature document (flow-foryou, flow-explore) were removed (concept §7;
+#   the v1 path is the v1 box in recommend.en.svg). First paragraph keeps only facts the summary lacks; the award is in the chip only;
+#   the 2026 work is a table; the PAD/energy truncation is stated once, in the limitations table.
+# Period and résumé bullets: src/data/profile.ts (resumeProjects heat-trip); status badge: projectStatus['heat-trip'].
+kind: case
 title: HeatTrip
-summary: An emotion-centered mobile travel service that recommends destinations based on the user's emotional state and connects itineraries, emotion diaries and retrospectives. As team lead of Hit다Heat, a three-person team, I handled most of the backend and deployment. For place recommendation I split roles so that the LLM picks only categories (cat3) and Spring does the ranking, and in a later solo refactoring I redesigned the search query based on execution plans and added tests and observability code.
-role: Team Lead · Backend-focused
+summary: A mobile travel service that recommends places from Korea Tourism Organization data based on emotional input (mood chips, PAD sliders, energy, sociability, trip goals) and links them to schedules and a diary. As team lead of a three-person team for the 2025 Tourism Data contest, I handled planning, the server's place collection, explore, recommendation, media and auth, the Python recommendation server, the app's recommendation and explore screens, and the deployment and ONE store release. From March to June 2026 I reworked the server on my own. As of 2026-10 the server is not running.
+role: Team Lead (team of 3) — planning, backend (place collection, explore, recommendation, media, auth), Python recommendation server, app recommendation & explore screens, deployment and ONE store release
 period: 2025.07–11 competition (team Hit다Heat, 3 people) · 2026.03–06 solo refactoring
-tech: [Java 21, Spring Boot 3.5, Spring Security, JPA, MySQL 8, OAuth2 / JWT, OpenAI API, AWS S3 / CloudFront, Docker]
-highlight: Kept tens of thousands of places out of the LLM — it picks categories (cat3) only; Excellence Award at the 2025 Tourism Data Utilization Competition (Korea Tourism Organization)
+tech: [Java 21 · Spring Boot 3.5, MySQL 8 (FULLTEXT ngram), Python · FastAPI · Pydantic, OpenAI API (recommendation server), Flutter, AWS S3 · CloudFront, Spring Security · JWT, JPA, Docker Compose, Kotlin (2026)]
+highlight: Gave the LLM only 95 category names instead of ~50,000 places; Spring maps the chosen labels to category codes (cat3) and selects and ranks places with its own scoring
 order: 4
 award: tour-data-2025
 cover: /img/projects/heat-trip/cover.webp
 coverWidth: 1600
 coverHeight: 900
 coverAlt: Five HeatTrip app screens — Explore, emotion input (PAD sliders), For You analysis result, recommended destinations, Diary
-# Cover screens = ONE store 1.0.0(3) build (5313bc7, 2025-10-23). Source: _site-refresh/captures/heattrip-run.md §4
+# Cover screens = ONE store 1.0.0(3) build (5313bc7, 2025-10-23). Source: HF §I
 coverCaption: Final build from the competition period — ONE store 1.0.0(3), 2025-10
 ogImage: /img/projects/heat-trip/og.jpg
 metrics:
-  - value: Scoped LLM role
-    label: Picks categories (cat3), not places
-    note: ranking in Spring (emotion · popularity · distance) — see the emotion-input limitation below
-  - value: Offset + Cursor
-    label: Split pagination strategy
-    note: createdtime + contentid composite key
+  - value: '~50,000'
+    label: Tourism Organization places collected
+    note: 50,098 rows in the local DB (2026-10-01)
+  - value: '95'
+    label: Categories the LLM chooses from
+    note: a closed list · no places in the prompt
 links:
   - label: Backend (Spring Boot)
     href: https://github.com/sanghyunbang/Heat_Trip_Spring_Boot_BE
-  - label: Frontend (Flutter)
-    href: https://github.com/sanghyunbang/heat_trip_flutter
+  - label: Frontend (Flutter) — store build 1.0.0(3), commit 5313bc7
+    href: https://github.com/sanghyunbang/heat_trip_flutter/tree/5313bc7a59e1247fb6a5205d8e656f9e838d3cf2
 ---
-import Callout from '../../../components/Callout.astro';
-import ArchitectureHeatTrip from '../../../components/ArchitectureHeatTrip.astro';
 import Figure from '../../../components/Figure.astro';
 import Gallery from '../../../components/Gallery.astro';
 
-As team lead, I designed and built the emotion-based recommendation logic, the LLM recommender integration, place search & pagination, and the auth/security structure, and later added observability code in a solo refactoring. Below, each feature is described by its problem, the reasoning behind the decision, and the solution.
+Teammate A built the schedule API and diary v1, and Teammate B built bookmarks and the profile. The app was registered on ONE store as 1.0.0 on 2025-09-15 and re-uploaded as 1.0.0(3) on 2025-10-23.
+
+## Team and scope
+
+This covers the 2025 team period. The server is split by package and the app by feature.
+
+| Area | Me | Teammate A | Teammate B |
+|---|---|---|---|
+| Planning | Team lead (planning, coordination) | Full-stack development | Full-stack development |
+| Server | Place collection and enrichment (`tour`, `kakao`), explore and search (`explore`), recommendation (`curation`), media (`S3`), auth (`OAuth`, most of `user`), diary v2 API, deployment config | Schedule CRUD, diary (journey) entity and v1 API | Bookmarks and collections, profile edit and account deletion, in-app feedback |
+| Rec. server | All of the Python (FastAPI) server | — | — |
+| App | For You v1 and v2, most of Explore, auth, records, media, release builds | Part of the diary | Bookmarks and profile, part of the diary screens, part of Explore, design fixes |
+| Release | Dockerfile and compose (2025-09-12), ONE store registration (I am the seller) | — | — |
 
 ## System architecture
 
-A Flutter client talks to the Spring Boot backend over REST, and the backend communicates with MySQL, S3/CloudFront and external APIs. The **LLM recommendation is split into a Python server** and connected via a Port/Adapter.
-
-<ArchitectureHeatTrip />
-
-The data model splits into places and place traits (`places`, `place_traits`, etc.), users · bookmarks · collections, schedules (`schedule`) and diary entries (`journey`), and emotion feedback. A diary entry can be attached to a schedule or written on its own, and entries are gathered in the schedule detail and the Diary tab.
-
 <Figure
-  src="/img/projects/heat-trip/erd.webp"
-  width={1600}
-  height={1136}
-  alt="HeatTrip ERD: tables such as users, places, place_traits, place_features, schedule, journey, bookmarks, collections, emotion_feedbacks, emotion_reviews and media_objects, with their relations"
-  caption="HeatTrip ERD (team design artifact, MySQL Workbench)"
+  src="/img/projects/heat-trip/architecture.en.svg"
+  width={1000}
+  height={924}
+  alt="HeatTrip system architecture. The Flutter app calls the Spring server over REST, and for place details the app calls the Tourism Organization API directly. Spring uses MySQL, S3 with CloudFront, the Tourism Organization collection API and Kakao Local, and recommendations go through the Python recommendation server to OpenAI. Gold is mine, grey is Teammates A and B, teal is 2026 solo additions, and the OAuth2 providers are dashed because they exist only on the server."
+  caption="2025 team setup and 2026 solo additions (teal) — backend 47d161f/034c3dc, app 5313bc7"
 />
 
-<Figure
-  src="/img/projects/heat-trip/flow-diary.webp"
-  width={1600}
-  height={718}
-  alt="Emotion diary (Diary) flow, five app screens in Korean: add a diary entry from the Diary tab → attach it to a schedule or write it on its own → enter title, date and mood emoji → see it in the schedule detail and the Diary tab"
-  caption="Emotion diary (Diary) flow — as of the competition submission (2025-09-18) · from the competition feature document (team-authored, Korean)"
-/>
+- The server collects the place data; for the 'Overview' on a place's detail page, the app calls the Tourism Organization API directly.
+- The recommendation LLM sits in a separate Python server, and Spring turns its result into a ranked list of places. The cost is one more synchronous hop on the request path, with a Tomcat thread waiting during it.
 
-## Contribution 1 — Not feeding tens of thousands of places to the LLM: it recommends categories (cat3) only
-
-<Callout kind="problem">
-
-I wanted to recommend places with an LLM, but the simplest approach (sending user input + all place data straight to the LLM) would require feeding the **tens of thousands of places** from the Korea Tourism API as input tokens — impossible due to **context limits and cost**.
-
-</Callout>
-
-<Callout kind="goal">
-
-Keep the LLM's natural-language recommendation ability, but build a structure that is **feasible at a realistic cost**.
-
-</Callout>
-
-<Callout kind="solution">
-
-I split responsibilities between the LLM and Spring. The LLM recommends only a **category (`cat3`)**, and ranking of actual places happens inside Spring.
-
-- Convert the LLM's category label into the Tour API's internal `cat3` code
-- Filter actual places by `cat3`, then rank on the backend by combining **emotion features · popularity · distance scores**
-- When a request sends back the initial `cat3` code as `cat3Filter`, **the LLM step is skipped and only ranking runs** (server path only; the current app does not send it)
-
-</Callout>
+## Recommendation: what the LLM picks and what Spring does
 
 <Figure
-  src="/img/projects/heat-trip/flow-foryou.webp"
-  width={1600}
-  height={718}
-  alt="Emotion-based recommendation (For You) flow, five app screens in Korean: open emotion insight → pick an emoji and adjust intensity with PAD sliders → choose energy, sociability and trip goal → see personalized travel categories and places → open details or bookmark"
-  caption="Emotion-based recommendation (For You) flow — as of the competition submission (2025-09-18) · v1 at submission — replaced by v2 on 2025-10-18 · from the competition feature document (team-authored, Korean)"
+  src="/img/projects/heat-trip/recommend.en.svg"
+  width={1000}
+  height={938}
+  alt="Sequence of one recommendation (v2). The app sends emotion values and goal keywords to Spring, and Spring passes only the emotion values and keywords — no places — to the Python recommendation server. The recommendation server asks OpenAI with a closed list of 95 categories and returns validated category labels. Spring maps the labels to cat3 codes, reads candidates from MySQL, sorts them with its scoring formula and returns them to the app. A note in the figure: pad and energy are integers in the server DTO, so truncated values are used in steps 2 and 10."
+  caption="One recommendation (v2, store 1.0.0(3)) — code lines at 034c3dc"
 />
 
-<Callout kind="result">
+**No places go into the prompt.** The LLM chooses from 95 category names and returns its picks in two groups. Because the output is a closed list, Spring maps the labels to cat3 codes with a category dictionary held in memory (`place_traits`, 95 rows) and filters places by those codes. The cost: labels missing from the dictionary are dropped, and an empty mapping makes it read every place (`findAll()`).
 
-This gave a recommendation structure that does not feed tens of thousands of places into the LLM.
+**Spring's scoring formula, not the LLM, decides the order.** The final score is 0.6×trait match + 0.4×popularity. When the app sends a location, a distance score is blended in with a weight of 0.2. The constants were set by hand, and there is no record of validating them against data.
 
-**Limitation — emotion-input contract mismatch:** the app sends emotion values (PAD and energy) as floats from -1 to 1, but the server DTOs take integers, so most values truncate to 0 (e.g. 0.7 / -0.4 / 1.0 / 0.9 → 0 / 0 / 1 / 0). Right now emotion features barely affect the ranking. The planned fix is to write a contract test first and then align the types on both sides.
+**The recommendation server validates and repairs the LLM's output format.** It takes the response in JSON mode and validates it with Pydantic; on failure it re-asks, then repairs the comfort letter, then normalizes. Identical inputs are cached for five minutes. The cache lives in process memory, so it assumes a single instance.
 
-**Limitation — LLM failure handling:** there is no fallback response when the LLM call fails, and a long timeout applies to every retry. The next step is to shorten the timeout and add a rule-based fallback so request threads aren't held up. Redis caching (same-input LLM output) and a VectorDB-based RAG approach are further improvements I'm considering.
+The contest submission (submitted 2025-09-19) is v1 (2025-09-10, `b6fac1c`), which has no LLM. v1 scored every place and grouped the results into 18 emotion categories (72 mappings). v2, which uses the LLM, came in on 2025-10-18 (`58da1b9`) and shipped in store build 1.0.0(3). Both versions use the same `ScoringService`.
 
-</Callout>
-
-## Contribution 2 — Splitting two pagination patterns
-
-<Callout kind="problem">
-
-The place list had two different usage patterns: **regular page browsing** and **mobile infinite scroll**. Using offset alone would degrade performance and cause duplicate/missing rows in infinite scroll as data grows.
-
-</Callout>
+## Place data: collection and model
 
 <Figure
-  src="/img/projects/heat-trip/flow-explore.webp"
-  width={1600}
-  height={718}
-  alt="Place exploration (Explore) flow, five app screens in Korean: pick a theme or search → place list → detail page → save a bookmark → check it in the profile's bookmark tab"
-  caption="Place exploration (Explore) flow — as of the competition submission (2025-09-18) · from the competition feature document (team-authored, Korean)"
+  src="/img/projects/heat-trip/data.en.svg"
+  width={1000}
+  height={912}
+  alt="Place data collection order and overview ERD. Collection runs Tour API area list → clean and truncate → batch save to places, then branches into Kakao link and coordinate backfill, and CAT3 trait snapshot → search_text (2026). Below are the main tables of the place catalog (places, place_traits, place_trait_snapshots, place_features, place_kakao_links), emotion categories, emotion feedback, and users and content, with solid lines for foreign keys and dashed lines for logical keys without a foreign key."
+  caption="How place data is collected, and the main tables — counts from the local DB on 2026-10-01"
 />
 
-<Callout kind="solution">
+- **Collection.** The server pulls the Tourism Organization area list (`areaBasedList2`), cleans and truncates it (`Place.sanitizeAndTruncate`) and saves it in batches. After saving, the work splits in two: one job enriches links and coordinates through Kakao Local (run once behind a property flag), and the other builds CAT3 trait snapshots, which since 2026 also fill `search_text`. The scheduler is commented out, so collection is run by hand, and no run history is kept.
+- **Scale.** There are 50,098 places (38,871 with an image). The category dictionary has 95 rows, and there are 18 emotion categories (72 mappings).
+- **Keys.** The place-side tables are joined by `contentid` and `cat3` without foreign keys. The schema is managed by Hibernate `ddl-auto` (no migration tool), and the FULLTEXT index is created with hand-written SQL.
+- **Infinite scroll.** A `(createdtime, contentid)` cursor travels as a Base64URL token, and the query reads size+1 rows to tell whether a next page exists. `contentid` as the second key prevents duplicates and gaps among rows with the same timestamp. The list screen keeps offset paging. The cost: the repo has no DDL for a composite index to back the cursor.
+- **Media.** The DB stores only the S3 key, and the URL is built at runtime from the CloudFront domain and the key. What a file belongs to is recorded as `ref_type/ref_id` (not a foreign key), and deletion is soft.
 
-I split the strategy. **Regular lists use Offset Pagination**, while **infinite scroll uses Cursor Pagination with `createdtime` + `contentid` as a composite sort key**. The cursor is Base64-encoded, and I fetch `size + 1` rows to decide whether a next page exists.
+## 2026 solo refactoring
 
-</Callout>
+From 2026-03-19 to 06-18 I reworked the server alone, with a public repository and operation in mind.
 
-<Callout kind="result">
+| Area | What changed (commit) | Cost |
+|---|---|---|
+| Preparing for public operation | `/api/curation/**` requires authentication, fewer paths open without it, per-path rate limits (in-memory fixed window), gitleaks secret scanning (`934caca`) | The already released 1.0.0(3) sends no token, so its For You screen now fails with a 302. Backward compatibility was not checked |
+| Search | `EXPLAIN ANALYZE` showed the count query doing a full scan while repeating a correlated subquery. The searchable text was denormalized into a single `search_text` column, and search switched to a FULLTEXT (ngram) index with `MATCH … AGAINST … IN BOOLEAN MODE` (`0a72056`) | Results differ from LIKE (single characters, special characters). Results are ordered by contentid, not relevance |
+| Recommendation call split, tests, observability | The recommendation-server call moved behind a Kotlin port/adapter (`12d351c`, 2026-04-19), with Kotlin DTOs and unit tests. Request-logging and error-alert AOP, a correlation id and masking. Errors are deduplicated by fingerprint and sent to Slack, optionally with a Spring AI summary | Some search and LLM DTO tests still pass when the change is reverted. The observability code has no tests and no record of an alert actually being sent |
 
-Infinite scroll gets stable next-page fetching, and even with identical `createdtime` values, the `contentid` tiebreaker **fixes the order**, preventing duplicates/omissions.
+For search, the count took about 755 ms before and the list about 4.9 ms after (one measurement for '카페', "cafe"), and the two numbers come from different queries. Search had been split behind a port/adapter in the 2025-09 team period (`df3044f`), so the switch only touched the storage side.
 
-</Callout>
-
-## Contribution 3 (solo refactoring) — Finding the bottleneck with execution plans and restructuring place search
-
-<Callout kind="problem">
-
-Over roughly 49k places (estimated), a text search such as `q=카페` ("cafe") was implemented as four `LOWER(col) LIKE '%카페%'` conditions plus an `EXISTS` correlated subquery to match category names.
-
-`EXPLAIN ANALYZE` showed the real bottleneck was not the list query but the **count query**: per the documented execution plan, a full table scan with the subquery repeated about 49k times, taking **about 755ms**. Because of the leading wildcard and `LOWER()`, adding a B-Tree index could not fix the text-search path.
-
-</Callout>
-
-<Callout kind="solution">
-
-I **denormalized** place name, category and category name into a `search_text` column and switched to `FULLTEXT INDEX … WITH PARSER ngram` + `MATCH … AGAINST`.
-
-</Callout>
-
-<Callout kind="result">
-
-After the change, the list query finds candidates (about 3,468 rows) directly from the fulltext index, **about 4.9ms** end to end (a single measurement for '카페', including the `contentid` sort), and per the documented execution plan the count query no longer does a full scan or repeats the subquery. The count SQL in the code has a LEFT JOIN, though, so I still need to re-measure to confirm the documented plan is for the same SQL.
-
-Caveat: 755ms (count, before) and 4.9ms (list, after) measure different queries. Comparing only the old `LIMIT 20` list query in isolation can make the old approach look faster, so since the API runs both list and count, I judged by the whole search path rather than a single number. I documented the migration steps and before/after execution plans in [8 documents](https://github.com/sanghyunbang/Heat_Trip_Spring_Boot_BE/tree/main/docs/database/sql-query-optimization-search) (Korean). The search API test currently checks only the response code (200), so it still passes if the code is reverted to `LIKE`; I plan to replace it with a test that checks the FULLTEXT path on real MySQL.
-
-**Limitation:** FULLTEXT results are not identical to `LIKE` (single-character and special-character queries). I treat this as a trade-off between performance and search semantics; finishing result comparisons for short queries and condition combinations is the next step.
-
-</Callout>
-
-## Contribution 4 (solo refactoring) — Adding unit tests and observability code
-
-<Callout kind="problem">
-
-External APIs, the LLM server, image uploads and auth were all failure-prone, and the recommendation/auth flows were core paths prone to regression on change. I needed a way to **catch problems early and trace the cause when an error happens**.
-
-</Callout>
-
-<Callout kind="solution">
-
-- **Unit tests** for recommendation orchestration, LLM-response DTO deserialization, and the auth service
-- **JaCoCo** coverage reports (generated in the build) · **Qodana** static analysis (GitHub Actions)
-- Collected controller latency & exceptions via **AOP**; errors are **deduplicated by fingerprint** then sent to **Slack**
-- Sensitive-data masking + a `correlation id` for both log traceability and security
-
-</Callout>
-
-<Callout kind="result">
-
-I wrote unit tests for recommendation orchestration, the LLM-response DTO and the auth service, and added observability code (AOP collection, fingerprint-deduplicated Slack alerts, `correlation id`). Qodana/JaCoCo are still at the visibility stage.
-
-**Limitation:** some tests stay green even when the change they cover is reverted (e.g. the LLM-response DTO deserialization test and the search adapter test), so they are not real regression guards yet; I plan to replace them with tests that fail on revert. The observability code has no tests yet and no record of an alert actually being sent, and it has design flaws to fix — the OpenAI and Slack calls run synchronously on the request path, and 4xx responses also trigger alerts.
-
-</Callout>
-
-## 2026 solo refactoring screens (not deployed · local run)
-
-In the 2026 solo refactoring, the app's bottom tabs became Today · Explore · [Record] · Feed · Me, with an emotion check-in and a feed added, but this version was never deployed; the screens below were captured on 2026-10-01 from a local run against a local backend with demo data.
+The app also moved to Today · Explore · [Record] · Feed · Me tabs and added an emotion check-in and a feed, but it was never released. The screens below were captured on 2026-10-01 against a local backend with demo data.
 
 <Gallery
-  caption="2026 solo refactoring build (not deployed) · local backend · demo data · captured 2026-10-01 · Korean UI · test account details blurred"
-  cols={3}
+  caption="2026 solo refactoring app (not released) · local backend · demo data · captured 2026-10-01 · Korean UI"
+  cols={4}
   ratio="720/1516"
   images={[
     { src: '/img/projects/heat-trip/refactor-2026/02-today-checkin.webp', alt: 'Today tab: “How do you feel today” — six emotion cards (joy, sadness, anxiety, anger, calm, excitement) and an intensity scale of 1–5, with a record button in the middle of the bottom tab bar (Korean UI)', caption: 'Today · emotion check-in', width: 720, height: 1516 },
     { src: '/img/projects/heat-trip/refactor-2026/10-explore-search-list.webp', alt: 'Explore tab: emotion chips and keyword search (DMZ), list/map toggle, and a result list with a record button on each place (Korean UI)', caption: 'Explore · search list', width: 720, height: 1516 },
     { src: '/img/projects/heat-trip/refactor-2026/12-feed-my-records.webp', alt: 'Feed tab, My records: a monthly emotion calendar with a streak counter and a diary card with a photo (demo data, Korean UI)', caption: 'Feed · my records', width: 720, height: 1516 },
     { src: '/img/projects/heat-trip/refactor-2026/13-feed-together.webp', alt: 'Feed tab, Together: anonymous or handle-based emotion cards with reactions (me too, cheering you on, you look calm) and comments (demo data, Korean UI)', caption: 'Feed · together', width: 720, height: 1516 },
-    { src: '/img/projects/heat-trip/refactor-2026/14-me.webp', alt: 'Me tab: total records, streak and this month’s count, my emotion distribution, and profile edit, bookmarks and log-out menu items (test account name and email blurred, Korean UI)', caption: 'Me', width: 720, height: 1516 },
   ]}
 />
 
+## Limitations (if I fixed them)
+
+| Limitation | Impact | If I fixed it |
+|---|---|---|
+| The server DTO takes emotion values (PAD, energy) as integers | Decimal input mostly becomes 0, so emotion traits barely affect ranking or the LLM input. Only the mood chip, the goal keywords and sociability reach the LLM intact | Switch to real-number types and add an app–server contract test |
+| Recommendation-server call: the 180 s timeout applies to every retry, 4xx responses are retried too, a Tomcat thread waits on `.block()`, and there is no fallback | When the recommendation server or OpenAI is slow, request threads stay tied up and the recommendation fails | A short timeout, no retry on 4xx, and a rule-based (v1) fallback response |
+| An empty mapping reads every place (`findAll()`), there is no DDL for the composite index behind the cursor, and the schema is `ddl-auto` | Queries appear that read or sort a large table whole | Return an empty result for an empty mapping, and manage indexes and schema through migrations |
+| Tests do not catch regressions (they pass on revert), and the observability code has no tests or send records | There is no test to show a change is safe | Start with tests that fail on revert |
+| The public app's main does not compile (store build is `5313bc7`; recovery PR #9 is open) | The linked main cannot rebuild the released app | Merge PR #9 |
+
+---
+
+The backend and app code are public; the Python recommendation server is private. As of 2026-10 the server is not running, and only the ONE store listing record remains. Cleanup commits in the repos from 2026-09-30 on (README, config classes and the like) were written by an AI coding agent and are marked with commit trailers. The 2026-06 attempt to redesign the app is not in the public repos; that work later continued as [Pawloop](/en/projects/pawloop).

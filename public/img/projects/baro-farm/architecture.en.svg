@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t d">
+  <title id="t">BARO FARM system architecture — my boundary</title>
+  <desc id="d">A browser request passes the API Gateway's authentication and authorization filters, which query OPA, and is then routed to a service. auth-service publishes status changes to a Kafka hotlist topic; opa-bundle rebuilds the bundle and OPA pulls it by polling. seller-service consumes the same topic to sync seller status. Gold marks my part; teammates' services and platform are grey.</desc>
+  <style>
+    .bg{fill:#f7f4ed}
+    .card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+    .core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+    .mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+    .part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+    .band{fill:#9a6b12}
+    .team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+    .unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+    .y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+    .dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+    .chipr{fill:#f1ece1}
+    .chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+    .chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+    .pill{fill:#f7f4ed}
+    .title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .b{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+    .s{font:500 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+    .mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+    .acc{fill:#9a6b12}
+    .acc2{fill:#2f7d74}
+    .ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+    .lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+    .ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+    .lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+    .lt{stroke:#2f7d74;stroke-width:2;fill:none}
+    .ah{fill:#6b6457}
+    .ahg{fill:#9a6b12}
+    .aht{fill:#2f7d74}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+    <marker id="t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="aht"/></marker>
+    <clipPath id="c0"><rect x="234" y="302" width="250" height="110" rx="12"/></clipPath>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1200" height="675" rx="18"/>
+  <text class="title" x="40" y="48">BARO FARM system architecture — my boundary</text>
+  <text class="s" x="40" y="72">Basis: final presentation commit 78eaa987 (2026-01-27) · the policy allowed by default from 01-26 (see 'Current state')</text>
+  <rect class="mine" x="866.9" y="31.3" width="22" height="12" rx="3" style="stroke-width:1.5"/>
+  <text class="s" x="894.9" y="42">mine</text>
+  <rect class="part" x="944.4" y="31.3" width="22" height="12" rx="3" style="stroke-width:1.5"/>
+  <rect class="band" x="944.4" y="31.3" width="5" height="12" rx="1.5"/>
+  <text class="s" x="972.4" y="42">partly mine</text>
+  <rect class="team" x="1062.3" y="31.3" width="22" height="12" rx="3"/>
+  <text class="s" x="1090.3" y="42">teammates</text>
+  <rect class="card" x="829.1" y="53.3" width="22" height="12" rx="3"/>
+  <text class="s" x="857.1" y="64">external / shared</text>
+  <path class="lgd" d="M980.5 59.3 H1002.5" style="stroke-dasharray:4 3"/>
+  <text class="s" x="1008.5" y="64">dashed = polling / async</text>
+  <rect class="card" x="30" y="96" width="190" height="76" rx="12"/>
+  <text class="h" x="50" y="124">Browser</text>
+  <text class="b" x="50" y="146">Web front end</text>
+  <text class="s" x="50" y="164">Next.js</text>
+  <rect class="card" x="30" y="184" width="190" height="56" rx="12"/>
+  <text class="h" x="50" y="208">Redis</text>
+  <text class="s" x="50" y="228">rate-limit store</text>
+  <rect class="mine" x="365" y="96" width="420" height="144" rx="12"/>
+  <text class="h" x="385" y="126">API Gateway</text>
+  <text class="b" x="512" y="126">Spring Cloud Gateway / WebFlux</text>
+  <text class="s" x="385" y="148">Entry for all external requests</text>
+  <rect class="chipm" x="385" y="160" width="380" height="30" rx="14"/>
+  <text class="s" x="396" y="179.7">Default filters: RateLimiter (Redis) · Retry · CircuitBreaker</text>
+  <rect class="chipm" x="385" y="198" width="380" height="30" rx="14"/>
+  <text class="s" x="396" y="217.7">Route filters: Authentication → OpaAuthorization</text>
+  <path class="lg" d="M220 134 H365" marker-end="url(#g)"/>
+  <rect class="pill" x="225.4" y="108.5" width="133.2" height="21" rx="10"/>
+  <text class="s" x="292.0" y="123.7" text-anchor="middle">① cookie or Bearer</text>
+  <path class="lg" d="M365 212 H220" marker-end="url(#g)"/>
+  <rect class="pill" x="233.4" y="186.5" width="117.2" height="21" rx="10"/>
+  <text class="s" x="292.0" y="201.7" text-anchor="middle">② rate limit 50/s</text>
+  <rect class="lgd" x="927" y="84" width="247" height="328" rx="16"/>
+  <text class="s acc" x="943" y="104">Authorization decision</text>
+  <rect class="mine" x="937" y="114" width="223" height="116" rx="12"/>
+  <text class="h" x="955" y="142">OPA server (PDP)</text>
+  <text class="b" x="955" y="164">gateway_authz.rego</text>
+  <text class="b" x="955" y="184">22 rule files</text>
+  <text class="s" x="955" y="206">deploy manifest: teammates</text>
+  <path class="lg" d="M785 150 H937" marker-end="url(#g)"/>
+  <rect class="pill" x="786.6" y="124.5" width="132.8" height="21" rx="10"/>
+  <text class="s" x="853.0" y="139.7" text-anchor="middle">③ allow query · 2 s</text>
+  <path class="lgd" d="M1047 230 V290" marker-end="url(#g)"/>
+  <rect class="pill" x="971.0" y="249.5" width="152.1" height="21" rx="10"/>
+  <text class="s" x="1047.0" y="264.7" text-anchor="middle">⑦ bundle poll 10–60 s</text>
+  <rect class="mine" x="937" y="290" width="223" height="108" rx="12"/>
+  <text class="h" x="955" y="318">opa-bundle</text>
+  <text class="b" x="955" y="340">Spring Boot</text>
+  <text class="s" x="955" y="360">in-memory hotlist</text>
+  <text class="s" x="955" y="379">builds bundle.tar.gz</text>
+  <path class="ln" d="M575 240 V262 M212 262 H673"/>
+  <path class="ln" d="M212 262 V302" marker-end="url(#a)"/>
+  <path class="ln" d="M359 262 V302" marker-end="url(#a)"/>
+  <path class="ln" d="M673 262 V302" marker-end="url(#a)"/>
+  <rect class="pill" x="410.2" y="251.5" width="119.6" height="21" rx="10"/>
+  <text class="s" x="470.0" y="266.7" text-anchor="middle">④ lb:// · X-User-*</text>
+  <rect class="dash" x="18" y="274" width="214" height="150" rx="16"/>
+  <text class="s" x="34" y="294">Spring Security (here only)</text>
+  <rect class="mine" x="30" y="302" width="190" height="110" rx="12"/>
+  <text class="h" x="48" y="328">auth-service</text>
+  <text class="b" x="48" y="349">Members, auth, tokens</text>
+  <text class="s" x="48" y="367">OAuth (Kakao, Naver)</text>
+  <text class="s" x="48" y="384">Withdrawal outbox</text>
+  <text class="s" x="48" y="401">Publishes hotlist events</text>
+  <rect class="part" x="234" y="302" width="250" height="110" rx="12"/>
+  <rect class="band" x="234" y="302" width="8" height="110" clip-path="url(#c0)"/>
+  <text class="h" x="256" y="328">seller-service</text>
+  <text class="b" x="256" y="349">seller (mine) · farm (teammates)</text>
+  <text class="s" x="256" y="367">Seller application</text>
+  <text class="s" x="256" y="384">business-number check</text>
+  <text class="s" x="256" y="401">Syncs seller_status</text>
+  <rect class="team" x="498" y="302" width="350" height="110" rx="12"/>
+  <text class="h" x="518" y="328">Teammates' services</text>
+  <text class="s" x="518" y="349">buyer · order · payment · support · settlement · ai</text>
+  <text class="s" x="518" y="367">Order-payment saga · stock · settlement ·</text>
+  <text class="s" x="518" y="384">delivery, notifications · search, recommendations</text>
+  <path class="lgd" d="M80 412 V476" marker-end="url(#g)"/>
+  <rect class="pill" x="25.6" y="429.5" width="108.7" height="21" rx="10"/>
+  <text class="s" x="80.0" y="444.7" text-anchor="middle">⑤ hotlist event</text>
+  <path class="lgd" d="M180 412 V476" marker-end="url(#g)"/>
+  <rect class="pill" x="96.5" y="451.5" width="167.1" height="21" rx="10"/>
+  <text class="s" x="180.0" y="466.7" text-anchor="middle">⑨ outbox · no consumer</text>
+  <path class="lgd" d="M359 476 V412" marker-end="url(#g)"/>
+  <rect class="pill" x="288.4" y="429.5" width="141.1" height="21" rx="10"/>
+  <text class="s" x="359.0" y="444.7" text-anchor="middle">⑧ sync seller_status</text>
+  <path class="ld" d="M673 412 V476" marker-end="url(#a)" marker-start="url(#a)"/>
+  <path class="lgd" d="M840 476 V452 H1047 V398" marker-end="url(#g)"/>
+  <rect class="pill" x="871.2" y="441.5" width="145.5" height="21" rx="10"/>
+  <text class="s" x="944.0" y="456.7" text-anchor="middle">⑥ consume · dedupe</text>
+  <rect class="card" x="30" y="476" width="830" height="70" rx="12"/>
+  <text class="h" x="50" y="517">Kafka</text>
+  <rect class="chipm" x="120" y="496" width="141" height="30" rx="14"/>
+  <text class="s" x="134" y="515.7">opa-hotlist-events</text>
+  <rect class="chipm" x="273" y="496" width="193" height="30" rx="14" style="stroke-dasharray:5 4"/>
+  <text class="s" x="287" y="515.7">user-events · no consumer</text>
+  <rect class="chipr" x="478" y="496" width="237" height="30" rx="14"/>
+  <text class="s" x="492" y="515.7">saga, notifications… (teammates)</text>
+  <rect class="card" x="880" y="476" width="280" height="96" rx="12"/>
+  <text class="h acc" x="900" y="502">Trust boundary</text>
+  <text class="s" x="900" y="523">Downstream services identify the user</text>
+  <text class="s" x="900" y="541">from X-User-* written by the gateway</text>
+  <text class="s" x="900" y="559">Spring Security only in auth-service</text>
+  <rect class="team" x="30" y="584" width="1130" height="30" rx="10"/>
+  <text class="s" x="48" y="604">Platform (teammates): Eureka · Config Server · MySQL (schema per service) · Elasticsearch · K8s (EC2 master/workers) · GitHub Actions → GHCR</text>
+  <line x1="40" y1="628" x2="1160" y2="628" stroke="#cdc4b2" stroke-width="1"/>
+  <text class="s" x="40" y="652">Not drawn: the seller → auth Feign call (no caller at presentation time) · the exact filter order (not verified)</text>
+</svg>

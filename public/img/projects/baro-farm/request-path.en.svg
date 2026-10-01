@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 668" width="1000" height="668" role="img" aria-labelledby="t d">
+  <title id="t">How one request is authorized</title>
+  <desc id="d">A request carrying the access_token cookie passes the API Gateway's Authentication filter and OpaAuthorization filter. A token that fails validation gets 401; with no token, incoming X-User-* headers are left as they are and the request moves on. The authorization filter sends request, subject and route.service to OPA and routes the request downstream when the result is true. false or no result is 403 (while the policy denied by default); an OPA error, more than 2 s, an open circuit or a full bulkhead is 503.</desc>
+  <style>
+    .bg{fill:#f7f4ed}
+    .card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+    .core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+    .mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+    .part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+    .band{fill:#9a6b12}
+    .team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+    .unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+    .y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+    .dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+    .chipr{fill:#f1ece1}
+    .chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+    .chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+    .pill{fill:#f7f4ed}
+    .title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .b{font:500 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+    .s{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+    .mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+    .acc{fill:#9a6b12}
+    .acc2{fill:#2f7d74}
+    .ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+    .lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+    .ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+    .lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+    .lt{stroke:#2f7d74;stroke-width:2;fill:none}
+    .ah{fill:#6b6457}
+    .ahg{fill:#9a6b12}
+    .aht{fill:#2f7d74}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+    <marker id="t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="aht"/></marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1000" height="668" rx="18"/>
+  <text class="title" x="40" y="48">How one request is authorized</text>
+  <text class="s" x="40" y="72">Basis: gateway at 78eaa987 · 403 applies while the policy denied by default, 1224e1a2–d4b67d1b (01-22 to 01-26)</text>
+  <rect class="mine" x="479.6" y="37.0" width="22" height="12" rx="3" style="stroke-width:1.5"/>
+  <text class="s" x="507.6" y="48">mine</text>
+  <rect class="card" x="559.5" y="37.0" width="22" height="12" rx="3"/>
+  <text class="s" x="587.5" y="48">responses / downstream</text>
+  <path class="ld" d="M770.5 43.0 H792.5" style="stroke-dasharray:4 3"/>
+  <text class="s" x="798.5" y="48">request without a token</text>
+  <rect class="dash" x="262" y="100" width="450" height="360" rx="16"/>
+  <text class="s" x="278" y="120">API Gateway · Spring Cloud Gateway</text>
+  <rect class="chipm" x="278" y="130" width="418" height="30" rx="14"/>
+  <text class="s" x="290" y="150.0">Default filters: RateLimiter (Redis) · Retry · CircuitBreaker</text>
+  <rect class="mine" x="330" y="180" width="340" height="100" rx="12"/>
+  <text class="h" x="350" y="210">Authentication filter</text>
+  <text class="b" x="350" y="234">cookie → Bearer · HS256 check</text>
+  <text class="s" x="350" y="258">if valid: X-User-* reset from the token</text>
+  <rect class="mine" x="330" y="340" width="340" height="100" rx="12"/>
+  <text class="h" x="350" y="370">OpaAuthorization filter</text>
+  <text class="b" x="350" y="394">circuit breaker · bulkhead · 2 s</text>
+  <text class="s" x="350" y="418">input: request · subject · route.service</text>
+  <path class="lg" d="M430 280 V340" marker-end="url(#g)"/>
+  <rect class="pill" x="385.8" y="299.0" width="88.4" height="22" rx="11"/>
+  <text class="s" x="430.0" y="315.0" text-anchor="middle">valid token</text>
+  <path class="ld" d="M590 280 V340" marker-end="url(#a)"/>
+  <rect class="pill" x="544.3" y="299.0" width="91.4" height="22" rx="11"/>
+  <text class="s" x="590.0" y="315.0" text-anchor="middle">no token ①</text>
+  <rect class="card" x="30" y="152" width="192" height="60" rx="12"/>
+  <text class="h" x="48" y="177">Browser</text>
+  <text class="s" x="48" y="199">access_token cookie</text>
+  <path class="ln" d="M222 192 H330" marker-end="url(#a)"/>
+  <rect class="pill" x="263.6" y="181.0" width="64.8" height="22" rx="11"/>
+  <text class="s" x="296.0" y="197.0" text-anchor="middle">request</text>
+  <rect class="card" x="30" y="228" width="192" height="60" rx="12"/>
+  <text class="h" x="48" y="253">401</text>
+  <text class="s" x="48" y="275">token fails validation</text>
+  <path class="ln" d="M330 258 H222" marker-end="url(#a)"/>
+  <rect class="card" x="30" y="316" width="192" height="84" rx="12"/>
+  <text class="h" x="48" y="341">403</text>
+  <text class="s" x="48" y="363">false or no result</text>
+  <text class="s" x="48" y="385">only while default-deny</text>
+  <path class="ln" d="M330 360 H222" marker-end="url(#a)"/>
+  <rect class="card" x="30" y="412" width="192" height="106" rx="12"/>
+  <text class="h" x="48" y="437">503</text>
+  <text class="s" x="48" y="459">OPA error · over 2 s</text>
+  <text class="s" x="48" y="481">circuit open</text>
+  <text class="s" x="48" y="503">bulkhead full</text>
+  <path class="ln" d="M330 424 H222" marker-end="url(#a)"/>
+  <rect class="mine" x="780" y="316" width="190" height="146" rx="12"/>
+  <text class="h" x="800" y="344">OPA (PDP)</text>
+  <text class="s" x="800" y="368">data.&lt;service&gt;.&lt;role&gt;</text>
+  <text class="s" x="800" y="390">rules_by_id</text>
+  <text class="s" x="800" y="412">+ index.method</text>
+  <text class="s" x="800" y="434">+ data.hotlist</text>
+  <path class="lg" d="M670 366 H780" marker-end="url(#g)"/>
+  <rect class="pill" x="719.5" y="355.0" width="53.0" height="22" rx="11"/>
+  <text class="s" x="746.0" y="371.0" text-anchor="middle">query</text>
+  <path class="lg" d="M780 412 H670" marker-end="url(#g)"/>
+  <rect class="pill" x="719.7" y="401.0" width="52.6" height="22" rx="11"/>
+  <text class="s" x="746.0" y="417.0" text-anchor="middle">result</text>
+  <rect class="band" x="726" y="112" width="3" height="170" rx="1.5"/>
+  <text class="hs" x="738" y="130">access token</text>
+  <text class="s" x="738" y="154">HS256 · valid for 7 days</text>
+  <text class="s" x="738" y="176">sub = email · uid · role</text>
+  <text class="s" x="738" y="198">user_status · flags</text>
+  <text class="s" x="738" y="220">seller_status = always UNKNOWN</text>
+  <text class="s" x="738" y="242">HttpOnly · Secure</text>
+  <text class="s" x="738" y="264">SameSite=Strict cookie</text>
+  <path class="lg" d="M500 440 V512" marker-end="url(#g)"/>
+  <rect class="pill" x="417.9" y="475.0" width="164.2" height="22" rx="11"/>
+  <text class="s" x="500.0" y="491.0" text-anchor="middle">true → routed via lb://</text>
+  <rect class="card" x="340" y="512" width="320" height="64" rx="12"/>
+  <text class="h" x="360" y="538">Downstream service</text>
+  <text class="s" x="360" y="560">identifies the user from X-User-Id/Role</text>
+  <line x1="40" y1="596" x2="960" y2="596" stroke="#cdc4b2" stroke-width="1"/>
+  <text class="s" x="40" y="620">① Without a token, incoming X-User-* headers are not cleared and reach the next filter and the downstream service (limitations, first row).</text>
+  <text class="s" x="40" y="642">The actual order of the default and route filters combined was not verified.</text>
+</svg>

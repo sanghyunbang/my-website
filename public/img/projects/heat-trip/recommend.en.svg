@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 938" width="1000" height="938" role="img" aria-labelledby="t d">
+<title id="t">One recommendation — what the LLM picks and what Spring does</title>
+<desc id="d">The app sends emotion values and goal keywords to Spring; Spring passes only the emotion values and keywords, with no place list, to the Python recommendation server. The recommendation server has the model pick two groups from a closed list of 95 categories and validates the output format. Spring maps the returned labels to cat3 codes, reads candidates from MySQL and ranks them with its own scoring.</desc>
+<style>
+.bg{fill:#f7f4ed}
+.card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+.core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+.mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+.part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+.band{fill:#9a6b12}
+.team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+.unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+.dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.chipr{fill:#f1ece1}
+.chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+.chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+.pill{fill:#f7f4ed}
+.title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.b{font:500 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+.s{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+.mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+.acc{fill:#9a6b12}
+.acc2{fill:#2f7d74}
+.ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+.lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+.ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+.lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+.lt{stroke:#2f7d74;stroke-width:2;fill:none}
+.ah{fill:#6b6457}
+.ahg{fill:#9a6b12}
+.aht{fill:#2f7d74}
+</style>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+<marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+<marker id="tq" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="aht"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1000" height="938" rx="18"/>
+<text class="title" x="40" y="48">One recommendation — what the LLM picks and what Spring does</text>
+<text class="s" x="40" y="72">Basis: v2 (introduced 2025-10-18, store 1.0.0(3)) · code lines at 034c3dc</text>
+<rect class="mine" x="38.0" y="96" width="100" height="56" rx="10"/>
+<text class="hs" x="88" y="120" text-anchor="middle">App</text>
+<text class="s" x="88" y="141" text-anchor="middle">For You</text>
+<line class="dash" x1="88" y1="152" x2="88" y2="794"/>
+<rect class="mine" x="268.0" y="96" width="150" height="56" rx="10"/>
+<text class="hs" x="343" y="120" text-anchor="middle">Spring</text>
+<text class="s" x="343" y="141" text-anchor="middle">recommend service</text>
+<line class="dash" x1="343" y1="152" x2="343" y2="794"/>
+<rect class="mine" x="497.0" y="96" width="150" height="56" rx="10"/>
+<text class="hs" x="572" y="120" text-anchor="middle">Python</text>
+<text class="s" x="572" y="141" text-anchor="middle">rec. server</text>
+<line class="dash" x1="572" y1="152" x2="572" y2="794"/>
+<rect class="card" x="708.0" y="96" width="120" height="56" rx="10"/>
+<text class="hs" x="768" y="130" text-anchor="middle">OpenAI</text>
+<line class="dash" x1="768" y1="152" x2="768" y2="794"/>
+<rect class="card" x="856.0" y="96" width="104" height="56" rx="10"/>
+<text class="hs" x="908" y="130" text-anchor="middle">MySQL</text>
+<line class="dash" x1="908" y1="152" x2="908" y2="794"/>
+<rect class="pill" x="96.5" y="162" width="238" height="22" rx="6"/>
+<rect class="pill" x="125" y="180" width="181" height="22" rx="6"/>
+<rect class="pill" x="121" y="198" width="189" height="22" rx="6"/>
+<rect class="pill" x="382.5" y="240" width="150" height="22" rx="6"/>
+<rect class="pill" x="385" y="258" width="145" height="22" rx="6"/>
+<rect class="pill" x="367" y="276" width="181" height="22" rx="6"/>
+<rect class="pill" x="608" y="316" width="149" height="22" rx="6"/>
+<rect class="pill" x="606" y="350" width="128" height="22" rx="6"/>
+<rect class="pill" x="600" y="368" width="140" height="22" rx="6"/>
+<rect class="pill" x="589" y="386" width="162" height="22" rx="6"/>
+<rect class="pill" x="627.5" y="422" width="85" height="22" rx="6"/>
+<rect class="pill" x="608" y="462" width="126" height="22" rx="6"/>
+<rect class="pill" x="608" y="480" width="133" height="22" rx="6"/>
+<rect class="pill" x="395" y="514" width="125" height="22" rx="6"/>
+<rect class="pill" x="353" y="532" width="209" height="22" rx="6"/>
+<rect class="pill" x="379" y="572" width="157" height="22" rx="6"/>
+<rect class="pill" x="379" y="590" width="120" height="22" rx="6"/>
+<rect class="pill" x="379" y="608" width="119" height="22" rx="6"/>
+<rect class="pill" x="364" y="640" width="187" height="22" rx="6"/>
+<rect class="pill" x="379" y="680" width="141" height="22" rx="6"/>
+<rect class="pill" x="379" y="698" width="128" height="22" rx="6"/>
+<rect class="pill" x="379" y="716" width="163" height="22" rx="6"/>
+<rect class="pill" x="379" y="734" width="173" height="22" rx="6"/>
+<rect class="pill" x="112.5" y="756" width="206" height="22" rx="6"/>
+<text class="s" x="215.5" y="178" text-anchor="middle">1 POST /api/curation/recommend</text>
+<text class="s" x="215.5" y="196" text-anchor="middle">pad · energy · socialNeed</text>
+<text class="s" x="215.5" y="214" text-anchor="middle">moodKey · goals · location</text>
+<path class="ln" d="M88 226 H341" marker-end="url(#a)"/>
+<rect class="unk" x="102.0" y="240" width="227" height="50" rx="8"/>
+<text class="s" x="116.0" y="260">! pad, energy: integers in DTO</text>
+<text class="s" x="116.0" y="280">truncated; used in steps 2, 10</text>
+<text class="s" x="457.5" y="256" text-anchor="middle">2 POST /recommend</text>
+<text class="s" x="457.5" y="274" text-anchor="middle">emotion values and</text>
+<text class="s" x="457.5" y="292" text-anchor="middle">keywords only, no places</text>
+<path class="lg" d="M343 304 H570" marker-end="url(#g)"/>
+<path class="ln" d="M572 318 H602 V336 H575" marker-end="url(#a)"/>
+<text class="s" x="614" y="332" text-anchor="start">3 check 5-min cache</text>
+<text class="s" x="670.0" y="366" text-anchor="middle">4 closed list of 95</text>
+<text class="s" x="670.0" y="384" text-anchor="middle">categories · exactly</text>
+<text class="s" x="670.0" y="402" text-anchor="middle">2 groups · JSON mode</text>
+<path class="lg" d="M572 414 H766" marker-end="url(#g)"/>
+<text class="s" x="670.0" y="438" text-anchor="middle">5 response</text>
+<path class="ln" d="M768 450 H574" marker-end="url(#a)"/>
+<path class="ln" d="M572 464 H602 V482 H575" marker-end="url(#a)"/>
+<text class="s" x="614" y="478" text-anchor="start">6 Pydantic check</text>
+<text class="s" x="614" y="496" text-anchor="start">→ re-ask or repair</text>
+<text class="s" x="457.5" y="530" text-anchor="middle">7 category labels</text>
+<text class="s" x="457.5" y="548" text-anchor="middle">mood reading · theme · letter</text>
+<path class="lg" d="M572 560 H345" marker-end="url(#g)"/>
+<path class="lg" d="M343 574 H373 V592 H346" marker-end="url(#g)"/>
+<text class="s" x="385" y="588" text-anchor="start">8 labels → cat3 codes</text>
+<text class="s" x="385" y="606" text-anchor="start">place_traits (95)</text>
+<text class="s" x="385" y="624" text-anchor="start">held in memory</text>
+<text class="s" x="457.5" y="656" text-anchor="middle">9 findByCat3In candidates</text>
+<path class="ln" d="M343 668 H906" marker-end="url(#a)"/>
+<path class="lg" d="M343 682 H373 V700 H346" marker-end="url(#g)"/>
+<text class="s" x="385" y="696" text-anchor="start">10 0.6×trait match</text>
+<text class="s" x="385" y="714" text-anchor="start">+ 0.4×popularity</text>
+<text class="s" x="385" y="732" text-anchor="start">distance 0.2 if location</text>
+<text class="s" x="385" y="750" text-anchor="start">→ sort (findAll if empty)</text>
+<text class="s" x="215.5" y="772" text-anchor="middle">11 ranked places + LLM meta</text>
+<path class="ln" d="M343 784 H90" marker-end="url(#a)"/>
+<rect class="mine" x="40" y="814" width="440" height="76" rx="12"/>
+<text class="hs" x="60" y="841">LLM boundary</text>
+<text class="b" x="60" y="864">no places in the input · output only from the list of 95</text>
+<rect class="mine" x="500" y="814" width="460" height="76" rx="12"/>
+<text class="hs" x="520" y="841">v1 (contest submission, 2025-09-10): no LLM</text>
+<text class="s" x="520" y="863">score all places → group into 18 emotion categories</text>
+<text class="s" x="520" y="882">(72 mappings), top 6×6</text>
+<rect class="mine" x="40" y="910" width="22" height="14" rx="4"/>
+<text class="s" x="70" y="922">mine</text>
+<rect class="card" x="126" y="910" width="22" height="14" rx="4"/>
+<text class="s" x="156" y="922">external / shared</text>
+</svg>

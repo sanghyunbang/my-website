@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 808" width="1000" height="808" role="img" aria-labelledby="t d">
+  <title id="t">상태가 바뀌면 — 판매자 승인 한 번</title>
+  <desc id="d">관리자가 판매자 상태를 승인으로 바꾸면 auth-service가 트랜잭션 안에서 users.user_type을 SELLER로 바꾸고, opa-hotlist-events 토픽에 subjectId를 키로 이벤트를 보냅니다(결과를 기다리지 않음). opa-bundle은 이벤트를 소비해 eventId로 중복을 거르고 bundle.tar.gz를 다시 씁니다. OPA는 10–60초 간격의 폴링으로 번들을 가져가 활성화하고, seller-service도 같은 이벤트로 seller_status를 갱신합니다.</desc>
+  <style>
+    .bg{fill:#f7f4ed}
+    .card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+    .core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+    .mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+    .part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+    .band{fill:#9a6b12}
+    .team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+    .unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+    .y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+    .dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+    .chipr{fill:#f1ece1}
+    .chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+    .chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+    .pill{fill:#f7f4ed}
+    .title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .b{font:500 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+    .s{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+    .mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+    .acc{fill:#9a6b12}
+    .acc2{fill:#2f7d74}
+    .ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+    .lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+    .ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+    .lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+    .lt{stroke:#2f7d74;stroke-width:2;fill:none}
+    .ah{fill:#6b6457}
+    .ahg{fill:#9a6b12}
+    .aht{fill:#2f7d74}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+    <marker id="t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="aht"/></marker>
+    <clipPath id="c0"><rect x="840.0" y="88" width="130" height="44" rx="10"/></clipPath>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1000" height="808" rx="18"/>
+  <text class="title" x="40" y="48">상태가 바뀌면 — 판매자 승인 한 번</text>
+  <text class="s" x="40" y="72">기준: 78eaa987 (2026-01-27) · 10–60초는 설정값이고 측정하지 않았습니다</text>
+  <rect class="mine" x="584.6" y="61.0" width="22" height="12" rx="3" style="stroke-width:1.5"/>
+  <text class="s" x="612.6" y="72">본인 담당</text>
+  <rect class="part" x="691.5" y="61.0" width="22" height="12" rx="3" style="stroke-width:1.5"/>
+  <rect class="band" x="691.5" y="61.0" width="5" height="12" rx="1.5"/>
+  <text class="s" x="719.5" y="72">일부 본인</text>
+  <rect class="card" x="798.4" y="61.0" width="22" height="12" rx="3"/>
+  <text class="s" x="826.4" y="72">외부·공용</text>
+  <path class="lgd" d="M904.0 67.0 H926.0" style="stroke-dasharray:4 3"/>
+  <text class="s" x="932.0" y="72">폴링</text>
+  <rect class="card" x="30.0" y="88" width="80" height="44" rx="10"/>
+  <text class="hs" x="70" y="116" text-anchor="middle">관리자</text>
+  <rect class="mine" x="195.0" y="88" width="130" height="44" rx="10"/>
+  <text class="hs" x="260" y="116" text-anchor="middle">auth-service</text>
+  <rect class="card" x="390.0" y="88" width="100" height="44" rx="10"/>
+  <text class="hs" x="440" y="116" text-anchor="middle">Kafka</text>
+  <rect class="mine" x="550.0" y="88" width="120" height="44" rx="10"/>
+  <text class="hs" x="610" y="116" text-anchor="middle">opa-bundle</text>
+  <rect class="mine" x="720.0" y="88" width="100" height="44" rx="10"/>
+  <text class="hs" x="770" y="116" text-anchor="middle">OPA</text>
+  <rect class="part" x="840.0" y="88" width="130" height="44" rx="10"/>
+  <rect class="band" x="840.0" y="88" width="8" height="44" clip-path="url(#c0)"/>
+  <text class="hs" x="908" y="116" text-anchor="middle">seller-service</text>
+  <path class="dash" d="M70 132 V656"/>
+  <path class="dash" d="M260 132 V656"/>
+  <path class="dash" d="M440 132 V656"/>
+  <path class="dash" d="M610 132 V656"/>
+  <path class="dash" d="M770 132 V656"/>
+  <path class="dash" d="M905 132 V656"/>
+  <path class="ln" d="M70 164 H260" marker-end="url(#a)"/>
+  <text class="s" x="165.0" y="156" text-anchor="middle">1 POST /sellers/{id}/status</text>
+  <rect class="dash" x="136" y="174" width="294" height="150" rx="8"/>
+  <text class="s" x="148" y="194">트랜잭션</text>
+  <rect class="chipm" x="149.0" y="204" width="222" height="28" rx="8"/>
+  <text class="s" x="260" y="223" text-anchor="middle">2 users.user_type = SELLER</text>
+  <rect class="pill" x="267.1" y="242.0" width="149.8" height="62" rx="6"/>
+  <text class="s" x="342.0" y="260.0" text-anchor="middle">3 opa-hotlist-events</text>
+  <text class="s" x="342.0" y="278.0" text-anchor="middle">key = subjectId</text>
+  <text class="s" x="342.0" y="296.0" text-anchor="middle">결과를 기다리지 않음</text>
+  <path class="lg" d="M260 310 H440" marker-end="url(#g)"/>
+  <path class="ln" d="M248 324 H272"/>
+  <text class="s" x="244" y="344" text-anchor="end">커밋</text>
+  <rect class="pill" x="445.2" y="336.0" width="159.5" height="44" rx="6"/>
+  <text class="s" x="525.0" y="354.0" text-anchor="middle">4 소비 · 중복 거름</text>
+  <text class="s" x="525.0" y="372.0" text-anchor="middle">eventId, 최근 10,000개</text>
+  <path class="lg" d="M440 386 H610" marker-end="url(#g)"/>
+  <rect class="chipm" x="503.0" y="396" width="214" height="46" rx="8"/>
+  <text class="s" x="610" y="415" text-anchor="middle">5 메모리 hotlist 갱신</text>
+  <text class="s" x="610" y="433" text-anchor="middle">→ bundle.tar.gz 다시 씀</text>
+  <rect class="pill" x="620.0" y="450.0" width="139.9" height="44" rx="6"/>
+  <text class="s" x="690.0" y="468.0" text-anchor="middle">6 GET /opa/bundle</text>
+  <text class="s" x="690.0" y="486.0" text-anchor="middle">10–60초마다</text>
+  <path class="lgd" d="M770 500 H610" marker-end="url(#g)"/>
+  <path class="lgd" d="M610 528 H770" marker-end="url(#g)"/>
+  <rect class="pill" x="669.0" y="517.0" width="42.0" height="22" rx="11"/>
+  <text class="s" x="690.0" y="533.0" text-anchor="middle">번들</text>
+  <rect class="chipm" x="690.0" y="544" width="160" height="46" rx="8"/>
+  <text class="s" x="770" y="563" text-anchor="middle">7 번들 활성화</text>
+  <text class="s" x="770" y="581" text-anchor="middle">data.hotlist 교체</text>
+  <rect class="pill" x="451.9" y="594.0" width="146.3" height="44" rx="6"/>
+  <text class="s" x="525.0" y="612.0" text-anchor="middle">8 같은 이벤트 소비</text>
+  <text class="s" x="525.0" y="630.0" text-anchor="middle">→ seller_status 갱신</text>
+  <path class="lg" d="M440 644 H905" marker-end="url(#g)"/>
+  <rect class="mine" x="30" y="672" width="300" height="80" rx="10"/>
+  <text class="s" x="48" y="697">토큰(access 7일)의 역할은 그대로</text>
+  <text class="s" x="48" y="718">즉시 반영할 상태는 hotlist로 보냄</text>
+  <text class="s" x="48" y="739">토큰의 seller_status는 항상 UNKNOWN</text>
+  <rect class="card" x="350" y="672" width="300" height="80" rx="10"/>
+  <text class="s" x="368" y="697">3은 트랜잭션 안에서 보냄</text>
+  <text class="s" x="368" y="718">롤백돼도 이벤트가 나갈 수 있고</text>
+  <text class="s" x="368" y="739">전송 실패는 로그만 남음</text>
+  <rect class="unk" x="670" y="672" width="300" height="80" rx="10"/>
+  <text class="s" x="688" y="697">탈퇴는 outbox 경로(참고)</text>
+  <text class="s" x="688" y="718">outbox_event → 1초 스케줄러</text>
+  <text class="s" x="688" y="739">→ user-events · ✕ 소비자 없음</text>
+  <line x1="40" y1="770" x2="960" y2="770" stroke="#cdc4b2" stroke-width="1"/>
+  <text class="s" x="40" y="794">발표 커밋(01-27)의 정책은 기본 허용이고, 판매자 승인 규칙은 01-26에 지웠습니다(본문 '현재 상태').</text>
+</svg>

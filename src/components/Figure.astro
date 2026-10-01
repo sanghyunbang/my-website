@@ -8,6 +8,9 @@
  * (개발 서버에서만 점선 자리표시를 보여 준다 — 자리표시가 배포되는 일을 막기 위해)
  * ratio를 주면 그 비율 틀에 맞추고(잘리지 않게 contain), 주지 않으면 원본 비율 그대로.
  * 그림은 원본 파일로 가는 링크로 감싸, 작은 글씨가 있는 도식을 새 탭에서 원본 크기로 볼 수 있게 한다.
+ * wide(기본: src가 .svg일 때)면 본문 칸(672px)보다 넓게, 커버 칸 오른쪽 끝(848px)까지 편다.
+ *   폭 기준은 ProjectDetail의 article(container-type: inline-size)이다. 좁은 화면(640px 미만)에서는
+ *   캡션 아래에 "원본 크기로 보기" 줄을 보이게 한다(그림 글씨가 작아지므로).
  */
 import { getLang } from '../i18n';
 interface Props {
@@ -20,14 +23,19 @@ interface Props {
   ratio?: string;
   width?: number;
   height?: number;
+  /** 본문 칸보다 넓게(커버 칸 폭까지). 기본: src가 .svg이면 true */
+  wide?: boolean;
 }
 const { src, alt = '', caption, placeholder, ratio, width, height } = Astro.props;
+const wide = Astro.props.wide ?? (src?.endsWith('.svg') ?? false);
 const showPlaceholder = !src && import.meta.env.DEV;
-const openTitle = getLang(Astro.url) === 'en' ? 'Open full size in a new tab' : '새 탭에서 원본 크기로 보기';
+const en = getLang(Astro.url) === 'en';
+const openTitle = en ? 'Open full size in a new tab' : '새 탭에서 원본 크기로 보기';
+const openLine = en ? 'Open full size ↗' : '원본 크기로 보기 ↗';
 ---
 
 {(src || showPlaceholder) && (
-  <figure class="my-6">
+  <figure class:list={['my-6', { 'figure-wide': wide }]}>
     {src ? (
       <a href={src} target="_blank" rel="noopener" title={openTitle} class="figure-link block cursor-zoom-in">
         <img
@@ -53,6 +61,11 @@ const openTitle = getLang(Astro.url) === 'en' ? 'Open full size in a new tab' : 
     {caption && (
       <figcaption class="mt-2 text-center font-mono text-xs text-muted">{caption}</figcaption>
     )}
+    {src && wide && (
+      <p class="figure-open mt-1 text-center font-mono text-xs sm:hidden">
+        <a href={src} target="_blank" rel="noopener" class="text-accent-ink">{openLine}</a>
+      </p>
+    )}
   </figure>
 )}
 
@@ -60,5 +73,8 @@ const openTitle = getLang(Astro.url) === 'en' ? 'Open full size in a new tab' : 
   /* .prose img의 위아래 여백을 덮어쓴다 */
   figure :global(img.figure-img) { margin: 0; }
   .figure-link { text-decoration: none; }
+  /* 본문 칸(.prose, 672px) 밖으로 오른쪽까지 편다. 100cqi = ProjectDetail article의 폭(데스크톱 848px) */
+  .figure-wide { width: min(848px, 100cqi); max-width: none; }
+  .figure-open { margin: 0.25rem 0 0; }
   .figure-link:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 1rem; }
 </style>

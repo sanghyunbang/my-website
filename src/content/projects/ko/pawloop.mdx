@@ -1,15 +1,26 @@
 ---
-# 근거: _site-refresh/project-briefs.md §3 (14장 검증자 판정을 반영해 고친 문장만 쓴다)
+# 근거: _site-refresh/refresh4/specs/pawloop.md §2–§3(명세), refresh4/facts/pawloop.md(팩트 시트), 공통 양식 refresh4/specs/00-portfolio-concept.md §2–§6
+#   기준: GitHub main b0f89f6 (2026-09-26). 명세·팩트 시트에 없는 새 주장은 쓰지 않는다.
 # 쓰지 않는 것: "통합 테스트 클래스 112", "잠금 순서로 교착 회피", "UPDATE와 SELECT 사이 끼어듦",
-#   "되돌리면 실패 확인", "20개 중 17개 실패", App Store, 복구 시간, "무사고", 사용자 수·다운로드·평점
-# 링크: 소스 비공개. 원스토어 링크는 src/data/profile.ts(links.apps)에서 자동으로 붙는다.
+#   "되돌리면 실패 확인", "20개 중 17개 실패", App Store·iOS 출시, 복구 시간(38분), "무사고", 사용자 수·다운로드·평점,
+#   "처음부터 새로 만든", "웹소켓"(채팅이 웹소켓이라는 주장. 보류한 대안으로만 언급), "Cloudflare",
+#   "RDS"(운영 DB가 RDS라는 주장), "CI/CD"·자동 배포, "무중단", "모니터링 운영"(Prometheus·Grafana는 운영에 없음),
+#   위치정보 신고를 하지 않은 이유(사업자등록·재직 관련), "신고 완료", "경로를 서버에 저장한다"(현재형),
+#   "문서를 직접 썼다", 커밋 수(전 과정 표), 모듈 22·표 37·연산 122·화면 35를 metrics에 넣는 것
+# 본인 확인 전(명세 §7 Q1): 원스토어 2.0.0 빌드의 UPLOAD_LOCATION 값은 확인 전이다.
+#   "원스토어 빌드는 좌표를 보내지 않는다"는 쓰지 않고, 코드 사실([확인 전] 문구)만 쓴다.
+# 출발점(HeatTrip v2, 07-01 피벗, git blame 서버 약 5%·앱 약 3%)은 "기획부터 운영까지" 표 바로 아래 한 줄. 인과 문장 금지.
+# 그림: architecture.svg(1000×1046), erd.svg(1000×952)는 명세 §4(표 수는 V1–V3 실측 38로 정정), chat-change-feed.webp(636×259)는 명세 §5.
+#   리뷰 반영(2026-10-01): 채팅 그림은 두 화면의 아래쪽(날짜 칩부터)만 잘라 나란히 두고 바뀐 말풍선을 금색 테두리로 표시. 패널 제목은 캡션으로 옮김(ko/en 같은 파일).
+#   첫 문단은 머리 요약과 같은 내용이라 지움. 갤러리는 커버(지도·홈)와 겹치지 않게 산책부터.
+# 링크: 소스 비공개(레포 이름·링크 금지). 원스토어 링크는 src/data/profile.ts(links.apps)에서 자동으로 붙는다.
 kind: case
 title: Pawloop (포루프)
-summary: 산책 기록, 반려동반 장소 지도, 가족 케어 공유, 일정, 커뮤니티, 채팅을 묶은 반려견 앱입니다. 기획, Flutter 앱, Spring Boot 서버, AWS 배포를 1인 개발로 진행해 원스토어에 출시했습니다. 서버는 모듈 경계를 테스트로 강제하고, 실제 MySQL로 도는 테스트로 동작을 고정합니다.
-role: 1인 개발 — 기획, Flutter 앱, Spring Boot 서버, AWS 배포
-period: 2026.06 – 현재 · 2026.09 첫 운영 배포 · 원스토어 등록
-tech: [Java 21, Spring Boot 3.5, Spring Modulith, JPA, MySQL 8, Testcontainers, Docker, Caddy, AWS EC2, Terraform, Flutter]
-highlight: 채팅 순번을 행 잠금 + LAST_INSERT_ID(expr)로 방별 원자 발급하고, 실제 MySQL에서 20스레드 동시 전송 테스트로 고정
+summary: 반려견 산책 기록, 반려동반 장소 지도, 가족 케어·일정, 동네 커뮤니티·크루, 채팅을 묶은 앱입니다. 기획, Flutter 앱, Spring Boot 서버, AWS 인프라를 1인 개발로 진행해 2026년 9월 원스토어에 출시했고 지금 운영하고 있습니다. AI 코딩 에이전트와 함께 작성했고 커밋의 약 81%에 공저로 표기했습니다.
+role: 1인 개발 — 기획, Flutter 앱, Spring Boot 서버, AWS 인프라, 원스토어 출시, 운영
+period: 2026.06 – 현재 · 2026.09 원스토어 출시
+tech: [Flutter, Java 21 · Spring Boot 3.5, MySQL 8 · Flyway, AWS EC2 · S3 · SES · Route 53, Terraform, Caddy, Spring Modulith, Docker Compose, FCM, Testcontainers, GitHub Actions]
+highlight: 기획 문서와 설계 결정 기록(ADR 23건)부터 Flutter 앱, Spring 서버, Terraform 운영 환경, 원스토어 출시(09-18)와 업데이트(09-21)까지 한 레포에서 1인 진행
 order: 1
 cover: /img/projects/pawloop/cover.webp
 coverWidth: 1024
@@ -17,111 +28,166 @@ coverHeight: 576
 coverAlt: Pawloop 원스토어 대표 그래픽 — 지도와 홈 화면
 ogImage: /img/projects/pawloop/og.jpg
 metrics:
+  - value: "2.0.0"
+    label: 원스토어 출시
+    note: 2026-09-18 바이너리 · 09-21 업데이트
+  - value: "23건"
+    label: 설계 결정 기록(ADR)
+    note: 기획·법·디자인·앱·서버 포함, 대안 비교 18건
   - value: "1,994건 · 실패 0"
     label: 백엔드 테스트 전체 실행
-    note: 2026-09-30 GitHub main 기준, 약 18분
-  - value: "순환 0"
-    label: 모듈 간 순환 의존
-    note: Spring Modulith 검사를 테스트로 고정
-  - value: "620 → 107"
-    label: 모듈 경계 위반(래칫)
-    note: 늘면 테스트가 실패, 남은 107건 공개
+    note: 2026-09-30 GitHub main, 약 18분
 links: []
 ---
-import Callout from '../../../components/Callout.astro';
+import Figure from '../../../components/Figure.astro';
 import Gallery from '../../../components/Gallery.astro';
 
-반려견 산책을 기록하고, 함께 갈 수 있는 장소를 찾고, 가족이 케어를 나눠 맡는 앱입니다. 기획, Flutter 앱, Spring Boot 서버, AWS 배포를 1인 개발로 진행했습니다. 아래는 서버에서 **데이터가 어긋날 수 있는 지점을 어떻게 막고, 무엇으로 확인했는지**를 정리한 것입니다.
+## 화면
 
 <Gallery
-  caption="원스토어 등록 스크린샷 · 지도 부분은 흐리게 처리"
-  cols={4}
+  caption="원스토어 등록 스크린샷(2.0.0)"
+  cols={3}
   images={[
-    { src: '/img/projects/pawloop/01-map.webp', alt: '지도 화면: 반려동반 장소를 카테고리(산책로, 동물병원, 카페·식당, 여행지)로 걸러 보는 지도 (지도 부분은 흐리게 처리)', caption: '지도', width: 720, height: 1560 },
-    { src: '/img/projects/pawloop/02-home.webp', alt: '홈 화면: 반려견 프로필, 오늘 산책 횟수·거리·시간, 오늘의 케어 항목', caption: '홈', width: 720, height: 1560 },
-    { src: '/img/projects/pawloop/03-walk.webp', alt: '산책 기록 화면: 지도 위 경로와 거리·시간·페이스, 배변·마킹·물·사진 기록 버튼 (지도 부분은 흐리게 처리)', caption: '산책', width: 720, height: 1560 },
-    { src: '/img/projects/pawloop/04-family.webp', alt: '우리 가족 화면: 가족 구성원, 오늘의 케어, 산책 주의사항, 가족 채팅 바로가기', caption: '가족 케어', width: 720, height: 1560 },
+    { src: '/img/projects/pawloop/03-walk.webp', alt: '산책 기록 화면: 지도 위 경로와 거리·시간·페이스, 배변·마킹·물·사진 기록 버튼', caption: '산책', width: 900, height: 1950 },
+    { src: '/img/projects/pawloop/04-family.webp', alt: '우리 가족 화면: 가족 구성원, 오늘의 케어, 산책 주의사항, 가족 채팅 바로가기', caption: '가족 케어', width: 900, height: 1950 },
+    { src: '/img/projects/pawloop/05-community.webp', alt: '커뮤니티 화면: 이야기·크루 탭, 동네 필터, 게시판 태그와 반려견 태그가 붙은 글, 도움돼요·귀여워요·공감 반응과 저장', caption: '커뮤니티', width: 900, height: 1950 },
+    { src: '/img/projects/pawloop/01-map.webp', alt: '지도 화면: 반려동반 장소를 카테고리(산책로, 동물병원, 카페·식당, 여행지)로 걸러 보는 지도', caption: '지도', width: 900, height: 1950 },
+    { src: '/img/projects/pawloop/02-home.webp', alt: '홈 화면: 반려견 프로필, 오늘 산책 횟수·거리·시간, 오늘의 케어 항목', caption: '홈', width: 900, height: 1950 },
   ]}
 />
 
-## 핵심 기여 1 — 채팅 방별 순번: 동시에 보낸 메시지가 같은 번호를 받는 문제
+## 기획부터 운영까지
 
-<Callout kind="problem">
+| 단계 | 시기 | 한 일 | 레포의 산출물 |
+|---|---|---|---|
+| 기획 | 07-01 피벗, 문서 레포 반영 09-01 | 감정 여행 앱에서 반려 앱으로 방향 전환, 가족 케어 문제 정의(이중 급여, 산책 누락), 위치정보법 검토 | `docs/00-product`(concept, personas, feature-family-care, legal-lbs-compliance), ADR-0001 |
+| 설계 | 08-29 레포 반영 | 디자인 시스템, 정보 구조, 화면 명세. API 계약을 정본으로 두고 코드와 테스트로 대조(경로 88, 연산 122). 결정 기록 23건 | `docs/01-design`, `docs/04-api/openapi.yaml`, `docs/99-decisions` |
+| 앱 | 06-29 – | Flutter 화면 35개, 산책 저장 실패 시 초안 큐에 쌓아 재전송, 좌표 전송 정책 한 곳, 채팅 적응형 폴링, 소셜 로그인 딥링크 | `app/lib/v2` |
+| 서버 | 08-30 – 09-10 도메인 모듈 | 모듈러 모놀리스(최상위 모듈 22개), Flyway 표 38개, 커밋 뒤 이벤트 5종, 새벽 정리 잡, 외부 API 대리 호출 | `backend/` |
+| 인프라 | 09-16 – 09-17 | Terraform 운영 환경(EC2 1대, Elastic IP, Route 53, 별도 EBS, SES), 운영 설정은 SSM, Caddy 단일 진입점 | `backend/infra/terraform/envs/prod` |
+| 출시 | 09-17 – 09-21 | Android `applicationId` 변경, 약관·개인정보처리방침 공개 사이트, 원스토어 2.0.0 바이너리(09-18)와 업데이트(09-21) | `store/`(스토어 그래픽 원본), Caddy 정적 사이트 |
+| 운영 | 09-16 – | 수동 배포 절차, 운영 설정을 바꾸는 길 하나(스크립트), CI(테스트, analyze, 문서 드리프트), 첫 운영 부팅 문제 대응 | `envs/prod/backend/README.md`, `backend/scripts/set-prod-env.sh`, `.github/workflows/ci.yml` |
 
-채팅방마다 메시지에 1, 2, 3… 순번을 붙입니다. 방을 읽고 +1 해서 쓰는 방식은 두 요청이 같은 값을 읽을 수 있어, 방별 순번의 유니크 제약에 걸립니다.
+출발점: [HeatTrip](/projects/heat-trip)의 2026-06 앱 재설계 코드(비공개, 로그인·미디어 업로드 등)로 저장소를 시작했고, 2026-07-01 반려 앱으로 방향을 바꿨습니다. 지금 코드 중 그 출발 코드에서 온 줄은 서버 약 5%, 앱 약 3%입니다(`git blame`, 커밋 `b0f89f6` 기준).
 
-</Callout>
+기획·설계 문서는 코드와 같은 레포에서 관리했고, 다수가 AI 공저 커밋으로 들어왔습니다.
 
-<Callout kind="solution">
+## 시스템 구성
 
-`SELECT … FOR UPDATE`로 읽고 +1 해서 쓰는 방식도 요청을 한 줄로 세웁니다. 다만 행을 다시 읽어야 하고, JPA 1차 캐시의 낡은 값을 읽을 위험이 있습니다. 그래서 증가와 '내 번호 받기'를 `LAST_INSERT_ID(expr)`로 묶었습니다.
+<Figure
+  src="/img/projects/pawloop/architecture.svg"
+  width={1000}
+  height={1046}
+  alt="Flutter 앱은 HTTPS 443으로 Caddy에 붙고, Caddy가 같은 EC2의 Spring Boot 앱으로 넘깁니다. Spring Boot는 같은 EC2의 MySQL 컨테이너(데이터는 별도 EBS), S3, SES, FCM, 소셜 로그인 공급자, 공공데이터 API를 씁니다. 운영 설정은 부팅 때 SSM에서 받습니다. CI는 배포하지 않고, 배포는 SSH로 수동입니다."
+  caption="운영 구성 — GitHub main b0f89f6 기준"
+/>
+
+1. 인터넷 전체에 열린 문은 Caddy(443·80) 하나입니다. SSH(22)는 지정한 IP 대역에만 엽니다. 앱 컨테이너는 호스트의 127.0.0.1:8080에만 게시하고, DB는 밖에 열지 않습니다.
+2. 공공데이터 API(관광공사, 두루누비, 인허가, 기상청, 에어코리아)와 AI API의 키는 서버에만 있습니다. 앱은 서버를 거쳐 데이터를 받습니다.
+3. 좌표가 기기를 떠나는 자리는 `LocationUploadPolicy` 하나입니다. 전송 여부는 컴파일 타임 상수로 정하고, 기본값은 꺼짐입니다.
+
+## 서버와 데이터
+
+<Figure
+  src="/img/projects/pawloop/erd.svg"
+  width={1000}
+  height={952}
+  alt="Pawloop 데이터 개요. Flyway 기준 38개 표 중 주요 표와 관계를 그렸습니다. 채팅 묶음(chat_room, chat_room_member, chat_message)은 묶음 밖의 표에 FK 없이 참조로만 붙습니다. 방은 origin_kind·origin_ref로 가족 그룹과 크루를, 멤버는 user_id로 사용자를 가리킵니다. 산책과 채팅 메시지의 재전송을 멱등하게 만드는 유니크 제약을 금색으로 표시했습니다."
+  caption="데이터 개요 — Flyway V1–V3 기준 38개 표 중 주요 표"
+/>
+
+- 하나의 Spring Boot 앱이고, 최상위 패키지 22개가 Spring Modulith 모듈입니다. 묶음은 반려·산책(dog, walk, walksafety), 가족·일정(group, care, schedule), 소통(chat, chatweb, crew, community, moderation, moderationweb, push), 장소(place), 계정(user, OAuth, consent), 공통(S3, security, config, error, observability)입니다.
+- 모듈 경계 검사는 나중에 들인 래칫이고, 위반 기준선은 처음 620에서 지금 107입니다(모듈 간 순환 0).
+- 모듈 경계를 넘는 FK는 21개이고 대부분 users와 dog로 갑니다. 테스트가 이 목록을 기준선으로 묶어 둡니다. chat 모듈은 바깥 의존이 없고(`allowedDependencies = {}`), 경계를 넘는 FK가 0입니다. 방은 가족·크루를 `origin_kind/origin_ref`로 가리키고, 일정(`owner_kind/owner_ref`)과 미디어(`ref_type/ref_id`)도 FK 없는 참조 쌍을 씁니다. 올려 두고 어디에도 붙지 않은 채 하루가 지난 미디어는 매일 04:10 정리 잡이 지웁니다.
+- 모바일 재전송으로 생기는 중복은 DB 유니크 제약으로 막습니다. 산책은 `UNIQUE(dog_id, client_walk_id)`, 채팅은 `UNIQUE(room_id, sender_user_id, client_msg_id)`입니다.
+
+### 커밋 뒤 이벤트(인메모리, 발행 → 구독)
+
+- `ChatMessagePosted`: chat → push(FCM 발송)
+- `ScheduleAssigned`: schedule → push(담당자에게 알림)
+- `UserSessionsRevoked`: user → push(기기 토큰 정리)
+- `FamilyGroupCreated`: group → care(기본 케어 항목 생성)
+- `ReportFiled`: moderation → observability(Slack 알림, 운영 설정 미확인)
+
+Modulith 이벤트 레지스트리는 들이지 않았습니다(ADR-0012).
+
+## 설계 결정
+
+기획·앱·서버·인프라에 걸친 결정 네 가지입니다. 앞의 셋은 결정 기록(ADR)에 있고, 운영 바깥문의 이유는 그 구성을 만든 커밋 메시지에 있습니다.
+
+### 위치정보: 좌표가 기기를 떠나는 자리를 한 곳으로
+
+위치기반서비스사업 신고 전이라, 좌표가 기기를 떠나는 9곳을 `LocationUploadPolicy` 하나로 모았습니다. 전송 여부는 컴파일 타임 상수 `UPLOAD_LOCATION`(기본값 false)으로 정합니다. 서버의 경로 저장 기능은 지우지 않았습니다.
+
+주변 장소는 전국 카탈로그를 내려받아 기기에서 거리를 계산합니다. 서버의 `walk.path`(LINESTRING, SRID 4326)에는 SPATIAL INDEX를 만들지 않았습니다. 산책을 공간 조건으로 찾는 질의가 없기 때문입니다.
+
+대가로, 상수가 꺼져 있으면 코스 남기기와 이웃 코스 화면이 숨습니다.
+
+### 채팅: 범용 방, HTTP 전송과 폴링, 방별 순번
+
+방은 가족에 묶지 않고 `origin_kind/origin_ref`로 붙여 가족과 크루가 같이 씁니다. 전송은 HTTP POST이고 수신은 폴링입니다. 앱은 `GET …/messages?afterSeq=`에 `If-None-Match`를 붙이고, 새 것이 없으면 304를 받습니다. 폴링 간격은 3초에서 시작해 빈 응답마다 두 배로 늘고, 최대 30초입니다.
+
+웹소켓과 Redis는 단일 인스턴스와 방 규모를 근거로 보류했습니다. 되돌릴 기준(빈 폴링 비율, p95, 커넥션 대기)은 ADR에 적었습니다.
+
+커서는 `id`가 아니라 방별 `room_seq`입니다. 번호는 방 행의 잠금과 세션 값으로 한 번에 받습니다.
 
 ```sql
-UPDATE chat_room SET last_seq = LAST_INSERT_ID(last_seq + 1) WHERE id = ?;
-SELECT CAST(LAST_INSERT_ID() AS SIGNED);   -- 같은 트랜잭션, INSERT 전에
+UPDATE chat_room SET last_seq = LAST_INSERT_ID(last_seq + 1) WHERE id = ?1
+-- 같은 트랜잭션에서 LAST_INSERT_ID()로 번호를 읽고 chat_message를 INSERT
 ```
 
-요청을 한 줄로 세우는 것은 UPDATE의 행 잠금입니다. `LAST_INSERT_ID(expr)`는 증가한 값을 내 세션에 남겨, 행을 다시 읽지 않고 내 번호를 받게 해 줍니다.
+실제 MySQL(Testcontainers)에서 스레드 20개가 같은 방에 동시에 보내, 순번 1–20이 한 번씩 나오는지 테스트로 고정했습니다. 테스트의 커넥션 풀은 기본값 10이라, 실제로 동시에 도는 트랜잭션은 최대 10개입니다.
 
-모바일 재전송으로 같은 메시지가 두 번 오는 경우는 방과 보낸 사람 단위 유니크 제약 `(room_id, sender_user_id, client_msg_id)`로 막았습니다. 제약 위반이 나면 그 키의 행이 실제로 있을 때만 200으로 돌려줍니다.
+지운 말과 반응은 `room_seq` 델타로 오지 않습니다. 그래서 방 단위 `change_seq`를 따로 발급합니다. `room_seq`를 다시 발급하는 안은 옛 말이 맨 아래로 내려가고 미읽음이 늘어서 버렸습니다.
 
-</Callout>
+<Figure
+  src="/img/projects/pawloop/chat-change-feed.webp"
+  width={636}
+  height={259}
+  alt="같은 채팅방 화면의 아래쪽 두 장. 왼쪽은 다른 멤버가 00:20에 보낸 '이 말은 곧 지울게요'가 맨 아래에 있고, 오른쪽은 그 멤버가 말을 지운 뒤 같은 자리가 '삭제된 메시지예요'로 바뀌었습니다. 바뀐 말풍선은 금색 테두리로 표시했습니다."
+  caption="왼쪽: 받은 말 · 오른쪽: 상대가 지운 뒤 같은 자리 — 에뮬레이터, 테스트 계정"
+/>
 
-<Callout kind="result">
+다른 멤버가 보낸 말을 지우면, 다음 폴링에서 같은 자리가 '삭제된 메시지예요'로 바뀝니다.
 
-실제 MySQL(Testcontainers)에서 스레드 20개가 같은 방에 동시에 보내면 순번 1–20이 각각 정확히 한 번 나오는지 테스트로 고정했습니다. 커넥션 풀 기본값이 10이라 실제 동시 트랜잭션은 최대 10개입니다.
+대가는 수신 지연(최대 30초 간격)입니다. 되돌릴 기준은 아직 운영에서 잴 수 없습니다(한계 3).
 
-재전송 멱등은 세 경우(같은 ID 중복 / 다른 멤버의 같은 키 / 키 없음)로 고정했습니다.
+### 공공데이터 한도: 격자 캐시와 일일 예산
 
-</Callout>
+관광공사 API는 하루 1,000콜 한도가 있습니다. 그 안에서 0.02° 격자 단위 스냅샷 캐시(`place_cell`)를 두고, 일일 호출 예산(`kto_call_budget`)은 DB 행 하나의 조건부 UPDATE로 셉니다.
 
-## 핵심 기여 2 — 첫 운영 배포 사고: 통과하던 테스트가 틀린 설정에 동의하고 있었다
+앱은 공공데이터 키를 갖지 않습니다. 서버가 관광공사, 두루누비, 인허가, 기상청, 에어코리아 API를 대신 부릅니다. 산책 안전 지수는 격자 번호만 받아 저장 없이 넘깁니다.
 
-<Callout kind="problem">
+카탈로그는 새벽 04:40에 예열하고, 인허가·두루누비 데이터는 매월 1일 05:20에 갱신합니다. 대가로 외부 API 장애와 호출 비용을 서버가 집니다.
 
-2026-09-17 첫 운영 서버 부팅에서 컨테이너는 모두 떴는데 80·443 포트가 응답하지 않았습니다. Caddy가 설정 파싱 오류(`handle`에 경로 매처 두 개 나열)로 시작하자마자 종료돼 있었습니다.
+### 운영 바깥문과 서버 한 대
 
-설정을 지키던 테스트는 Caddyfile의 문자열을 검사해서, 잘못 쓴 설정도 "문자열이 있다"며 통과시켰습니다.
+운영은 Terraform으로 만든 EC2 한 대의 Docker Compose입니다. 바깥문은 nginx 대신 Caddy 2.10입니다. Caddy가 인증서 자동 발급·갱신, `X-Real-IP` 주입, 약관 정적 사이트를 맡고, `/actuator/*`는 health만 통과시킵니다.
 
-</Callout>
+DB는 RDS가 아니라 같은 EC2의 MySQL 8.0 컨테이너입니다. 데이터 디렉터리만 별도 EBS(`prevent_destroy`)에 둡니다. 운영 설정(.env, 배포 키)은 SSM Parameter Store에 두고 부팅 때 받습니다. 설정을 고치는 길은 스크립트 하나입니다.
 
-<Callout kind="solution">
+RDB 하나로 두고 Redis는 보류했습니다. 인스턴스가 둘이 되는 날 함께 옮겨야 할 것 네 가지(일회용 인가 코드 저장소, rate limit 카운터 등)는 ADR에 목록으로 남겼습니다. 대가는 단일 장애 지점, 배포 중 짧은 중단, 백업 절차가 없다는 점이고, 아래 한계 표에 적었습니다.
 
-운영과 같은 Caddy 이미지를 Testcontainers로 띄워 `caddy validate`를 실제로 실행하는 테스트로 바꿨습니다.
+## 출시 준비와 첫 운영 부팅에서 겪은 일
 
-마운트 경로와 헬스체크는 compose 파일을 읽는 정적 검사로 보강했고, 문서 사이트는 렌더링을 실제로 실행해 확인합니다.
+| 날짜 | 무슨 일 | 바꾼 것 |
+|---|---|---|
+| 09-16 | 스테이징에서 `terraform apply` 뒤 EC2가 부팅 단계에서 아무것도 하지 못하는 문제 다섯 가지 | 부팅 스크립트 수정 |
+| 09-17 | 첫 부팅이 buildx 부재·낡은 buildx, 이미지의 자산 누락으로 실패. 로컬 CI는 캐시된 결과로 "전부 통과"를 보고(실제로는 0개 실행) | buildx는 있는지가 아니라 버전을 확인. 테스트는 매번 `cleanTest --no-build-cache`로 새로 돌리고 결과 XML 개수를 셈 |
+| 09-17 | Caddy가 뜨지 않음. 첫 운영 부팅에서는 Caddyfile 문법 오류(`handle`에 경로 매처 둘)로 바로 종료되어 80·443이 응답하지 않았고, Caddyfile 문자열을 검사하던 테스트는 통과하고 있었음. 겹친 bind mount의 마운트 지점도 없었음 | 운영과 같은 Caddy 이미지로 `caddy validate`를 실제로 실행하는 테스트로 교체, 마운트 지점 생성과 compose 정적 검사 추가 |
 
-</Callout>
-
-<Callout kind="result">
-
-같은 주에 실행 테스트라도 운영과 다르게(복사 방식으로) 돌리면 거짓 초록이 난다는 것을 알게 되어, 기준을 '실행하느냐'에서 '운영과 같은 조건이냐'로 바꿨습니다.
-
-</Callout>
-
-## 핵심 기여 3 — 모듈 경계와 테스트 구조
-
-Spring Modulith 기반 모듈러 모놀리스입니다(최상위 모듈 22개). Modulith 검사는 테스트에서 돌고, 운영 의존성에는 애너테이션 API만 들어갑니다.
-
-- **경계 위반 래칫** — 경계 검사를 나중에 들여 위반을 **620건에서 107건**으로 줄였고, 늘어나면 테스트가 실패하도록 래칫으로 고정했습니다.
-- **순환 의존과 모듈을 넘는 참조** — 모듈 간 순환 의존 0(`ModuleCycleTest`). 모듈을 넘는 FK와 조인은 기준선 테스트로 늘지 못하게 막았습니다.
-- **테스트 전체 실행** — 백엔드 테스트 1,994건, 실패 0(2026-09-30, GitHub main 기준, 약 18분).
-- **운영 구성** — 운영 서버는 Terraform으로 구성한 EC2 한 대이고, Caddy가 TLS를 맡는 유일한 진입점입니다. Prometheus와 Grafana는 스테이징과 로컬에만 있습니다.
-- **설계 결정 기록** — 23건(대안 비교 포함 18건).
+원스토어 2.0.0 바이너리는 09-18, 업데이트는 09-21에 올렸습니다.
 
 ## 한계와 다음 단계
 
-| 지금 상태 | 다음에 할 것 |
-|---|---|
-| 출시 초기이고 서버는 1대이며, 부하 테스트는 하지 않았습니다. 채팅 순번 발급 타이머(`chat.seq.assign`)는 이미 기록되지만, 히스토그램이 꺼져 있어 p99를 낼 수 없습니다 | 히스토그램을 켜고 실제 트래픽에서 응답 시간(p99)과 순번 잠금 대기를 잽니다. 필요가 측정되기 전에는 캐시나 메시지 큐를 더하지 않습니다 |
-| 배포할 때 컨테이너를 다시 만들어 짧은 중단이 생깁니다. 컨테이너 시작 명령이 exec 없는 `sh -c`라서 종료 신호(SIGTERM)가 JVM까지 가지 않을 가능성이 있습니다. 같은 베이스 이미지 실험에서는 PID 1이 셸이었고, 실제 앱 이미지로는 아직 확인하지 않았습니다 | 신호 경로를 먼저 재고 고칩니다(exec 형태). 그다음 종료 유예 시간을 맞추고, 블루/그린 배포로 옮겨 배포 중 오류율을 잽니다 |
-| 로그아웃·탈퇴 때 기기 푸시 토큰 정리가 커밋 후 비동기 큐에서 돕니다. 큐가 가득 차거나 배포로 종료되면 유실될 수 있습니다 | 유실되면 안 되는 정리를 트랜잭션 안으로 옮기고, 큐 포화를 주입한 테스트로 고정합니다 |
-| 채팅 읽음 처리 경로가 문서의 잠금 순서와 반대로 잠가, 같은 방에서 전송과 동시에 오면 교착이 날 수 있습니다(코드 리뷰에서 재현됨, 재현 테스트는 작성 예정). 지금은 500으로 응답합니다 | 재현 테스트 → 잠금 순서 통일 → 20스레드 테스트가 계속 초록인지 확인 → 잠금 순서 주석 갱신 |
-| 운영 서버에는 메트릭 수집기가 없습니다(Prometheus/Grafana는 스테이징과 로컬) | 운영 수집을 붙이고 채팅 지표 패널을 만듭니다 |
-| 모듈 경계 위반 107건이 남아 있습니다 | 래칫으로 계속 줄입니다 |
+| 한계 | 영향 | 다음 단계 |
+|---|---|---|
+| 서버 1대, 부하 테스트는 하지 않음 | 인스턴스 장애가 곧 중단이고, 처리 한계를 모릅니다. 푸시 발송 큐는 인메모리입니다(스레드 2–4, 큐 1,000, 넘치면 버림) | 인스턴스를 늘리기 전에 ADR 목록의 네 가지를 옮기기 |
+| 배포가 수동(SSH → `git pull` → `docker compose up -d --build`) | 컨테이너를 다시 만드는 동안 짧게 끊깁니다. 진입점이 `sh -c`라 SIGTERM이 JVM에 닿지 않을 수 있습니다 | 이미지 빌드·배포 자동화, exec 형식 진입점 |
+| 운영 관측 수단이 actuator health뿐 | 커스텀 지표(`chat.seq.assign` 등)는 기록되지만 수집기가 없습니다. 그래서 채팅 폴링의 되돌릴 기준(빈 폴링 비율, p95)을 운영에서 잴 수 없습니다 | 메트릭 수집기 도입 |
+| 채팅 읽음 처리의 잠금 순서가 전송과 반대 | 둘이 겹치면 교착이 재현됩니다(현재 500 응답) | 잠금 순서 통일 |
+| DB 백업 절차가 없음 | MySQL은 같은 EC2의 컨테이너이고, 데이터 볼륨만 EBS로 분리(`prevent_destroy`)했습니다. 운영 Terraform과 운영 README에 백업·복구 절차가 없습니다 | EBS 스냅샷 주기와 복구 리허설 |
 
-## AI 사용 공개
+---
 
-전체 550커밋 중 445개(약 81%)는 AI 코딩 에이전트와 함께 작성했고, 커밋 트레일러(`Co-Authored-By`)로 표기했습니다. 그래서 "테스트가 통과했다"는 보고보다 테스트가 실제로 무엇을 확인하는지를 먼저 봅니다. 위의 첫 운영 배포 사고가 그 기준을 세운 계기입니다.
-
-소스는 비공개입니다. 요청하시면 시연과 코드 워크스루를 해 드립니다.
+소스는 비공개이고 시연과 코드 워크스루는 요청하면 할 수 있습니다. 기준은 GitHub main `b0f89f6`(2026-09-26)입니다.

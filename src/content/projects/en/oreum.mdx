@@ -1,162 +1,132 @@
 ---
-# Detail page (case). Source: _site-refresh/refresh3/oreum-site-draft.md, interview-prep/05-oreum (branch oreum-interview-prep)
-# Code basis: backend ec805ca, frontend c663906 (private team repos, read-only clones). No repo links. Teammates' names are not published.
-# Commit counts and shares are not role shares, so they are not published (no roleBreakdown).
+# Detail page (case). refresh4 rewrite (2026-10-01). Spec: _site-refresh/refresh4/specs/oreum.md §2·§3 (plan 1 clips for the demo; the cover is the architecture cover after the review — line 9); common skeleton: specs/00-portfolio-concept.md §2–§3
+# Evidence: _site-refresh/refresh4/facts/oreum.md, interview-prep/05-oreum. No claim that is not in the spec or the fact sheet.
+# Code basis: backend ec805ca, frontend c663906 (2025-07-02, private team repos, read-only clones). No repo links. Teammates' names and account names are not published.
+# Commit counts and line shares are not role shares, so they are not published (no roleBreakdown, no metrics).
 # Period and resume bullets come from src/data/profile.ts (resumeProjects.oreum); the status badge from projectStatus.oreum.
-# Images are slides from the team deck (Figma, 2025.07) that show no real names (s4, s6, s9, s10, s11); captions give the slide number and whose area it is.
-# The cover is the s6 diagram cropped onto a white background (top-left left empty for the card's award chip); the same diagram is no longer repeated in the body.
-# Before publishing (merge to main): confirm the team agrees to the use of the team deck.
+# Demo: silent clips cut from the feature segments of the s9/s10 videos in the team deck (plan 1) or links to the Figma slides (fallback). Never s1/s3 (real names), s10 0:08–0:18 (email and name), s12 (watermark).
+# This version (review fixes 2026-10-01): the demo section has two Clips — demo-curation.mp4 (s9 0:12–0:57, 45 s, poster demo-curation-poster.webp = the editor) and demo-map.mp4 (s10 0:12.5–0:37, 24 s, My Page segment excluded, poster demo-map-poster.webp = map with forecast, trails and an author marker). Both 1280×714, silent. Both posters were re-taken without the mouse cursor (the cursor spot is filled from another frame of the same screen). The only Figma link is the s9 link inside the source sentence. The candidate allowed the video use on 2026-10-01.
+# The cover is the code-based architecture cover architecture-cover.en.svg (1200×675; the top-left 320×90 is free for the card chip), and og.jpg (1200×630) was rebuilt from that SVG (concept §3 alternative; changed from plan 1 of lead decision 6 because the map-frame cover could not be read at card size, the chip sat on the forecast panel, and the map clip's poster showed the curation detail page). The body points to the cover instead of repeating the diagram (concept §2-4); the body version architecture.en.svg (1000×860) is not referenced now. Data figure: data.en.svg (1000×740). New figures are light only (the site has no dark mode).
+# Use of the team deck: on 2026-10-01 the candidate confirmed the team agreed.
+# Do not write: "KMA short-term forecast", "retries twice with backoff", "refreshed daily by a scheduler", "faster queries", "CloudFront for speed and stability", "curation posts are stored in MongoDB" (alone), "Kakao login", "30-minute access token", "renewed with the refresh token", "the server fetches VWorld", "deployed / operated", "wrote tests", "PR review", "built the Flutter app", "team leader", commit or line shares, "radius query optimized with an index", intent wording about splitting data by its nature, teammates' names or account names, CORS IPs, config values.
 kind: case
 title: OREUM
-summary: A hiking-community web service for recording and sharing trails on a map, built by a team of four as the graduation project of the KDT Full-stack Bootcamp (Gangnam HiMedia); it received the graduation-project Excellence Award. I worked on the backend and frontend of the map (mountain search, KMA mountain forecast, trail display), curation posts (route segments stored in MongoDB and drawn on the map), social login (OAuth2 + JWT) and S3 media upload.
-role: Team of 4 — map and mountain forecast, curation posts, social login and S3 upload (backend and frontend)
+summary: A hiking community web service for recording and sharing routes on a map, segment by segment. A team of four built it as the graduation project of the KDT Full-stack Bootcamp (Gangnam HiMedia), and it won the graduation-project Excellence Award. I set up the initial structure of both repositories and the server configuration, and built the map (mountain search, mountain forecast, trails), curation posts, social login and S3 upload on both server and screen. The demo ran locally and the source is private.
+role: Team of 4 — repository setup and server config, map and mountain forecast, curation posts, social login and S3 upload (Spring Boot, React)
 tech: [Java 17, Spring Boot 3.5, Spring Security, OAuth2 Client / JWT, MyBatis, MySQL, MongoDB, Redis, WebClient (Reactor), AWS S3 / CloudFront, React 18, Redux Toolkit, Tailwind CSS, Kakao Maps]
-highlight: Curation route segments stored as MongoDB documents (coordinates as GeoJSON), post metadata in MySQL, linked by postId
+highlight: "A map-centered feature built on both server and screen: posts in MySQL, route segments (GeoJSON) in MongoDB, mountain forecasts in Redis (12 h), 153 mountain locations in server memory"
 award: kdt-2025
 order: 5
-cover: /img/projects/oreum/cover.webp
-coverWidth: 1600
-coverHeight: 900
-coverAlt: OREUM service infrastructure diagram — a Flutter app and a React/Tailwind web client using Kakao Map; a Spring Boot, Spring Security and JWT server connected to Naver/Kakao login, S3 and CloudFront, MySQL, MongoDB and Redis, VWorld trail GeoJSON and the KMA API Hub summit weather (labels in Korean)
-coverCaption: Service infrastructure — team presentation deck, slide 6 (diagram as presented; in the code the social login providers are Naver and Google)
+cover: /img/projects/oreum/architecture-cover.en.svg
+coverWidth: 1200
+coverHeight: 675
+coverAlt: "OREUM system diagram. The React web client sits in the middle above a single Spring Boot app. On the left are the CRA dev proxy and VWorld trails, the KMA API Hub, S3 with CloudFront, Naver/Google OAuth and the Flutter app; on the right are Kakao Maps, Iamport, MySQL, MongoDB, Redis and server memory. Gold boxes and arrows mark my part, and the numbers ①–⑧ match the two flows on this page."
+coverCaption: As built in code — backend ec805ca · frontend c663906 · gold = my part
 ogImage: /img/projects/oreum/og.jpg
-metrics:
-  - value: N markers → 2N−1 segments
-    label: Curation route model
-    note: One MongoDB document per segment, coordinates as GeoJSON
-  - value: MySQL + MongoDB
-    label: Curation posts split across two stores
-    note: Linked by postId; no transaction spans both stores
 links: []
 ---
-import Callout from '../../../components/Callout.astro';
 import Figure from '../../../components/Figure.astro';
+import Clip from '../../../components/Clip.astro';
 
-OREUM is a hiking community that a team of four built in about a month (June 2 – July 3, 2025, per the team deck) as the KDT Full-stack Bootcamp graduation project. My scope was the map (mountain search, mountain forecast, trail display), curation posts, social login and S3 upload, on both the backend and the frontend of each feature. I set up the initial structure of both repositories (Spring Boot project, React app skeleton, routing, state management, development proxy).
+The team built it between June 2 and July 3, 2025; my feature line ran mountain locations → cached mountain forecast → map → curation posts (posts that record a route segment by segment) → authors shown on the map. Teammates built goods and payments, regular login, sign-up and My Page, the home feed, and sub-community creation and feeds; the repositories contain no deployment setup.
 
-Below are the decisions behind each feature, together with the limitations I confirmed when I re-read the code.
+## Demo
 
-## System overview
+**Curation post.** Markers placed on the map draw the route; each segment gets a point name, facilities, notes and a video; the detail page then shows the segment cards and the route map.
 
-The React (Tailwind CSS) web client calls a Spring Boot server. The server authenticates with Spring Security and JWT, keeps board data in MySQL through MyBatis, curation route segments in MongoDB and weather forecasts in Redis. Media goes to S3 and is served through CloudFront. External data comes from the KMA API Hub (mountain forecast), VWorld (hiking trails) and the Kakao Maps SDK.
-
-## Contribution 1 — Map and mountain forecast: taking external API calls off the request path
-
-<Callout kind="problem">
-
-Calling the KMA API every time a user picks a mountain would tie page latency to the external API and use up the call quota quickly. Forecasts change only a few times a day, so there was no need to fetch them at request time.
-
-</Callout>
-
-<Callout kind="solution">
-
-- The 153 KMA mountain forecast points are kept in a JSON file and loaded into memory at startup; mountain search runs against this list.
-- Forecasts are collected in bulk with WebClient and Reactor. Mountains are grouped in batches of 5, batches run one after another, and within a batch request starts are spaced 500 ms apart. Each mountain's result is stored in Redis with a 12-hour TTL.
-- The map page's forecast API reads only from Redis.
-- Trails come from VWorld trail data around the selected mountain and are drawn on the Kakao map, colored by difficulty.
-
-</Callout>
-
-<Figure
-  src="/img/projects/oreum/map-feature.webp"
-  width={1502}
-  height={845}
-  alt="Team deck slide 'Map-based hiking information: public data and user data', with a description of map UI, weather and public data on the left and the OREUM home feed on the right"
-  caption="Team presentation deck, slide 10 — the map feature, my area (the screen on the right is the first frame of the demo video, the home feed)"
+<Clip
+  src="/img/projects/oreum/demo-curation.mp4"
+  poster="/img/projects/oreum/demo-curation-poster.webp"
+  width={1280}
+  height={714}
+  label="Demo video of writing and reading a curation post (no sound)"
+  caption="Writing and reading a curation post · 45 s · no sound (Korean UI)"
 />
 
-<Callout kind="result">
+**Map.** A mountain search shows forecast cards by date and hour and the trails; a trail info popup opens, and an author's profile marker leads to a curation post.
 
-External API calls are no longer on the page request path.
-
-**Limitation — refresh trigger:** one full refresh makes 153 calls to the KMA API. The scheduled run was commented out from the first version (the method comment says to use it only when the API quota allows), and the full refresh on startup was enabled in a 2025-06-18 commit and commented out again in a commit the next day. So the final code has no path that fills the forecast cache.
-
-**Limitation — retry:** re-reading the code, the fetch method converts every error into an empty list, so the backoff retry (up to 2 attempts) placed after it never runs. As a result, a failed mountain gets an empty value cached for 12 hours. The fix is to move the error conversion after the retry, keep the previous value on failure, and set a response timeout per call.
-
-</Callout>
-
-## Contribution 2 — Curation posts: route segments in MongoDB, posts in MySQL
-
-<Callout kind="problem">
-
-A curation post records a hiking route as alternating points and path segments. Placing N markers on the map produces 2N−1 segments, and each segment carries coordinates, difficulty, cautions, a list of facilities and photos. The number of segments and coordinates varies per post, which did not fit the board table as is. The first version used a MySQL curation-detail table, which was removed when the segment structure was adopted.
-
-</Callout>
-
-<Callout kind="solution">
-
-- Post metadata (author, board, title, representative coordinate) goes to the MySQL `posts` table; segments are stored as MongoDB documents (GeoJSON coordinates, description, photo URLs), linked by `postId`.
-- Post detail and board listings attach the segments from MongoDB when the post type is curation. Curation search finds matching segments in MongoDB and then loads those posts from MySQL.
-- In the editor, each map click adds a marker and a line segment; the detail page redraws the route from the stored coordinates.
-- Searching a mountain on the map page shows the profiles of curation authors within 3 km of its center; clicking one opens the post.
-
-</Callout>
-
-<Figure
-  src="/img/projects/oreum/curation-write.webp"
-  width={1502}
-  height={845}
-  alt="Team deck slide 'Regular posts and curation posts', describing user-experience content and curation posts that link map, media and facility information, with the OREUM home feed on the right"
-  caption="Team presentation deck, slide 9 — regular and curation posts (curation posts are my area; the screen on the right is the first frame of the demo video)"
+<Clip
+  src="/img/projects/oreum/demo-map.mp4"
+  poster="/img/projects/oreum/demo-map-poster.webp"
+  width={1280}
+  height={714}
+  label="Demo video of the map and mountain forecast (no sound)"
+  caption="Map and mountain forecast · 24 s · no sound (Korean UI)"
 />
 
-<Callout kind="result">
+Both clips are feature segments cut from the demo videos in the [team presentation (Figma)](https://www.figma.com/deck/D1mxNRJgbZa3TRkuRSfGXU/Product-Review?node-id=1-1318) (July 2025), without sound. They show a local development server, and the nicknames on screen are generated by the service.
 
-Posts can now show a route on the map together with per-segment descriptions and photos.
+## Scope
 
-**Limitation — consistency across stores:** a post is written to MySQL, then S3, then MongoDB, with nothing tying the steps together. A failure in between can leave a post without segments or files that nothing references. The fix is to let one server request own the sequence and to create the post as a draft that is published only after the segments are saved.
+| Area | Me | Teammates |
+|---|---|---|
+| Repository skeleton and server config | Initial structure of both repositories (Spring Boot project; React routes, Redux, dev proxy), server configuration and build files | Part of the CORS allow list |
+| Map | Mountain search, mountain forecast collection and Redis cache, trail display, author profiles on the map — server and screen | — |
+| Curation posts | Editor (markers and route on the map, segment input), saving the post to MySQL and the segments to MongoDB, list and search, detail screen | Server-side joining of segments in the detail API |
+| Auth and media | Social login (Naver, Google) with JWT cookies, restoring the login state on reload, S3 upload with CloudFront URLs | Regular login, sign-up, ID and password recovery, My Page; profile image upload |
+| Community | Community search, my communities, stats cards | Creating sub-communities and custom feeds; the home feed; most of the regular post write and edit forms |
+| Goods and payments | — | Goods, cart, orders, payments (Iamport), reviews |
 
-**Limitation — radius query:** the 3 km lookup parses a string coordinate and computes the distance for every row, so it cannot use an index. Filtering by a coordinate range first, or using a spatial index, is the next step.
+The Flutter app lives in a separate repository and is not covered here.
 
-</Callout>
+## System architecture
 
-## Contribution 3 — Social login (OAuth2 + JWT) and S3 upload
+The architecture diagram is the [cover image above](#cover). Gold marks my part; the React web client calls a single Spring Boot app over REST, and the browser draws the map with the Kakao Maps SDK. The numbers ①–⑧ on the arrows match the numbers in the sections below.
 
-<Callout kind="solution">
+It differs from the diagram in the team presentation in three places. The login providers are Naver and Google, the browser calls VWorld for trails through the dev proxy (④), and the server fetches forecasts and writes them to Redis.
 
-- Naver and Google login run on Spring Security OAuth2 Client. Provider-specific user-info responses are adapted to one interface, and users are looked up by email or created (with a generated nickname).
-- On success the server issues JWTs as HttpOnly cookies; a filter validates the token from the header or cookie on each request. On reload, the frontend asks the server for the login state and restores the Redux state.
-- Photos and videos for posts and segments are uploaded to S3 under UUID-prefixed keys, and the CloudFront URL is returned.
-
-</Callout>
-
-<Callout kind="result">
-
-**Limitations:** the access-token lifetime on the social login path is set to about 20.8 days (the comment says 30 minutes), and the refresh token is issued but never used to renew. Authentication uses cookies with CSRF protection disabled. Uploads are not checked for type, and size is capped only by the global servlet multipart limit in configuration. The fix is a short-lived access token with a server-stored refresh token rotated on use, an explicit SameSite cookie attribute, and upload validation.
-
-</Callout>
-
-## Team work and schedule
-
-The board screens, sub-communities and feeds, goods, cart, orders and payment, and regular sign-up and login were built mainly by other team members. The sub-community screen below is also mainly their work.
+## Where the data lives
 
 <Figure
-  src="/img/projects/oreum/community.webp"
-  width={1502}
-  height={845}
-  alt="Team deck slide 'Creating sub-communities and customizing feeds', with the OREUM sub-community page on the right — hiking post cards and a photo of an autumn mountain, with a curation banner and joined communities in the left sidebar"
-  caption="Team presentation deck, slide 11 — sub-community and feed screens (mainly built by teammates), local development build"
+  src="/img/projects/oreum/data.en.svg"
+  width={1000}
+  height={740}
+  alt="Data placement diagram. On the left, the MySQL group with the users, boards, posts, post_media and comments tables and a folded group of teammates' tables; in the middle, the MongoDB curation segment document and the retired curation_details table; on the right, the Redis forecast key, the in-memory mountain list and S3. Below, the route segment model: three markers become five segments that alternate between points and paths."
+  caption="Where data lives, and the route-segment model — per the team's shared SQL notes and mappers"
 />
 
-The schedule ran from planning and role assignment (6/2–6/4) through design and development (6/4–6/25) and design unification and testing (6/25–6/30) to the final presentation (7/3).
+**A curation post is split across two stores.** Shared fields such as the title, board and representative coordinate live in the MySQL `posts` table. Segments (point name, notes, coordinates, media and so on) live in MongoDB documents, linked to the post by `postId` in application code, with no foreign key. The route and notes first lived in a MySQL detail table (`curation_details`). Between June 24 and 26, 2025 that content moved to MongoDB segment documents, and the code no longer uses the table.
 
-<Figure
-  src="/img/projects/oreum/process.webp"
-  width={1502}
-  height={809}
-  alt="Project timeline: 6/2–6/4 planning and role assignment, 6/4–6/25 design and feature development, 6/25–6/30 design unification and deployment, 7/1 presentation preparation, 7/3 final presentation"
-  caption="Project timeline (2025-06-02 to 07-03) — team presentation deck, slide 4"
-/>
+**A route is a sequence of alternating points and paths.** N markers become 2N−1 segments (odd = point, even = path). The last point segment holds the whole route as a GeoJSON `LineString` (`[lon, lat]`). MySQL `posts.searchGeo` stores the average of the route coordinates as a `"lat,lon"` string.
 
-## Limitations and next steps
+**Forecasts are fetched ahead of time into Redis, and the screen's API reads only Redis.** The key is `weather:{mountainNum}`, and it expires after 12 hours. On June 17 the weather source changed from the public data portal's short-term forecast (grid conversion) to the KMA API Hub mountain point forecast (153 points). The 153 mountain points are loaded from a JSON file into server memory.
 
-| Current state | Next |
-|---|---|
-| No tests beyond the generated defaults. The limitations above were found by re-reading the code, not by tests | Starting with core flows such as the forecast cache and curation saving, add tests that fail when the change is reverted |
-| The forecast refresh trigger is disabled and the retry never runs | Fix the order of retry and error handling, keep the previous value on failure, and make the TTL longer than the refresh interval |
-| Nothing ties the MySQL, S3 and MongoDB writes together | Draft-then-publish, plus a cleanup job for unreferenced files |
-| Long-lived access token on the social login path, no refresh path | Short-lived access token with a rotated, server-stored refresh token |
-| Keys were committed in a config file. Those keys were later revoked, and the repositories are private | Keep secrets in environment variables, commit only an example config, and add a secret scan before each commit |
-| Work was pushed straight to the default branch without feature branches or PR review | Use feature branches and PR review |
+**Authors on the map are found through the representative coordinate string.** The query splits `searchGeo` and keeps the authors of posts within 3 km by spherical distance in SQL. Every row is parsed and run through trigonometry, so no index can be used.
 
-The source is a team repository and is not public.
+## Two flows
+
+The numbers match the arrows in the [diagram above](#cover).
+
+### Mountain forecast
+
+- **① Collect.** `WeatherScheduler` sends the 153 points in batches of five, one batch after another (500 ms apart within a batch), and writes each result with `SET weather:N … EX 43200`. The June 17 version was a `for` loop with `Thread.sleep(800)`; the next day it became a Reactor pipeline.
+- **Trigger.** `@Scheduled` was commented out from the start. Running it at boot was enabled on June 18 and disabled on June 19. The committed final code has no automatic refresh path (see the limitations table).
+- **② Read.** `GET /weather/summit?mountainNum=` reads only Redis and groups the 09:00, 15:00 and 21:00 values by day. If there is no value, it returns 200 with `error`.
+- **③ Mountain search.** Looks up names in the in-memory list (up to 10 results).
+
+### Curation posts
+
+- **⑤ Save.** The screen first creates the `posts` row with `POST /posts/insert`, then sends `POST /mongo/curationSegments` (segment JSON and per-segment files) with the returned postId. The server uploads each segment's files to S3, fills in the CloudFront URLs and saves all segments at once (`saveAll`).
+- **⑥ Search.** A regex on MongoDB `description` yields a set of postIds, and MySQL then reads the posts with `board_id = ? AND post_id IN (…)`.
+- **Detail.** The screen loads the post and its segments (`GET /mongo/curationSegments/{postId}`) separately and combines them.
+- **⑦ Map.** Clicking an author's profile marker within 3 km opens that post.
+
+## Auth and media
+
+- **⑧ Social login.** Naver and Google login run on OAuth2 Client. The user is looked up or created by email (with a generated nickname), and access and refresh JWTs are set as HttpOnly cookies. On the final login screen, the button wired to this server flow is Naver's.
+- **Request auth.** On each request, `JWTFilter` validates the token from the header or the cookie. On reload, the screen restores the login state with `GET /api/user`.
+- **Upload.** Files go to S3 under `UUID_originalName` keys, and since June 19 the server returns CloudFront URLs.
+
+## Limitations (if I fixed them)
+
+| Limitation | Impact | If I fixed it |
+|---|---|---|
+| The only tests are the generated defaults | Nothing guards against regressions | Tests, starting with forecast collection and segment saving |
+| Forecast: the final code has no automatic refresh trigger. `onErrorResume` sits before `retryWhen`, so the retry never runs (a failed mountain keeps an empty array for 12 hours), and there is no response timeout | Forecasts can be empty or stale | A scheduled trigger, retry in the right order, a timeout, and an expiry that matches the refresh interval |
+| Curation writes: nothing ties the MySQL → S3 → MongoDB saves together (success is reported once MySQL succeeds), and postId and ownership are not checked. Segment documents have no `@Id` field, and there is no update or delete path | A failure midway leaves the post and its segments out of sync, and segments can be attached to someone else's post | Accept it in one request and let the server own the order, compensation and ownership check |
+| Reads: the radius query parses a string and runs trigonometry for every row (no index, no LIMIT). The curation search term becomes a regex without escaping | Slows down as posts grow, and a search term can inject a regex | A coordinate column with a range pre-filter or a spatial index; escape the search term |
+| Auth and config: the access token lasts about 20.8 days (the comment says 30 minutes), and the refresh token is only issued. Cookie authentication runs with CSRF protection disabled, and tokens are printed to standard output. Real keys were committed in config files while the repositories were public (made private in 2026-09; keys revoked and replaced afterwards) | Risk of token theft and key exposure | A short access token with refresh, CSRF protection, cleaned-up logs, secret scanning |
+
+---
+
+The source is in private team repositories. Basis: backend `ec805ca`, frontend `c663906` (2025-07-02).

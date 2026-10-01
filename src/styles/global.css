@@ -265,7 +265,8 @@ h3 {
   width: 100%;
   margin: 1.5rem 0;
   border-collapse: collapse;
-  table-layout: fixed;
+  /* 열 폭은 내용에 맞춘다(짧은 열은 좁게, 설명 열은 넓게) */
+  table-layout: auto;
   font-size: 0.92rem;
   line-height: 1.65;
 }
@@ -275,7 +276,18 @@ h3 {
   padding: 0.6rem 0.85rem;
   text-align: left;
   vertical-align: top;
-  overflow-wrap: anywhere;
+  /* 한글은 어절 단위로만 줄을 바꾸고, 낱말 중간은 넘칠 때만 끊는다 */
+  overflow-wrap: break-word;
+  word-break: keep-all;
+}
+/* 칸 안의 코드: 경로는 / 뒤에서만 줄을 바꾼다(rehype 단계가 <wbr>을 넣음). 짧은 토큰(해시·식별자)은 rehype가 .nw를 붙여 한 줄로.
+   그래도 칸보다 긴 토큰만 넘칠 때 끊는다(break-word는 열 최소 폭을 줄이지 않아 토큰 중간 끊김이 생기지 않는다) */
+.prose td code {
+  overflow-wrap: break-word;
+}
+.prose td code.nw,
+.prose td.nw {
+  white-space: nowrap;
 }
 .prose th {
   background: #f5f5f5;
@@ -283,16 +295,17 @@ h3 {
   color: var(--color-ink);
 }
 /* 좁은 화면: 표의 각 행을 "지금 상태 → 다음에 할 것" 카드로 쌓는다.
-   td의 data-label은 astro.config.mjs의 rehypeTableLabels가 열 머리글에서 채운다 */
+   td의 data-label은 astro.config.mjs의 rehypeTableLabels가 열 머리글에서 채운다.
+   짧은 표(3열 이하, 칸이 모두 짧음)는 rehype 단계가 .tbl-plain을 붙이고, 보통 표 모양을 그대로 둔다 */
 @media (max-width: 639px) {
-  .prose table,
-  .prose tbody,
-  .prose tr,
-  .prose td {
+  .prose table:not(.tbl-plain),
+  .prose table:not(.tbl-plain) tbody,
+  .prose table:not(.tbl-plain) tr,
+  .prose table:not(.tbl-plain) td {
     display: block;
     width: 100%;
   }
-  .prose thead {
+  .prose table:not(.tbl-plain) thead {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -300,21 +313,31 @@ h3 {
     clip: rect(0 0 0 0);
     white-space: nowrap;
   }
-  .prose tr {
+  .prose table:not(.tbl-plain) tr {
     margin: 0 0 0.75rem;
     border: 1px solid var(--color-line);
     border-radius: 12px;
     overflow: hidden;
   }
-  .prose td {
+  .prose table:not(.tbl-plain) td {
     border: none;
     padding: 0.7rem 0.9rem;
   }
-  .prose td + td {
+  .prose table:not(.tbl-plain) td + td {
     border-top: 1px dashed var(--color-line);
     background: #fafafa;
   }
-  .prose td[data-label]::before {
+  /* 각 카드의 첫 칸(행 이름)은 라벨 없이 카드 제목처럼 — 카드 하나에 줄 하나를 아낀다 */
+  .prose table:not(.tbl-plain) td:first-child {
+    font-weight: 700;
+    color: var(--color-ink);
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+  }
+  .prose table:not(.tbl-plain) td:first-child[data-label]::before {
+    content: none;
+  }
+  .prose table:not(.tbl-plain) td[data-label]::before {
     content: attr(data-label);
     display: block;
     margin-bottom: 0.2rem;

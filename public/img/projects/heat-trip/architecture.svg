@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 924" width="1000" height="924" role="img" aria-labelledby="t d">
+<title id="t">HeatTrip 시스템 구성</title>
+<desc id="d">Flutter 앱은 Spring 서버에 REST로 붙고, 장소 상세는 관광공사 API를 직접 부른다. Spring은 MySQL, S3·CloudFront, 관광공사 수집 API, Kakao Local을 쓰고, 추천은 Python 추천 서버를 거쳐 OpenAI에 묻는다. OAuth2 공급자 연동은 서버에만 있고 출시 앱은 이메일 로그인을 쓴다. 청록은 2026년 개인 추가 항목이다. 배포 띠는 2026-03-18 운영 확인 문서에 적힌 구성이고, 처음 구성한 시기는 확인되지 않았다.</desc>
+<style>
+.bg{fill:#f7f4ed}
+.card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+.core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+.mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+.part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+.band{fill:#9a6b12}
+.team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+.unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+.dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.chipr{fill:#f1ece1}
+.chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+.chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+.pill{fill:#f7f4ed}
+.title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.b{font:500 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+.s{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+.mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+.acc{fill:#9a6b12}
+.acc2{fill:#2f7d74}
+.ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+.lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+.ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+.lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+.lt{stroke:#2f7d74;stroke-width:2;fill:none}
+.ah{fill:#6b6457}
+.ahg{fill:#9a6b12}
+.aht{fill:#2f7d74}
+</style>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+<marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+<marker id="tq" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="aht"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1000" height="924" rx="18"/>
+<text class="title" x="40" y="48">HeatTrip 시스템 구성</text>
+<text class="s" x="40" y="72">기준: 백엔드 47d161f(2025 팀) · 034c3dc(2026) · 앱 스토어 빌드 5313bc7 · 서버는 2026-10 운영 종료</text>
+<!-- N1 Flutter app (core: mixed ownership, chips show owner) -->
+<rect class="core" x="30" y="96" width="440" height="132" rx="12"/>
+<text class="h" x="50" y="125">Flutter 앱</text>
+<text class="b" x="170" y="125">Android · 원스토어 1.0.0(3)</text>
+<rect class="chipm" x="50" y="142" width="196" height="30" rx="14"/>
+<text class="s" x="148" y="162" text-anchor="middle">For You v1·v2 · Explore</text>
+<rect class="chipm" x="254" y="142" width="196" height="30" rx="14"/>
+<text class="s" x="352" y="162" text-anchor="middle">인증 · 기록 · 미디어</text>
+<rect class="chipr" x="50" y="180" width="196" height="30" rx="14"/>
+<text class="s" x="148" y="200" text-anchor="middle">다이어리 일부(팀원 A·B)</text>
+<rect class="chipr" x="254" y="180" width="196" height="30" rx="14"/>
+<text class="s" x="352" y="200" text-anchor="middle">북마크 · 프로필(팀원 B)</text>
+<!-- N2 Spring Boot -->
+<rect class="core" x="30" y="272" width="440" height="314" rx="12"/>
+<text class="h" x="50" y="303">Spring Boot 3.5 · Java 21</text>
+<text class="b" x="50" y="327">단일 앱 · 패키지 = 기능</text>
+<rect class="chipm" x="50" y="346" width="97" height="30" rx="14"/>
+<text class="s" x="98.5" y="366" text-anchor="middle">tour·kakao</text>
+<rect class="chipm" x="155" y="346" width="74" height="30" rx="14"/>
+<text class="s" x="192" y="366" text-anchor="middle">explore</text>
+<rect class="chipm" x="237" y="346" width="80" height="30" rx="14"/>
+<text class="s" x="277" y="366" text-anchor="middle">curation</text>
+<rect class="chipm" x="50" y="388" width="86" height="30" rx="14"/>
+<text class="s" x="93" y="408" text-anchor="middle">S3 미디어</text>
+<rect class="chipm" x="144" y="388" width="99" height="30" rx="14"/>
+<text class="s" x="193.5" y="408" text-anchor="middle">OAuth·user</text>
+<rect class="chipr" x="50" y="430" width="113" height="30" rx="14"/>
+<text class="s" x="106.5" y="450" text-anchor="middle">schedules(A)</text>
+<rect class="chipr" x="171" y="430" width="116" height="30" rx="14"/>
+<text class="s" x="229" y="450" text-anchor="middle">bookmark(B)</text>
+<rect class="chipr" x="295" y="430" width="108" height="30" rx="14"/>
+<text class="s" x="349" y="450" text-anchor="middle">feedback(B)</text>
+<rect class="chipt" x="50" y="472" width="84" height="30" rx="14"/>
+<text class="s" x="92" y="492" text-anchor="middle">rate limit</text>
+<rect class="chipt" x="142" y="472" width="111" height="30" rx="14"/>
+<text class="s" x="197.5" y="492" text-anchor="middle">관측성</text>
+<rect class="chipt" x="261" y="472" width="134" height="30" rx="14"/>
+<text class="s" x="328" y="492" text-anchor="middle">추천 포트(Kotlin)</text>
+<text class="s" x="50" y="536">다이어리 v2 API는 본인</text>
+<text class="s" x="50" y="558">Dockerfile·compose 2025-09</text>
+<!-- N8 Tour API detail (called by the app) -->
+<rect class="card" x="640" y="96" width="330" height="60" rx="12"/>
+<text class="h" x="660" y="123">Tour API 상세</text>
+<text class="b" x="660" y="146">앱이 직접 호출(앱 서비스키)</text>
+<!-- N5 OpenAI -->
+<rect class="card" x="640" y="176" width="330" height="60" rx="12"/>
+<text class="h" x="660" y="203">OpenAI Chat Completions</text>
+<text class="b" x="660" y="226">JSON 모드</text>
+<!-- N4 Python recommendation server (mine) -->
+<rect class="mine" x="640" y="272" width="330" height="82" rx="12"/>
+<text class="h" x="660" y="299">Python 추천 서버</text>
+<text class="b" x="660" y="322">FastAPI · Pydantic</text>
+<text class="s" x="660" y="343">5분 캐시 · 비공개 레포</text>
+<!-- N6 S3 + CloudFront -->
+<rect class="card" x="640" y="372" width="330" height="60" rx="12"/>
+<text class="h" x="660" y="399">S3 + CloudFront</text>
+<text class="b" x="660" y="422">이미지 · 앱은 CloudFront URL로 표시</text>
+<!-- N7 Tour API area list -->
+<rect class="card" x="640" y="450" width="330" height="82" rx="12"/>
+<text class="h" x="660" y="477">Tour API 지역 목록</text>
+<text class="b" x="660" y="500">서버 수집</text>
+<text class="s" x="660" y="521">스케줄러 꺼짐(수동)</text>
+<!-- N9 Kakao Local -->
+<rect class="card" x="640" y="550" width="330" height="60" rx="12"/>
+<text class="h" x="660" y="577">Kakao Local</text>
+<text class="b" x="660" y="600">링크·좌표 보강(1회)</text>
+<!-- N10 OAuth2 providers (server only) -->
+<rect class="unk" x="640" y="628" width="330" height="92" rx="12"/>
+<text class="h" x="660" y="655">OAuth2 공급자</text>
+<text class="b" x="660" y="678">Google · Kakao · Naver · 서버 구현</text>
+<text class="s" x="660" y="699">출시 앱은 이메일 로그인</text>
+<!-- N3 MySQL -->
+<rect class="card" x="30" y="628" width="214" height="92" rx="12"/>
+<text class="h" x="46" y="655">MySQL 8.0 (Docker)</text>
+<text class="b" x="46" y="678">JPA + 네이티브 SQL(커서)</text>
+<rect class="chipt" x="46" y="686" width="182" height="26" rx="14"/>
+<text class="s" x="137" y="706" text-anchor="middle">FULLTEXT ngram · 2026</text>
+<!-- N11 Slack + Spring AI (2026) -->
+<rect class="y26" x="260" y="628" width="210" height="92" rx="12"/>
+<text class="h" x="276" y="655">Slack + Spring AI</text>
+<text class="b" x="276" y="678">에러 알림 · OpenAI 요약</text>
+<text class="s" x="276" y="699">2026-03 · 발송 기록 없음</text>
+<!-- edges -->
+<path class="ln" d="M90 228 V270" marker-end="url(#a)"/>
+<text class="s" x="102" y="255">REST · JWT 헤더</text>
+<path class="ln" d="M470 126 H638" marker-end="url(#a)"/>
+<text class="s" x="555.0" y="116" text-anchor="middle">HTTPS</text>
+<text class="s" x="555.0" y="146" text-anchor="middle">앱 서비스키</text>
+<path class="lg" d="M470 313 H638" marker-end="url(#g)"/>
+<text class="s" x="555.0" y="303" text-anchor="middle">POST /recommend</text>
+<text class="s" x="555.0" y="333" text-anchor="middle">180초 · 재시도 2</text>
+<path class="lg" d="M690 272 V238" marker-end="url(#g)"/>
+<text class="s" x="702" y="259">JSON 모드 · 검증 실패 시 재요청</text>
+<path class="lg" d="M470 402 H638" marker-end="url(#g)"/>
+<text class="s" x="555.0" y="392" text-anchor="middle">키 저장</text>
+<text class="s" x="555.0" y="422" text-anchor="middle">URL은 CDN+키</text>
+<path class="lg" d="M470 491 H638" marker-end="url(#g)"/>
+<text class="s" x="555.0" y="481" text-anchor="middle">지역별 수집</text>
+<text class="s" x="555.0" y="511" text-anchor="middle">→ places</text>
+<path class="lg" d="M470 540 H512 V580 H638" marker-end="url(#g)"/>
+<text class="s" x="576" y="570" text-anchor="middle">키워드 검색</text>
+<text class="s" x="576" y="600" text-anchor="middle">보강</text>
+<path class="ld" d="M470 562 H490 V674 H638" marker-end="url(#a)"/>
+<text class="s" x="564" y="664" text-anchor="middle">oauth2Login</text>
+<path class="ln" d="M80 586 V626" marker-end="url(#a)"/>
+<text class="s" x="92" y="612">JPA + 네이티브 SQL</text>
+<path class="lt" d="M440 586 V626" marker-end="url(#tq)"/>
+<text class="s" x="428" y="612" text-anchor="end">예외 → 중복 억제 → 알림</text>
+<!-- N12 deployment, N13 CI (2026) -->
+<rect class="card" x="30" y="740" width="580" height="80" rx="12"/>
+<text class="hs" x="50" y="765">배포 · 2026-03-18 운영 확인 문서 기준(시작 시기 미확인)</text>
+<text class="b" x="50" y="787">Cloudflare → cloudflared 터널 → Spring 컨테이너</text>
+<text class="s" x="50" y="808">추천 서버·MySQL은 같은 Docker 네트워크의 컨테이너 · 셀프 호스팅</text>
+<rect class="y26" x="630" y="740" width="340" height="80" rx="12"/>
+<text class="hs" x="650" y="765">GitHub Actions</text>
+<text class="b" x="650" y="787">gitleaks 비밀 스캔 · Qodana</text>
+<text class="s" x="650" y="808">빌드·테스트 단계 없음</text>
+<line x1="40" y1="838" x2="960" y2="838" stroke="#cdc4b2" stroke-width="1"/>
+<rect class="mine" x="40" y="849" width="22" height="14" rx="4"/>
+<text class="s" x="70" y="861">본인</text>
+<rect class="team" x="120" y="849" width="22" height="14" rx="4"/>
+<text class="s" x="150" y="861">팀원 A·B</text>
+<rect class="card" x="225" y="849" width="22" height="14" rx="4"/>
+<text class="s" x="255" y="861">외부·공용·미확인</text>
+<rect class="y26" x="383" y="849" width="22" height="14" rx="4"/>
+<text class="s" x="413" y="861">2026 개인 추가</text>
+<rect class="core" x="40" y="873" width="22" height="14" rx="4"/>
+<text class="s" x="70" y="885">팀 공동 코드(칩 색 = 담당)</text>
+<rect class="unk" x="261" y="873" width="22" height="14" rx="4"/>
+<text class="s" x="291" y="885">점선 테두리 = 서버에 구현, 출시 앱 미사용</text>
+<text class="s" x="40" y="909">그리지 않은 것: 앱이 직접 여는 관광공사 이미지 URL(키 없음) · 2025 시기의 배포 호스팅(문서로 확인되지 않음)</text>
+</svg>

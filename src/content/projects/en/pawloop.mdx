@@ -1,16 +1,29 @@
 ---
-# Source: _site-refresh/project-briefs.md §3 (only the sentences corrected after the chapter-14 review)
+# Source: _site-refresh/refresh4/specs/pawloop.md §2–§3 (spec), refresh4/facts/pawloop.md (fact sheet), shared layout refresh4/specs/00-portfolio-concept.md §2–§6
+#   Basis: GitHub main b0f89f6 (2026-09-26). No claim that is not in the spec or the fact sheet.
 # Not used: "112 integration test classes", "avoided deadlock by lock order", "another request can slip in
-#   between UPDATE and SELECT", "confirmed it fails when reverted", "17 of 20 failed", App Store, recovery time,
-#   "no incidents since", user counts / downloads / ratings
-# Links: source is private. The ONE store link is appended from src/data/profile.ts (links.apps).
+#   between UPDATE and SELECT", "confirmed it fails when reverted", "17 of 20 failed", App Store / iOS release,
+#   recovery time (38 min), "no incidents", user counts / downloads / ratings, "built from scratch",
+#   "WebSocket" (as a claim that chat uses it; mentioned only as a deferred alternative), "Cloudflare",
+#   "RDS" (as a claim that the production DB is RDS), "CI/CD" / automatic deploys, "zero-downtime",
+#   "monitored in production" (Prometheus/Grafana are not in production), why the location-business filing was not made
+#   (business registration / employment), "filing completed", "stores routes on the server" (present tense),
+#   "wrote the documents by hand", commit counts (stage table), module 22 / table 37 / 122 operations / 35 screens as metrics
+# Pending confirmation (spec §7 Q1): the UPLOAD_LOCATION value of the ONE store 2.0.0 build is not confirmed yet.
+#   Do not write "the ONE store build does not send coordinates"; only the code facts ("before" wording).
+# Starting point (HeatTrip v2, pivot 07-01, git blame ~5% server / ~3% app) is a one-line note right under the
+#   "From planning to operation" table. No causal sentence.
+# Figures: architecture.en.svg (1000×1046), erd.en.svg (1000×952) per spec §4 (table count corrected to 38, counted in V1–V3); chat-change-feed.webp (636×259) per spec §5.
+#   Review fixes (2026-10-01): the chat figure is cropped to the lower part of both screens with the changed bubble outlined in gold;
+#   panel titles moved to the caption (same file as ko). The first paragraph repeated the header summary and was removed. The gallery starts with Walk.
+# Links: source is private (no repo name or link). The ONE store link is appended from src/data/profile.ts (links.apps).
 kind: case
 title: Pawloop
-summary: A dog-walking and family-care app that brings together walk logs, a map of pet-friendly places, shared family care, schedules, a community and chat. A solo project — planning, Flutter app, Spring Boot server and AWS deployment — released on ONE store. The server enforces module boundaries with tests and pins behavior with tests that run on real MySQL.
-role: Solo — planning, Flutter app, Spring Boot server, AWS deployment
-period: 2026.06 – present · first production deploy 2026.09 · listed on ONE store
-tech: [Java 21, Spring Boot 3.5, Spring Modulith, JPA, MySQL 8, Testcontainers, Docker, Caddy, AWS EC2, Terraform, Flutter]
-highlight: Per-room chat sequence numbers issued atomically with the row lock + LAST_INSERT_ID(expr), pinned by a 20-thread concurrent-send test on real MySQL
+summary: An app that brings together dog-walk tracking, a map of pet-friendly places, shared family care and schedules, a neighborhood community with crews, and chat. Planning, the Flutter app, the Spring Boot server and the AWS infrastructure were done solo; it was released on ONE store in September 2026 and is in operation. It was written with an AI coding agent, and about 81% of commits carry a co-author trailer.
+role: Solo — planning, Flutter app, Spring Boot server, AWS infrastructure, ONE store release, operation
+period: 2026.06 – present · released on ONE store 2026.09
+tech: [Flutter, Java 21 · Spring Boot 3.5, MySQL 8 · Flyway, AWS EC2 · S3 · SES · Route 53, Terraform, Caddy, Spring Modulith, Docker Compose, FCM, Testcontainers, GitHub Actions]
+highlight: From planning documents and 23 decision records (ADRs) to the Flutter app, the Spring server, a Terraform-managed production setup, the ONE store release (09-18) and its update (09-21) — solo, in one repository
 order: 1
 cover: /img/projects/pawloop/cover.webp
 coverWidth: 1024
@@ -18,111 +31,166 @@ coverHeight: 576
 coverAlt: Pawloop ONE store feature graphic — map and home screens
 ogImage: /img/projects/pawloop/og.jpg
 metrics:
+  - value: "2.0.0"
+    label: Released on ONE store
+    note: binary 2026-09-18 · update 09-21
+  - value: "23"
+    label: Decision records (ADRs)
+    note: planning, legal, design, app, server; 18 compare alternatives
   - value: "1,994 · 0 failed"
     label: Full backend test run
-    note: GitHub main as of 2026-09-30, about 18 min
-  - value: "0 cycles"
-    label: Dependency cycles between modules
-    note: Spring Modulith check pinned by a test
-  - value: "620 → 107"
-    label: Module-boundary violations (ratchet)
-    note: test fails if they grow; the remaining 107 are disclosed
+    note: GitHub main on 2026-09-30, about 18 min
 links: []
 ---
-import Callout from '../../../components/Callout.astro';
+import Figure from '../../../components/Figure.astro';
 import Gallery from '../../../components/Gallery.astro';
 
-An app for logging dog walks, finding places you can go with your dog, and sharing care within the family. It is a solo project covering planning, the Flutter app, the Spring Boot server and AWS deployment. Below is **where data could drift on the server, how I blocked it, and what I used to check it**.
+## Screens
 
 <Gallery
-  caption="ONE store listing screenshots (Korean UI; map areas blurred)"
-  cols={4}
+  caption="ONE store listing screenshots (2.0.0, Korean UI)"
+  cols={3}
   images={[
-    { src: '/img/projects/pawloop/01-map.webp', alt: 'Map screen: pet-friendly places filtered by category (walking trails, vets, cafés & restaurants, destinations); the map itself is blurred', caption: 'Map', width: 720, height: 1560 },
-    { src: '/img/projects/pawloop/02-home.webp', alt: "Home screen: the dog's profile, today's walk count, distance and time, and today's care items", caption: 'Home', width: 720, height: 1560 },
-    { src: '/img/projects/pawloop/03-walk.webp', alt: 'Walk recording screen: route on the map with distance, time and pace, plus buttons to log poop, marking, water and photos; the map itself is blurred', caption: 'Walk', width: 720, height: 1560 },
-    { src: '/img/projects/pawloop/04-family.webp', alt: "My family screen: family members, today's care, walk notes and a shortcut to family chat", caption: 'Family care', width: 720, height: 1560 },
+    { src: '/img/projects/pawloop/03-walk.webp', alt: 'Walk recording screen: route on the map with distance, time and pace, plus buttons to log poop, marking, water and photos', caption: 'Walk', width: 900, height: 1950 },
+    { src: '/img/projects/pawloop/04-family.webp', alt: "My family screen: family members, today's care, walk notes and a shortcut to family chat", caption: 'Family care', width: 900, height: 1950 },
+    { src: '/img/projects/pawloop/05-community.webp', alt: 'Community screen: Stories and Crews tabs, a neighborhood filter, a post tagged with board and dog, helpful/cute/empathy reactions and save', caption: 'Community', width: 900, height: 1950 },
+    { src: '/img/projects/pawloop/01-map.webp', alt: 'Map screen: pet-friendly places filtered by category (walking trails, vets, cafés & restaurants, destinations)', caption: 'Map', width: 900, height: 1950 },
+    { src: '/img/projects/pawloop/02-home.webp', alt: "Home screen: the dog's profile, today's walk count, distance and time, and today's care items", caption: 'Home', width: 900, height: 1950 },
   ]}
 />
 
-## Contribution 1 — Per-room chat sequence: concurrent messages getting the same number
+## From planning to operation
 
-<Callout kind="problem">
+| Stage | When | What | In the repository |
+|---|---|---|---|
+| Planning | pivot 07-01, docs added to the repo 09-01 | Changed direction from an emotion-based travel app to a pet app; defined the family-care problem (double feeding, missed walks); reviewed the Location Information Act | `docs/00-product` (concept, personas, feature-family-care, legal-lbs-compliance), ADR-0001 |
+| Design | added to the repo 08-29 | Design system, information architecture, screen specs. The API contract is the source of truth, checked against code and tests (88 paths, 122 operations). 23 decision records | `docs/01-design`, `docs/04-api/openapi.yaml`, `docs/99-decisions` |
+| App | 06-29 – | 35 Flutter screens, a draft queue that resends walks that failed to save, one location-upload policy, adaptive chat polling, social sign-in deep links | `app/lib/v2` |
+| Server | 08-30 – 09-10 domain modules | Modular monolith (22 top-level modules), 38 Flyway tables, 5 after-commit events, early-morning cleanup jobs, server-side calls to external APIs | `backend/` |
+| Infrastructure | 09-16 – 09-17 | Terraform production environment (one EC2 instance, Elastic IP, Route 53, separate EBS, SES), production config in SSM, Caddy as the single entry point | `backend/infra/terraform/envs/prod` |
+| Release | 09-17 – 09-21 | Changed the Android `applicationId`, published the terms and privacy policy site, ONE store 2.0.0 binary (09-18) and update (09-21) | `store/` (store graphic sources), Caddy static site |
+| Operation | 09-16 – | Manual deploy procedure, one path for changing production config (a script), CI (tests, analyze, doc drift), fixing problems on the first production boot | `envs/prod/backend/README.md`, `backend/scripts/set-prod-env.sh`, `.github/workflows/ci.yml` |
 
-Each chat room numbers its messages 1, 2, 3… Reading the room and writing +1 lets two requests read the same value, so they hit the per-room sequence unique constraint.
+Starting point: the repository began with the code of the June 2026 [HeatTrip](/en/projects/heat-trip) app redesign (private; sign-in, media upload and so on) and turned into a pet app on 2026-07-01. Of today's code, about 5% of server lines and 3% of app lines still come from that starting code (`git blame` at commit `b0f89f6`).
 
-</Callout>
+The planning and design documents live in the same repository as the code; many came in through AI co-authored commits.
 
-<Callout kind="solution">
+## System architecture
 
-Reading with `SELECT … FOR UPDATE` and writing +1 also serializes the requests. But it has to read the row again, and it risks reading a stale value from the JPA first-level cache. So I bundled the increment and "get my number" with `LAST_INSERT_ID(expr)`.
+<Figure
+  src="/img/projects/pawloop/architecture.en.svg"
+  width={1000}
+  height={1046}
+  alt="The Flutter app connects to Caddy over HTTPS 443, and Caddy forwards to the Spring Boot app on the same EC2 instance. Spring Boot uses a MySQL container on the same instance (data on a separate EBS volume), S3, SES, FCM, social sign-in providers and public-data APIs. Production config is fetched from SSM at boot. CI does not deploy; deploys are manual over SSH."
+  caption="Production setup — as of GitHub main b0f89f6"
+/>
+
+1. The only door open to the whole internet is Caddy (443/80). SSH (22) is open only to an allowed IP range. The app container is published only on the host's 127.0.0.1:8080, and the DB is not exposed.
+2. The keys for the public-data APIs (Korea Tourism Organization, Durunubi, business licensing, KMA weather, AirKorea) and the AI API stay on the server. The app gets that data through the server.
+3. Coordinates can leave the device in one place only: `LocationUploadPolicy`. Whether they are sent is set by a compile-time constant, which is off by default.
+
+## Server and data
+
+<Figure
+  src="/img/projects/pawloop/erd.en.svg"
+  width={1000}
+  height={952}
+  alt="Pawloop data overview. It shows the main tables out of 38 (Flyway) and their relations. The chat group (chat_room, chat_room_member, chat_message) attaches to tables outside it only through references without FKs. Rooms point to family groups and crews through origin_kind and origin_ref, and members point to users through user_id. Unique constraints that make walk and chat-message resends idempotent are marked in gold."
+  caption="Data overview — main tables out of 38 (Flyway V1–V3)"
+/>
+
+- It is one Spring Boot app, and its 22 top-level packages are Spring Modulith modules. The groups are walks (dog, walk, walksafety), family and schedules (group, care, schedule), messaging (chat, chatweb, crew, community, moderation, moderationweb, push), places (place), accounts (user, OAuth, consent) and common (S3, security, config, error, observability).
+- The module-boundary check is a ratchet added later; the violation baseline went from 620 at first to 107 today (zero cycles between modules).
+- 21 FKs cross module boundaries, most of them pointing to users and dog. A test pins that list as a baseline. The chat module has no outside dependencies (`allowedDependencies = {}`), and no FK crosses its boundary. Rooms point to families and crews through `origin_kind/origin_ref`, and schedules (`owner_kind/owner_ref`) and media (`ref_type/ref_id`) also use reference pairs without FKs. Media that were uploaded but never attached to anything for a day are removed by a cleanup job at 04:10 every day.
+- Idempotency for mobile resends is enforced by DB constraints: `UNIQUE(dog_id, client_walk_id)` for walks and `UNIQUE(room_id, sender_user_id, client_msg_id)` for chat.
+
+### After-commit events (in-memory, publisher → subscriber)
+
+- `ChatMessagePosted`: chat → push (sends FCM)
+- `ScheduleAssigned`: schedule → push (notifies the assignee)
+- `UserSessionsRevoked`: user → push (cleans up device tokens)
+- `FamilyGroupCreated`: group → care (creates default care items)
+- `ReportFiled`: moderation → observability (Slack alert; production config unconfirmed)
+
+The Modulith event registry is not used (ADR-0012).
+
+## Design decisions
+
+These are four decisions that span planning, app, server and infrastructure. The first three are in the decision records (ADRs); the reasons for the front door are in the message of the commit that set it up.
+
+### Location: one place where coordinates can leave the device
+
+The location-based service business filing has not been made, so the nine places where coordinates could leave the device were gathered into one class, `LocationUploadPolicy`. Whether coordinates are sent is set by the compile-time constant `UPLOAD_LOCATION` (default false). The server's route storage was not removed.
+
+Nearby places are computed on the device from a downloaded nationwide catalog. On the server, `walk.path` (LINESTRING, SRID 4326) has no SPATIAL INDEX, because no query looks up walks by location.
+
+The cost: with the constant off, the screens for saving a course and browsing neighbors' courses are hidden.
+
+### Chat: generic rooms, HTTP send with polling, per-room sequence
+
+Rooms are not tied to a family; they attach through `origin_kind/origin_ref`, so families and crews share them. Sending is an HTTP POST and receiving is polling. The app sends `GET …/messages?afterSeq=` with `If-None-Match` and gets 304 when there is nothing new. The polling interval starts at 3 seconds, doubles on every empty response and caps at 30 seconds.
+
+WebSocket and Redis were deferred on the grounds of a single instance and the size of rooms. The criteria for revisiting that (empty-poll ratio, p95, connection wait) are written in the ADR.
+
+The cursor is the per-room `room_seq`, not `id`. The number is taken in one step with the room row's lock and a session value.
 
 ```sql
-UPDATE chat_room SET last_seq = LAST_INSERT_ID(last_seq + 1) WHERE id = ?;
-SELECT CAST(LAST_INSERT_ID() AS SIGNED);   -- same transaction, before the INSERT
+UPDATE chat_room SET last_seq = LAST_INSERT_ID(last_seq + 1) WHERE id = ?1
+-- in the same transaction, read the number with LAST_INSERT_ID(), then INSERT chat_message
 ```
 
-What serializes the requests is the UPDATE's row lock. `LAST_INSERT_ID(expr)` leaves the incremented value in my session, so I get my number without reading the row again.
+A test on real MySQL (Testcontainers) has 20 threads send to the same room at once and pins that sequence numbers 1–20 each come out once. The test uses the default connection pool of 10, so at most 10 transactions actually run at once.
 
-When a mobile client resends the same message, a unique constraint per room and sender — `(room_id, sender_user_id, client_msg_id)` — stops the duplicate. On a constraint violation, the server returns 200 only if a row with that key actually exists.
+Deleted messages and reactions do not arrive in the `room_seq` delta. So a separate per-room `change_seq` is issued. Re-issuing `room_seq` was rejected because old messages would drop to the bottom and unread counts would go up.
 
-</Callout>
+<Figure
+  src="/img/projects/pawloop/chat-change-feed.webp"
+  width={636}
+  height={259}
+  alt="The lower part of the same chat room, twice. On the left, a message another member sent at 00:20 is at the bottom. On the right, after that member deletes it, the same place shows a 'message deleted' tombstone. The changed bubble is outlined in gold."
+  caption="Left: the message as received · right: the same place after the sender deleted it — emulator, test accounts (Korean UI)"
+/>
 
-<Callout kind="result">
+When another member deletes a message, the next poll turns it into a tombstone in the same place.
 
-A test on real MySQL (Testcontainers) pins that when 20 threads send to the same room at once, sequence numbers 1–20 each come out exactly once. The default connection pool is 10, so at most 10 transactions actually run concurrently.
+The cost is receive latency (an interval of up to 30 seconds). The criteria for revisiting cannot be measured in production yet (limitation 3).
 
-Resend idempotency is pinned by three cases: same ID duplicated / same key from another member / no key.
+### Public-data quota: a grid cache and a daily budget
 
-</Callout>
+The Korea Tourism Organization API allows 1,000 calls a day. Within that, there is a snapshot cache per 0.02° grid cell (`place_cell`), and a daily call budget (`kto_call_budget`) counted with a conditional UPDATE on a single DB row.
 
-## Contribution 2 — First production deploy: a passing test was agreeing with a broken config
+The app holds no public-data keys. The server calls the Korea Tourism Organization, Durunubi, business licensing, KMA weather and AirKorea APIs on its behalf. The walk-safety index takes only a grid number and passes the result through without storing it.
 
-<Callout kind="problem">
+The catalog is warmed at 04:40 in the morning, and the licensing and Durunubi data are refreshed at 05:20 on the first of each month. The cost is that the server carries external API outages and call costs.
 
-On the first production boot on 2026-09-17, every container came up but ports 80 and 443 did not respond. Caddy had exited right after start on a config parse error (two path matchers listed on one `handle`).
+### The front door and a single server
 
-The test guarding the config checked strings in the Caddyfile, so it passed the broken config because "the string is there."
+Production is Docker Compose on one EC2 instance built with Terraform. The front door is Caddy 2.10 instead of nginx. Caddy handles automatic certificate issuance and renewal, `X-Real-IP` injection and the static terms site, and lets only health through under `/actuator/*`.
 
-</Callout>
+The DB is not RDS; it is a MySQL 8.0 container on the same EC2 instance. Only the data directory sits on a separate EBS volume (`prevent_destroy`). Production config (.env, deploy key) lives in SSM Parameter Store and is fetched at boot. There is one way to change it: a script.
 
-<Callout kind="solution">
+There is one RDB, and Redis was deferred. The four things that would have to move once there are two instances (the one-time authorization code store, rate-limit counters and others) are listed in the ADR. The cost is a single point of failure, a short outage during deploys and no backup procedure; these are in the limitations table below.
 
-I replaced it with a test that starts the same Caddy image as production via Testcontainers and actually runs `caddy validate`.
+## Before release and on the first production boot
 
-Mount paths and health checks were reinforced with static checks that read the compose files, and the docs site is checked by actually rendering it.
+| Date | What happened | What changed |
+|---|---|---|
+| 09-16 | On staging, after `terraform apply`, five problems left the EC2 instance unable to do anything at boot | Fixed the boot script |
+| 09-17 | The first boot failed on a missing or outdated buildx and on assets missing from the image. Local CI reported "all passed" from cached results (0 tests actually ran) | Check the buildx version, not just whether it exists. Run tests fresh every time with `cleanTest --no-build-cache` and count the result XML files |
+| 09-17 | Caddy did not start. On the first production boot, a Caddyfile syntax error (two path matchers on one `handle`) made it exit right away, so 80/443 did not respond, while the test that checked strings in the Caddyfile was passing. The mount point for nested bind mounts was also missing | Replaced that test with one that actually runs `caddy validate` in the same Caddy image as production; created the mount point and added a static check of the compose files |
 
-</Callout>
+The ONE store 2.0.0 binary went up on 09-18 and an update on 09-21.
 
-<Callout kind="result">
+## Limitations and next steps
 
-That same week I learned that even an execution test gives a false green if it runs differently from production (by copying files in), so I changed the bar from "does it execute" to "does it run under the same conditions as production."
+| Limitation | Impact | Next step |
+|---|---|---|
+| One server, no load test | An instance failure means an outage, and the throughput limit is unknown. The push send queue is in memory (2–4 threads, queue of 1,000, drops when full) | Before adding instances, move the four items listed in the ADR |
+| Manual deploys (SSH → `git pull` → `docker compose up -d --build`) | There is a short break while containers are recreated. The entry point is `sh -c`, so SIGTERM may not reach the JVM | Automate image builds and deploys; exec-form entry point |
+| Production observability is actuator health only | Custom metrics (`chat.seq.assign` and others) are recorded but there is no collector, so the chat-polling revisit criteria (empty-poll ratio, p95) cannot be measured in production | Add a metrics collector |
+| Chat read-marking locks in the opposite order to sending | When the two overlap, a deadlock reproduces (currently a 500 response) | Unify the lock order |
+| No DB backup procedure | MySQL is a container on the same EC2 instance, with only the data volume split onto EBS (`prevent_destroy`). The production Terraform and production README have no backup or restore procedure | EBS snapshot schedule and a restore rehearsal |
 
-</Callout>
+---
 
-## Contribution 3 — Module boundaries and test structure
-
-A modular monolith on Spring Modulith (22 top-level modules). The Modulith checks run in tests; only the annotation API is a runtime dependency.
-
-- **Boundary-violation ratchet** — I introduced boundary checks after the fact, cut violations from **620 to 107**, and locked them with a ratchet so the test fails if they grow.
-- **Cycles and cross-module references** — zero dependency cycles between modules (`ModuleCycleTest`). Foreign keys and joins that cross modules are held at a baseline by tests so they cannot grow.
-- **Full test run** — 1,994 backend tests, 0 failures (2026-09-30, GitHub main, about 18 minutes).
-- **Production setup** — production is a single EC2 instance provisioned with Terraform, with Caddy as the only entry point handling TLS. Prometheus and Grafana exist only in staging and locally.
-- **Decision records** — 23 (18 of them compare alternatives).
-
-## Limitations & next steps
-
-| Current state | Next |
-|---|---|
-| Early after launch, one server, no load test yet. The chat sequence timer (`chat.seq.assign`) is already recorded, but histograms are off, so p99 can't be computed | Turn on histograms and measure response time (p99) and sequence-lock waits under real traffic. No cache or message queue until a need is measured |
-| Deploys recreate containers, causing a short outage. The container start command is `sh -c` without exec, so the stop signal (SIGTERM) may not reach the JVM. In an experiment with the same base image PID 1 was the shell; not yet checked with the actual app image | Measure and fix the signal path first (exec form). Then tune the stop grace period, move to blue/green deploys and measure the error rate during a deploy |
-| On logout and account deletion, device push-token cleanup runs on an async queue after commit. It can be lost if the queue is full or the process stops for a deploy | Move cleanup that must not be lost into the transaction, and pin it with a test that injects queue saturation |
-| The chat read-marking path locks in the opposite order to the documented lock order, so it can deadlock when it coincides with a send in the same room (reproduced in code review; a reproduction test is still to be written). It currently responds with 500 | Reproduction test → unify the lock order → confirm the 20-thread test stays green → update the lock-order comments |
-| Production has no metrics collector (Prometheus/Grafana are staging and local only) | Add production collection and build a chat-metrics panel |
-| 107 module-boundary violations remain | Keep reducing them with the ratchet |
-
-## AI use disclosure
-
-Of 550 commits, 445 (about 81%) were written with an AI coding agent and are marked with a commit trailer (`Co-Authored-By`). That is why I look at what a test actually verifies before trusting a "tests passed" report. The first-deploy incident above is what set that bar.
-
-The source is private. I'm happy to give a demo and a code walkthrough on request.
+The source is private; a demo or code walkthrough is available on request. Basis: GitHub main `b0f89f6` (2026-09-26).

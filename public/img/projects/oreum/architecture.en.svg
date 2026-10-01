@@ -1,0 +1,190 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 860" width="1000" height="860" role="img" aria-labelledby="t d">
+<title id="t">OREUM system architecture</title>
+<desc id="d">The React web client calls the Spring Boot server over REST and uses the Kakao Maps SDK and VWorld trails (through the CRA dev proxy) directly from the browser. The server fetches KMA API Hub mountain forecasts into Redis, keeps 153 mountain points in memory, posts in MySQL, route segments in MongoDB, media in S3 with CloudFront, and handles Naver/Google OAuth login. Gold marks my part, grey marks teammates, white marks external services and shared storage. Numbers refer to the flows listed below.</desc>
+<style>
+.bg{fill:#f7f4ed}
+.card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+.core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+.mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+.part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+.band{fill:#9a6b12}
+.team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+.unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+.dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.chipr{fill:#f1ece1}
+.chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+.chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+.pill{fill:#f7f4ed}
+.title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.b{font:500 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+.s{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+.mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+.acc{fill:#9a6b12}
+.acc2{fill:#2f7d74}
+.ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+.lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+.ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+.lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+.lt{stroke:#2f7d74;stroke-width:2;fill:none}
+.ah{fill:#6b6457}
+.ahg{fill:#9a6b12}
+.aht{fill:#2f7d74}
+</style>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+<marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1000" height="860" rx="18"/>
+<text class="title" x="40" y="48">OREUM system architecture</text>
+<text class="s" x="40" y="72">Basis: backend ec805ca · frontend c663906 (2025-07-02) · demo ran locally, no deployment setup</text>
+<rect class="part" x="335" y="96" width="340" height="120" rx="12"/>
+<path class="band" d="M347,97 H344 V215 H347 A11 11 0 0 1 336 204 V108 A11 11 0 0 1 347 97 z"/>
+<text class="h" x="363" y="125">Web — React 18 (CRA)</text>
+<text class="b" x="363" y="146">Redux Toolkit · React Router 7</text>
+<text class="s" x="363" y="166">Mine: skeleton, map, curation screens</text>
+<text class="s" x="363" y="186">Teammates: goods, basic login, home feed</text>
+<rect class="mine" x="30" y="96" width="215" height="84" rx="12"/>
+<text class="h" x="47" y="125">CRA dev proxy</text>
+<text class="b" x="47" y="146">/vworld · npm start</text>
+<text class="s" x="47" y="166">dev server only</text>
+<rect class="card" x="30" y="200" width="215" height="84" rx="12"/>
+<text class="h" x="47" y="229">VWorld trails</text>
+<text class="mono" x="47" y="249">LT_L_FRSTCLIMB</text>
+<text class="s" x="47" y="269">GeoJSON</text>
+<rect class="card" x="765" y="96" width="205" height="84" rx="12"/>
+<text class="h" x="782" y="125">Kakao Maps</text>
+<text class="b" x="782" y="146">JS SDK (browser)</text>
+<text class="s" x="782" y="166">map, markers, polylines</text>
+<rect class="team" x="765" y="192" width="205" height="62" rx="12"/>
+<text class="h" x="782" y="221">Iamport</text>
+<text class="s" x="782" y="241">payments · teammates</text>
+<rect class="core" x="335" y="300" width="340" height="344" rx="14"/>
+<text class="h" x="355" y="330">Spring Boot 3.5 · Java 17</text>
+<text class="b" x="355" y="352">one app · MyBatis · WebClient</text>
+<rect class="chipm" x="355" y="366" width="300" height="30" rx="14"/>
+<text class="s" x="369" y="386.04">map: search, forecast, radius</text>
+<rect class="chipm" x="355" y="402" width="300" height="30" rx="14"/>
+<text class="s" x="369" y="422.04">posts: curation (MongoDB)</text>
+<rect class="chipm" x="355" y="438" width="300" height="30" rx="14"/>
+<text class="s" x="369" y="458.04">auth: OAuth2 · JWT</text>
+<rect class="chipm" x="355" y="474" width="300" height="30" rx="14"/>
+<text class="s" x="369" y="494.04">external: S3 · old KMA code (off)</text>
+<rect class="chipr" x="355" y="510" width="300" height="30" rx="14"/>
+<path class="band" d="M369,510 H363 V540 H369 A14 14 0 0 1 355 526 V524 A14 14 0 0 1 369 510 z"/>
+<text class="s" x="375" y="530.04">community: search, my communities</text>
+<rect class="chipr" x="355" y="546" width="300" height="30" rx="14"/>
+<text class="s" x="369" y="566.04">goods · basic login (teammates)</text>
+<text class="s" x="355" y="600">Filters: CORS → oauth2Login</text>
+<text class="s" x="355" y="620">→ LoginFilter (team) → JWTFilter</text>
+<rect class="card" x="30" y="304" width="215" height="64" rx="12"/>
+<text class="h" x="47" y="333">KMA API Hub</text>
+<text class="s" x="47" y="353">mountain point forecast</text>
+<rect class="card" x="30" y="388" width="215" height="84" rx="12"/>
+<text class="h" x="47" y="417">S3 + CloudFront</text>
+<text class="b" x="47" y="438">UUID keys</text>
+<text class="s" x="47" y="458">→ CloudFront URLs</text>
+<rect class="card" x="30" y="492" width="215" height="64" rx="12"/>
+<text class="h" x="47" y="521">OAuth</text>
+<text class="b" x="47" y="542">Naver · Google</text>
+<rect class="card" x="30" y="576" width="215" height="62" rx="12"/>
+<text class="h" x="47" y="605">Flutter app</text>
+<text class="s" x="47" y="625">separate repo</text>
+<rect class="card" x="765" y="300" width="205" height="84" rx="12"/>
+<text class="h" x="782" y="329">MySQL</text>
+<text class="b" x="782" y="350">12 MyBatis mappers</text>
+<text class="s" x="782" y="370">posts, users, boards …</text>
+<rect class="mine" x="765" y="400" width="205" height="64" rx="12"/>
+<text class="h" x="782" y="429">MongoDB</text>
+<text class="b" x="782" y="450">curation segments</text>
+<rect class="mine" x="765" y="480" width="205" height="64" rx="12"/>
+<text class="h" x="782" y="509">Redis</text>
+<text class="b" x="782" y="530">weather:{n} · 12 h</text>
+<rect class="mine" x="765" y="560" width="205" height="84" rx="12"/>
+<text class="h" x="782" y="589">Server memory</text>
+<text class="b" x="782" y="610">153 mountain points</text>
+<text class="s" x="782" y="630">mountains.json</text>
+<path class="lg" d="M335,126 H245" marker-end="url(#g)"/>
+<circle class="mine" cx="290.0" cy="110" r="11"/>
+<text x="290.0" y="115.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">4</text>
+<path class="lg" d="M140,180 V200" marker-end="url(#g)"/>
+<path class="ln" d="M675,126 H765" marker-end="url(#a)"/>
+<path class="ln" d="M675,206 H765" marker-end="url(#a)"/>
+<path class="ln" d="M870,254 V276 H650 V300" marker-end="url(#a)"/>
+<rect class="pill" x="680.4" y="264.0" width="171.1" height="24.0" rx="6"/>
+<text class="s" x="766.0" y="279.9" text-anchor="middle">payment check (team)</text>
+<path class="ln" d="M430,216 V300" marker-end="url(#a)"/>
+<rect class="pill" x="436.0" y="246.0" width="155.5" height="24.0" rx="6"/>
+<text class="s" x="442" y="261.9" text-anchor="start">REST · with cookies</text>
+<path class="lg" d="M335,336.0 H245" marker-end="url(#g)"/>
+<circle class="mine" cx="290.0" cy="319.0" r="11"/>
+<text x="290.0" y="324.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">1</text>
+<path class="lg" d="M335,430.0 H245" marker-end="url(#g)"/>
+<circle class="mine" cx="290.0" cy="413.0" r="11"/>
+<text x="290.0" y="418.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">5</text>
+<path class="lg" d="M335,524.0 H245" marker-end="url(#g)"/>
+<circle class="mine" cx="290.0" cy="507.0" r="11"/>
+<text x="290.0" y="512.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">8</text>
+<path class="ln" d="M245,607.0 H335" marker-end="url(#a)"/>
+<text class="s" x="290.0" y="580.0" text-anchor="middle">mountain</text>
+<text class="s" x="290.0" y="598.0" text-anchor="middle">search etc.</text>
+<path class="lg" d="M675,342.0 H765" marker-end="url(#g)"/>
+<circle class="mine" cx="695.0" cy="325.0" r="11"/>
+<text x="695.0" y="330.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">5</text>
+<circle class="mine" cx="720.0" cy="325.0" r="11"/>
+<text x="720.0" y="330.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">6</text>
+<circle class="mine" cx="745.0" cy="325.0" r="11"/>
+<text x="745.0" y="330.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">7</text>
+<path class="lg" d="M675,432.0 H765" marker-end="url(#g)"/>
+<circle class="mine" cx="707.5" cy="415.0" r="11"/>
+<text x="707.5" y="420.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">5</text>
+<circle class="mine" cx="732.5" cy="415.0" r="11"/>
+<text x="732.5" y="420.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">6</text>
+<path class="lg" d="M675,512.0 H765" marker-end="url(#g)" marker-start="url(#g)"/>
+<circle class="mine" cx="707.5" cy="495.0" r="11"/>
+<text x="707.5" y="500.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">1</text>
+<circle class="mine" cx="732.5" cy="495.0" r="11"/>
+<text x="732.5" y="500.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">2</text>
+<path class="lg" d="M675,602.0 H765" marker-end="url(#g)"/>
+<circle class="mine" cx="720.0" cy="585.0" r="11"/>
+<text x="720.0" y="590.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">3</text>
+<rect class="mine" x="40" y="664" width="22" height="14" rx="3"/>
+<path class="lg" d="M68,671 H90" marker-end="url(#g)"/>
+<text class="s" x="98" y="676">my part</text>
+<rect class="part" x="171.12" y="664" width="22" height="14" rx="3"/>
+<rect class="band" x="171.12" y="664" width="5" height="14" rx="1"/>
+<text class="s" x="199.12" y="676">partly mine</text>
+<rect class="team" x="298.24" y="664" width="22" height="14" rx="3"/>
+<text class="s" x="326.24" y="676">teammates</text>
+<rect class="card" x="424.32" y="664" width="22" height="14" rx="3"/>
+<text class="s" x="452.32" y="676">external / shared</text>
+<line x1="40" y1="690" x2="960" y2="690" stroke="#cdc4b2" stroke-width="1"/>
+<circle class="mine" cx="51" cy="709" r="11"/>
+<text x="51" y="714.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">1</text>
+<text class="s" x="70" y="714">forecast batch: 153 points, 5 at a time, 500 ms apart → Redis 12 h</text>
+<circle class="mine" cx="557" cy="709" r="11"/>
+<text x="557" y="714.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">2</text>
+<text class="s" x="576" y="714">forecast read: the map API reads Redis only</text>
+<circle class="mine" cx="51" cy="733" r="11"/>
+<text x="51" y="738.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">3</text>
+<text class="s" x="70" y="738">mountain search: in-memory list</text>
+<circle class="mine" cx="557" cy="733" r="11"/>
+<text x="557" y="738.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">4</text>
+<text class="s" x="576" y="738">trails: the browser calls VWorld through the dev proxy</text>
+<circle class="mine" cx="51" cy="757" r="11"/>
+<text x="51" y="762.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">5</text>
+<text class="s" x="70" y="762">save curation: posts → S3 per segment → MongoDB</text>
+<circle class="mine" cx="557" cy="757" r="11"/>
+<text x="557" y="762.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">6</text>
+<text class="s" x="576" y="762">search curation: MongoDB regex → postIds → MySQL IN</text>
+<circle class="mine" cx="51" cy="781" r="11"/>
+<text x="51" y="786.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">7</text>
+<text class="s" x="70" y="786">authors within 3 km: searchGeo + SQL spherical distance</text>
+<circle class="mine" cx="557" cy="781" r="11"/>
+<text x="557" y="786.0" text-anchor="middle" style="font:700 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">8</text>
+<text class="s" x="576" y="786">social login: Naver/Google → JWT HttpOnly cookie</text>
+<text class="s" x="40" y="812">Differs from the diagram in the team deck: login is Naver/Google, the browser calls VWorld, and the server</text>
+<text class="s" x="40" y="834">fetches forecasts into Redis · no deployment boundary drawn (no evidence for one)</text>
+</svg>

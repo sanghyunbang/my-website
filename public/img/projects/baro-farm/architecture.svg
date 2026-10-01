@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t d">
+  <title id="t">BARO FARM 시스템 구성 — 맡은 경계</title>
+  <desc id="d">브라우저 요청이 API Gateway의 인증·인가 필터를 지나 OPA에 질의한 뒤 서비스로 라우팅됩니다. auth-service가 상태 변경을 Kafka의 hotlist 토픽으로 내보내면 opa-bundle이 번들을 다시 만들고, OPA는 폴링으로 그 번들을 가져갑니다. 같은 토픽을 seller-service가 소비해 판매자 상태를 맞춥니다. 금색은 맡은 부분이고, 팀원이 맡은 서비스와 플랫폼은 회색입니다.</desc>
+  <style>
+    .bg{fill:#f7f4ed}
+    .card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+    .core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+    .mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+    .part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+    .band{fill:#9a6b12}
+    .team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+    .unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+    .y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+    .dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+    .chipr{fill:#f1ece1}
+    .chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+    .chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+    .pill{fill:#f7f4ed}
+    .title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .b{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+    .s{font:500 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+    .mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+    .acc{fill:#9a6b12}
+    .acc2{fill:#2f7d74}
+    .ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+    .lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+    .ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+    .lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+    .lt{stroke:#2f7d74;stroke-width:2;fill:none}
+    .ah{fill:#6b6457}
+    .ahg{fill:#9a6b12}
+    .aht{fill:#2f7d74}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+    <marker id="t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="aht"/></marker>
+    <clipPath id="c0"><rect x="234" y="302" width="250" height="110" rx="12"/></clipPath>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1200" height="675" rx="18"/>
+  <text class="title" x="40" y="48">BARO FARM 시스템 구성 — 맡은 경계</text>
+  <text class="s" x="40" y="72">기준: 최종 발표 커밋 78eaa987 (2026-01-27) · 정책은 01-26부터 기본 허용(본문 '현재 상태')</text>
+  <rect class="mine" x="870.2" y="31.3" width="22" height="12" rx="3" style="stroke-width:1.5"/>
+  <text class="s" x="898.2" y="42">본인 담당</text>
+  <rect class="part" x="972.8" y="31.3" width="22" height="12" rx="3" style="stroke-width:1.5"/>
+  <rect class="band" x="972.8" y="31.3" width="5" height="12" rx="1.5"/>
+  <text class="s" x="1000.8" y="42">일부 본인</text>
+  <rect class="team" x="1075.4" y="31.3" width="22" height="12" rx="3"/>
+  <text class="s" x="1103.4" y="42">팀원 담당</text>
+  <rect class="card" x="918.6" y="53.3" width="22" height="12" rx="3"/>
+  <text class="s" x="946.6" y="64">외부·공용</text>
+  <path class="lgd" d="M1019.9 59.3 H1041.9" style="stroke-dasharray:4 3"/>
+  <text class="s" x="1047.9" y="64">점선 = 폴링·비동기</text>
+  <rect class="card" x="30" y="96" width="190" height="76" rx="12"/>
+  <text class="h" x="50" y="124">브라우저</text>
+  <text class="b" x="50" y="146">웹 프론트</text>
+  <text class="s" x="50" y="164">Next.js</text>
+  <rect class="card" x="30" y="184" width="190" height="56" rx="12"/>
+  <text class="h" x="50" y="208">Redis</text>
+  <text class="s" x="50" y="228">요청 수 제한 저장소</text>
+  <rect class="mine" x="365" y="96" width="420" height="144" rx="12"/>
+  <text class="h" x="385" y="126">API Gateway</text>
+  <text class="b" x="512" y="126">Spring Cloud Gateway / WebFlux</text>
+  <text class="s" x="385" y="148">모든 외부 요청의 입구</text>
+  <rect class="chipm" x="385" y="160" width="380" height="30" rx="14"/>
+  <text class="s" x="396" y="179.7">기본 필터: RateLimiter(Redis) · Retry · CircuitBreaker</text>
+  <rect class="chipm" x="385" y="198" width="380" height="30" rx="14"/>
+  <text class="s" x="396" y="217.7">라우트 필터: Authentication → OpaAuthorization</text>
+  <path class="lg" d="M220 134 H365" marker-end="url(#g)"/>
+  <rect class="pill" x="227.0" y="108.5" width="130.0" height="21" rx="10"/>
+  <text class="s" x="292.0" y="123.7" text-anchor="middle">① 쿠키 또는 Bearer</text>
+  <path class="lg" d="M365 212 H220" marker-end="url(#g)"/>
+  <rect class="pill" x="224.3" y="186.5" width="135.4" height="21" rx="10"/>
+  <text class="s" x="292.0" y="201.7" text-anchor="middle">② 요청 수 제한 50/s</text>
+  <rect class="lgd" x="927" y="84" width="247" height="328" rx="16"/>
+  <text class="s acc" x="943" y="104">인가 결정</text>
+  <rect class="mine" x="937" y="114" width="223" height="116" rx="12"/>
+  <text class="h" x="955" y="142">OPA 서버(PDP)</text>
+  <text class="b" x="955" y="164">gateway_authz.rego</text>
+  <text class="b" x="955" y="184">규칙 22파일</text>
+  <text class="s" x="955" y="206">배포 매니페스트는 팀원</text>
+  <path class="lg" d="M785 150 H937" marker-end="url(#g)"/>
+  <rect class="pill" x="790.2" y="124.5" width="125.5" height="21" rx="10"/>
+  <text class="s" x="853.0" y="139.7" text-anchor="middle">③ allow 질의 · 2초</text>
+  <path class="lgd" d="M1047 230 V290" marker-end="url(#g)"/>
+  <rect class="pill" x="976.5" y="249.5" width="141.0" height="21" rx="10"/>
+  <text class="s" x="1047.0" y="264.7" text-anchor="middle">⑦ 번들 폴링 10–60초</text>
+  <rect class="mine" x="937" y="290" width="223" height="108" rx="12"/>
+  <text class="h" x="955" y="318">opa-bundle</text>
+  <text class="b" x="955" y="340">Spring Boot</text>
+  <text class="s" x="955" y="360">메모리 hotlist</text>
+  <text class="s" x="955" y="379">bundle.tar.gz 생성</text>
+  <path class="ln" d="M575 240 V262 M212 262 H673"/>
+  <path class="ln" d="M212 262 V302" marker-end="url(#a)"/>
+  <path class="ln" d="M359 262 V302" marker-end="url(#a)"/>
+  <path class="ln" d="M673 262 V302" marker-end="url(#a)"/>
+  <rect class="pill" x="410.2" y="251.5" width="119.6" height="21" rx="10"/>
+  <text class="s" x="470.0" y="266.7" text-anchor="middle">④ lb:// · X-User-*</text>
+  <rect class="dash" x="18" y="274" width="214" height="150" rx="16"/>
+  <text class="s" x="34" y="294">Spring Security(여기에만)</text>
+  <rect class="mine" x="30" y="302" width="190" height="110" rx="12"/>
+  <text class="h" x="48" y="328">auth-service</text>
+  <text class="b" x="48" y="349">회원·인증 · 토큰 발급</text>
+  <text class="s" x="48" y="367">OAuth(카카오·네이버)</text>
+  <text class="s" x="48" y="384">탈퇴 outbox</text>
+  <text class="s" x="48" y="401">hotlist 이벤트 발행</text>
+  <rect class="part" x="234" y="302" width="250" height="110" rx="12"/>
+  <rect class="band" x="234" y="302" width="8" height="110" clip-path="url(#c0)"/>
+  <text class="h" x="256" y="328">seller-service</text>
+  <text class="b" x="256" y="349">seller(본인) · farm(팀원)</text>
+  <text class="s" x="256" y="367">판매자 신청 · 사업자번호 검증</text>
+  <text class="s" x="256" y="384">seller_status 동기화</text>
+  <rect class="team" x="498" y="302" width="350" height="110" rx="12"/>
+  <text class="h" x="518" y="328">팀원 서비스</text>
+  <text class="s" x="518" y="349">buyer · order · payment · support · settlement · ai</text>
+  <text class="s" x="518" y="367">주문·결제 SAGA · 재고 · 정산 · 배송·알림 · 검색·추천</text>
+  <path class="lgd" d="M80 412 V476" marker-end="url(#g)"/>
+  <rect class="pill" x="24.2" y="429.5" width="111.5" height="21" rx="10"/>
+  <text class="s" x="80.0" y="444.7" text-anchor="middle">⑤ hotlist 이벤트</text>
+  <path class="lgd" d="M180 412 V476" marker-end="url(#g)"/>
+  <rect class="pill" x="102.8" y="451.5" width="154.4" height="21" rx="10"/>
+  <text class="s" x="180.0" y="466.7" text-anchor="middle">⑨ outbox · 소비자 없음</text>
+  <path class="lgd" d="M359 476 V412" marker-end="url(#g)"/>
+  <rect class="pill" x="284.6" y="429.5" width="148.8" height="21" rx="10"/>
+  <text class="s" x="359.0" y="444.7" text-anchor="middle">⑧ seller_status 동기화</text>
+  <path class="ld" d="M673 412 V476" marker-end="url(#a)" marker-start="url(#a)"/>
+  <path class="lgd" d="M840 476 V452 H1047 V398" marker-end="url(#g)"/>
+  <rect class="pill" x="881.0" y="441.5" width="126.1" height="21" rx="10"/>
+  <text class="s" x="944.0" y="456.7" text-anchor="middle">⑥ 소비 · 중복 거름</text>
+  <rect class="card" x="30" y="476" width="830" height="70" rx="12"/>
+  <text class="h" x="50" y="517">Kafka</text>
+  <rect class="chipm" x="120" y="496" width="141" height="30" rx="14"/>
+  <text class="s" x="134" y="515.7">opa-hotlist-events</text>
+  <rect class="chipm" x="273" y="496" width="193" height="30" rx="14" style="stroke-dasharray:5 4"/>
+  <text class="s" x="287" y="515.7">user-events · 소비자 없음</text>
+  <rect class="chipr" x="478" y="496" width="237" height="30" rx="14"/>
+  <text class="s" x="492" y="515.7">SAGA·알림 등(팀원)</text>
+  <rect class="card" x="880" y="476" width="280" height="96" rx="12"/>
+  <text class="h acc" x="900" y="502">신뢰 경계</text>
+  <text class="s" x="900" y="523">하류 서비스는 게이트웨이가 쓴</text>
+  <text class="s" x="900" y="541">X-User-* 헤더로 사용자를 식별</text>
+  <text class="s" x="900" y="559">Spring Security는 auth-service에만</text>
+  <rect class="team" x="30" y="584" width="1130" height="30" rx="10"/>
+  <text class="s" x="48" y="604">플랫폼(팀원): Eureka · Config Server · MySQL(서비스별 스키마) · Elasticsearch · K8s(EC2 마스터·워커) · GitHub Actions → GHCR</text>
+  <line x1="40" y1="628" x2="1160" y2="628" stroke="#cdc4b2" stroke-width="1"/>
+  <text class="s" x="40" y="652">그리지 않은 것: seller → auth Feign 호출(발표 시점 호출처 없음) · 필터의 세부 실행 순서(확인하지 않음)</text>
+</svg>

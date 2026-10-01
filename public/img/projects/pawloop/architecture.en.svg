@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1046" width="1000" height="1046" role="img" aria-labelledby="t d">
+<title id="t">Pawloop system architecture</title>
+<desc id="d">The Flutter app connects to Caddy over HTTPS 443, and Caddy forwards to the Spring Boot app on the same EC2 instance. Spring Boot uses a MySQL container on the same instance (data on a separate EBS volume), S3, SES, FCM, social sign-in providers and public-data APIs. Production config is fetched from SSM at boot. CI does not deploy; deploys are manual over SSH.</desc>
+<style>
+.bg{fill:#f7f4ed}
+.card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+.core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+.mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+.part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+.band{fill:#9a6b12}
+.team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+.unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+.dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.chipr{fill:#f1ece1}
+.chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+.chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+.pill{fill:#f7f4ed}
+.title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.b{font:500 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+.s{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+.mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+.acc{fill:#9a6b12}
+.acc2{fill:#2f7d74}
+.ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+.lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+.ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+.lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+.lt{stroke:#2f7d74;stroke-width:2;fill:none}
+.ah{fill:#6b6457}
+.ahg{fill:#9a6b12}
+.aht{fill:#2f7d74}
+</style>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+<marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+<marker id="t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="aht"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1000" height="1046" rx="18"/>
+<!-- groups -->
+<rect class="dash" x="24" y="88" width="952" height="132" rx="16"/>
+<rect class="dash" x="24" y="292" width="632" height="528" rx="16"/>
+<rect class="dash" x="248" y="328" width="392" height="476" rx="16"/>
+<rect class="dash" x="688" y="292" width="288" height="528" rx="16"/>
+<path d="M40 926 H960" stroke="#cdc4b2" stroke-width="1"/>
+<!-- lines -->
+<path class="ln" d="M716 158 H778" marker-end="url(#a)"/>
+<path class="ln" d="M520 206 V362" marker-end="url(#a)"/>
+<path class="ld" d="M576 206 V362" marker-end="url(#a)"/>
+<path class="ln" d="M64 206 V494" marker-end="url(#a)"/>
+<path class="ln" d="M520 456 V494" marker-end="url(#a)"/>
+<path class="ln" d="M520 670 V708" marker-end="url(#a)"/>
+<path class="ln" d="M264 542 H222" marker-end="url(#a)"/>
+<path class="ln" d="M264 642 H222" marker-end="url(#a)"/>
+<path class="ld" d="M220 750 H246" marker-end="url(#a)"/>
+<path class="ln" d="M624 583 H672"/>
+<path class="ln" d="M672 383 V627"/>
+<path class="ln" d="M672 627 V749"/>
+<path class="ln" d="M672 383 H702" marker-end="url(#a)"/>
+<path class="ln" d="M672 505 H702" marker-end="url(#a)"/>
+<path class="ln" d="M672 627 H702" marker-end="url(#a)"/>
+<path class="ln" d="M672 749 H702" marker-end="url(#a)"/>
+<path class="ln" d="M300 834 V806" marker-end="url(#a)"/>
+<!-- boxes -->
+<rect class="core" x="40" y="118" width="676" height="88" rx="12"/>
+<rect class="chipm" x="92" y="160" width="210" height="30" rx="14"/>
+<rect class="chipr" x="310" y="160" width="197" height="30" rx="14"/>
+<rect class="chipr" x="515" y="160" width="173" height="30" rx="14"/>
+<rect class="card" x="780" y="118" width="180" height="88" rx="12"/>
+<rect class="core" x="264" y="364" width="360" height="92" rx="12"/>
+<rect class="core" x="264" y="496" width="360" height="174" rx="12"/>
+<rect class="chipr" x="284" y="562" width="100" height="30" rx="14"/>
+<rect class="chipr" x="392" y="562" width="100" height="30" rx="14"/>
+<rect class="chipr" x="500" y="562" width="100" height="30" rx="14"/>
+<rect class="chipr" x="284" y="600" width="100" height="30" rx="14"/>
+<rect class="chipr" x="392" y="600" width="100" height="30" rx="14"/>
+<rect class="chipr" x="500" y="600" width="100" height="30" rx="14"/>
+<rect class="core" x="264" y="710" width="360" height="76" rx="12"/>
+<rect class="card" x="40" y="496" width="180" height="92" rx="12"/>
+<rect class="card" x="40" y="604" width="180" height="76" rx="12"/>
+<rect class="card" x="40" y="696" width="180" height="108" rx="12"/>
+<rect class="card" x="704" y="328" width="256" height="110" rx="12"/>
+<rect class="card" x="704" y="450" width="256" height="110" rx="12"/>
+<rect class="card" x="704" y="572" width="256" height="110" rx="12"/>
+<rect class="unk" x="704" y="694" width="256" height="110" rx="12"/>
+<rect class="card" x="24" y="836" width="336" height="72" rx="12"/>
+<rect class="card" x="376" y="836" width="600" height="72" rx="12"/>
+<!-- labels -->
+<circle class="mine" cx="72" cy="175" r="12"/>
+<text class="hs acc" x="72" y="181" text-anchor="middle">③</text>
+<rect class="pill" x="728.2" y="135" width="37.6" height="20" rx="6"/>
+<text class="s" x="747" y="150" text-anchor="middle">SDK</text>
+<circle class="mine" cx="616" cy="366" r="12"/>
+<text class="hs acc" x="616" y="372" text-anchor="middle">①</text>
+<circle class="mine" cx="887.640625" cy="594" r="12"/>
+<text class="hs acc" x="887.640625" y="600" text-anchor="middle">②</text>
+<rect class="card" x="460" y="278" width="180" height="28" rx="14"/>
+<text class="s" x="550" y="297" text-anchor="middle">Route 53 → Elastic IP</text>
+<rect class="pill" x="384.0" y="227" width="129.0" height="20" rx="6"/>
+<text class="s" x="508" y="242" text-anchor="end">HTTPS 443 · REST</text>
+<rect class="pill" x="351.6" y="249" width="161.4" height="20" rx="6"/>
+<text class="s" x="508" y="264" text-anchor="end">openapi.yaml contract</text>
+<rect class="pill" x="583.0" y="227" width="89.8" height="20" rx="6"/>
+<text class="s" x="588" y="242">chat polling</text>
+<rect class="pill" x="583.0" y="249" width="134.9" height="20" rx="6"/>
+<text class="s" x="588" y="264">304 if nothing new</text>
+<rect class="pill" x="71.0" y="415" width="153.5" height="20" rx="6"/>
+<text class="s" x="76" y="430">video: presigned PUT</text>
+<rect class="pill" x="368.6" y="466" width="144.4" height="20" rx="6"/>
+<text class="s" x="508" y="481" text-anchor="end">app:8080 · X-Real-IP</text>
+<rect class="pill" x="467.1" y="680" width="45.9" height="20" rx="6"/>
+<text class="s" x="508" y="695" text-anchor="end">JDBC</text>
+<rect class="unk" x="190.2071875" y="1013" width="26" height="16" rx="4"/>
+<path class="ld" d="M522.6 1021 H550.6"/>
+<!-- text -->
+<text class="title" x="40" y="48">Pawloop system architecture</text>
+<text class="s" x="40" y="72">Basis: GitHub main b0f89f6 (2026-09-26) · host names and account details omitted</text>
+<text class="s" x="40" y="108">Device</text>
+<text class="h" x="60" y="146">Flutter app</text>
+<text class="b" x="173.0625" y="146">Android (on ONE store) · iOS</text>
+<text class="s" x="104" y="180">Location upload: one policy</text>
+<text class="s" x="322" y="180">Walk draft queue · resend</text>
+<text class="s" x="527" y="180">Chat polling 3→30 s</text>
+<text class="h" x="796" y="146">Naver Map SDK</text>
+<text class="b" x="796" y="170">tiles and markers</text>
+<text class="b" x="796" y="192">drawn by the app</text>
+<text class="s" x="80" y="314">AWS · Terraform envs/prod: EC2, EIP, EBS, SES</text>
+<text class="s" x="264" y="350">One EC2 instance · Docker Compose</text>
+<text class="s" x="704" y="314">External services</text>
+<text class="h" x="284" y="392">Caddy 2.10 — the only entry point</text>
+<text class="b" x="284" y="416">443·80 · auto TLS · /actuator: health only</text>
+<text class="s" x="284" y="438">static terms &amp; privacy site</text>
+<text class="h" x="284" y="524">Spring Boot · Java 21</text>
+<text class="b" x="284" y="548">modular monolith · 22 top-level modules</text>
+<text class="s" x="284" y="656">published only on 127.0.0.1:8080</text>
+<text class="s" x="334" y="582" text-anchor="middle">Walks</text>
+<text class="s" x="442" y="582" text-anchor="middle">Family</text>
+<text class="s" x="550" y="582" text-anchor="middle">Messaging</text>
+<text class="s" x="334" y="620" text-anchor="middle">Places</text>
+<text class="s" x="442" y="620" text-anchor="middle">Accounts</text>
+<text class="s" x="550" y="620" text-anchor="middle">Common</text>
+<text class="h" x="284" y="738">MySQL 8.0 container</text>
+<text class="b" x="284" y="762">data on separate EBS (prevent_destroy)</text>
+<text class="h" x="60" y="524">S3</text>
+<text class="b" x="60" y="548">photos, videos</text>
+<text class="s" x="60" y="570">videos: HEAD check</text>
+<text class="h" x="60" y="632">SES</text>
+<text class="b" x="60" y="656">sign-up, reset mail</text>
+<text class="h" x="60" y="724">SSM</text>
+<text class="b" x="60" y="748">Parameter Store</text>
+<text class="s" x="60" y="770">.env · deploy key</text>
+<text class="s" x="60" y="792">fetched at boot</text>
+<text class="h" x="724" y="356">FCM</text>
+<text class="b" x="724" y="380">push to the app</text>
+<text class="s" x="724" y="402">chat · schedule assignment</text>
+<text class="s" x="724" y="424">sent async, after commit</text>
+<text class="h" x="724" y="478">Social sign-in</text>
+<text class="b" x="724" y="502">Kakao · Google · Apple</text>
+<text class="s" x="724" y="524">server exchanges the code</text>
+<text class="s" x="724" y="546">app gets a 60 s one-time code</text>
+<text class="h" x="724" y="600">Public data APIs</text>
+<text class="s" x="724" y="624">Korea Tourism Org. · Durunubi</text>
+<text class="s" x="724" y="646">licensing · KMA · AirKorea</text>
+<text class="s" x="724" y="668">server-side calls · daily budget</text>
+<text class="h" x="724" y="722">OpenAI · ORS · Slack</text>
+<text class="b" x="724" y="746">ORS = OpenRouteService</text>
+<text class="s" x="724" y="768">summary · routes · alerts</text>
+<text class="s" x="724" y="790">production config unconfirmed</text>
+<text class="h" x="44" y="864">Deploy (manual)</text>
+<text class="b" x="44" y="888">SSH → git pull → compose up --build</text>
+<text class="h" x="396" y="864">GitHub Actions CI — does not deploy</text>
+<text class="b" x="396" y="888">backend tests·JaCoCo · flutter analyze·test · doc drift</text>
+<text class="hs acc" x="40" y="953">①</text>
+<text class="s" x="64" y="952">The only door open to the whole internet is Caddy (443/80) — SSH from allowed IPs only, app port on 127.0.0.1, DB not exposed</text>
+<text class="hs acc" x="40" y="977">②</text>
+<text class="s" x="64" y="976">Public-data and AI keys stay on the server — the app goes through it</text>
+<text class="hs acc" x="40" y="1001">③</text>
+<text class="s" x="64" y="1000">Coordinates can leave the device in one place only (compile-time constant, off by default)</text>
+<text class="s" x="40" y="1026">All parts built solo</text>
+<text class="s" x="224.2071875" y="1026">in code, production config unconfirmed</text>
+<text class="s" x="558.62171875" y="1026">polling / fetched at boot</text>
+<text class="s" x="750.06109375" y="1026">no metrics collector</text>
+</svg>

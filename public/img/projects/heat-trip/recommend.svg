@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 938" width="1000" height="938" role="img" aria-labelledby="t d">
+<title id="t">추천 한 번 — LLM이 고르는 것과 Spring이 하는 것</title>
+<desc id="d">앱이 감정 값과 목표 키워드를 Spring에 보내면, Spring은 장소 목록 없이 감정 값과 키워드만 Python 추천 서버에 넘깁니다. 추천 서버는 95개 카테고리 닫힌 목록에서 그룹 두 개를 고르게 하고 응답 형식을 검증합니다. Spring은 받은 라벨을 cat3 코드로 바꿔 MySQL에서 후보를 읽고, 자체 점수식으로 순위를 매겨 돌려줍니다.</desc>
+<style>
+.bg{fill:#f7f4ed}
+.card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+.core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+.mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+.part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+.band{fill:#9a6b12}
+.team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+.unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+.dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.chipr{fill:#f1ece1}
+.chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+.chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+.pill{fill:#f7f4ed}
+.title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.b{font:500 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+.s{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+.mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+.acc{fill:#9a6b12}
+.acc2{fill:#2f7d74}
+.ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+.lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+.ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+.lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+.lt{stroke:#2f7d74;stroke-width:2;fill:none}
+.ah{fill:#6b6457}
+.ahg{fill:#9a6b12}
+.aht{fill:#2f7d74}
+</style>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+<marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+<marker id="tq" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="aht"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1000" height="938" rx="18"/>
+<text class="title" x="40" y="48">추천 한 번 — LLM이 고르는 것과 Spring이 하는 것</text>
+<text class="s" x="40" y="72">기준: v2(2025-10-18 도입, 스토어 1.0.0(3)) · 코드 줄은 034c3dc</text>
+<rect class="mine" x="38.0" y="96" width="100" height="56" rx="10"/>
+<text class="hs" x="88" y="120" text-anchor="middle">앱</text>
+<text class="s" x="88" y="141" text-anchor="middle">For You</text>
+<line class="dash" x1="88" y1="152" x2="88" y2="794"/>
+<rect class="mine" x="268.0" y="96" width="150" height="56" rx="10"/>
+<text class="hs" x="343" y="120" text-anchor="middle">Spring</text>
+<text class="s" x="343" y="141" text-anchor="middle">추천 서비스</text>
+<line class="dash" x1="343" y1="152" x2="343" y2="794"/>
+<rect class="mine" x="497.0" y="96" width="150" height="56" rx="10"/>
+<text class="hs" x="572" y="120" text-anchor="middle">Python</text>
+<text class="s" x="572" y="141" text-anchor="middle">추천 서버</text>
+<line class="dash" x1="572" y1="152" x2="572" y2="794"/>
+<rect class="card" x="708.0" y="96" width="120" height="56" rx="10"/>
+<text class="hs" x="768" y="130" text-anchor="middle">OpenAI</text>
+<line class="dash" x1="768" y1="152" x2="768" y2="794"/>
+<rect class="card" x="856.0" y="96" width="104" height="56" rx="10"/>
+<text class="hs" x="908" y="130" text-anchor="middle">MySQL</text>
+<line class="dash" x1="908" y1="152" x2="908" y2="794"/>
+<rect class="pill" x="96.5" y="162" width="238" height="22" rx="6"/>
+<rect class="pill" x="125" y="180" width="181" height="22" rx="6"/>
+<rect class="pill" x="115" y="198" width="201" height="22" rx="6"/>
+<rect class="pill" x="382.5" y="240" width="150" height="22" rx="6"/>
+<rect class="pill" x="398.5" y="258" width="118" height="22" rx="6"/>
+<rect class="pill" x="404.5" y="276" width="106" height="22" rx="6"/>
+<rect class="pill" x="608" y="316" width="112" height="22" rx="6"/>
+<rect class="pill" x="579.5" y="350" width="181" height="22" rx="6"/>
+<rect class="pill" x="613" y="368" width="114" height="22" rx="6"/>
+<rect class="pill" x="630.5" y="386" width="79" height="22" rx="6"/>
+<rect class="pill" x="643.5" y="422" width="53" height="22" rx="6"/>
+<rect class="pill" x="608" y="462" width="113" height="22" rx="6"/>
+<rect class="pill" x="608" y="480" width="137" height="22" rx="6"/>
+<rect class="pill" x="364" y="514" width="187" height="22" rx="6"/>
+<rect class="pill" x="400.5" y="532" width="114" height="22" rx="6"/>
+<rect class="pill" x="379" y="572" width="135" height="22" rx="6"/>
+<rect class="pill" x="379" y="590" width="172" height="22" rx="6"/>
+<rect class="pill" x="387.5" y="640" width="140" height="22" rx="6"/>
+<rect class="pill" x="379" y="680" width="122" height="22" rx="6"/>
+<rect class="pill" x="379" y="698" width="97" height="22" rx="6"/>
+<rect class="pill" x="379" y="716" width="157" height="22" rx="6"/>
+<rect class="pill" x="379" y="734" width="187" height="22" rx="6"/>
+<rect class="pill" x="146" y="756" width="139" height="22" rx="6"/>
+<text class="s" x="215.5" y="178" text-anchor="middle">1 POST /api/curation/recommend</text>
+<text class="s" x="215.5" y="196" text-anchor="middle">pad · energy · socialNeed</text>
+<text class="s" x="215.5" y="214" text-anchor="middle">moodKey · 목표 키워드 · 좌표</text>
+<path class="ln" d="M88 226 H341" marker-end="url(#a)"/>
+<rect class="unk" x="99.0" y="240" width="233" height="50" rx="8"/>
+<text class="s" x="113.0" y="260">! pad·energy는 서버 DTO가 정수</text>
+<text class="s" x="113.0" y="280">잘린 값이 단계 2·10에 쓰임</text>
+<text class="s" x="457.5" y="256" text-anchor="middle">2 POST /recommend</text>
+<text class="s" x="457.5" y="274" text-anchor="middle">감정 값·키워드만</text>
+<text class="s" x="457.5" y="292" text-anchor="middle">장소 목록 없음</text>
+<path class="lg" d="M343 304 H570" marker-end="url(#g)"/>
+<path class="ln" d="M572 318 H602 V336 H575" marker-end="url(#a)"/>
+<text class="s" x="614" y="332" text-anchor="start">3 5분 캐시 확인</text>
+<text class="s" x="670.0" y="366" text-anchor="middle">4 카테고리 95개 닫힌 목록</text>
+<text class="s" x="670.0" y="384" text-anchor="middle">그룹 정확히 2개</text>
+<text class="s" x="670.0" y="402" text-anchor="middle">JSON 모드</text>
+<path class="lg" d="M572 414 H766" marker-end="url(#g)"/>
+<text class="s" x="670.0" y="438" text-anchor="middle">5 응답</text>
+<path class="ln" d="M768 450 H574" marker-end="url(#a)"/>
+<path class="ln" d="M572 464 H602 V482 H575" marker-end="url(#a)"/>
+<text class="s" x="614" y="478" text-anchor="start">6 Pydantic 검증</text>
+<text class="s" x="614" y="496" text-anchor="start">실패 시 재요청·보정</text>
+<text class="s" x="457.5" y="530" text-anchor="middle">7 카테고리 라벨 · 감정 진단</text>
+<text class="s" x="457.5" y="548" text-anchor="middle">테마 · 위로 편지</text>
+<path class="lg" d="M572 560 H345" marker-end="url(#g)"/>
+<path class="lg" d="M343 574 H373 V592 H346" marker-end="url(#g)"/>
+<text class="s" x="385" y="588" text-anchor="start">8 라벨 → cat3 코드</text>
+<text class="s" x="385" y="606" text-anchor="start">place_traits 95행(메모리)</text>
+<text class="s" x="457.5" y="656" text-anchor="middle">9 findByCat3In 후보</text>
+<path class="ln" d="M343 668 H906" marker-end="url(#a)"/>
+<path class="lg" d="M343 682 H373 V700 H346" marker-end="url(#g)"/>
+<text class="s" x="385" y="696" text-anchor="start">10 0.6×특성 일치</text>
+<text class="s" x="385" y="714" text-anchor="start">+ 0.4×인기도</text>
+<text class="s" x="385" y="732" text-anchor="start">위치가 있으면 거리 0.2</text>
+<text class="s" x="385" y="750" text-anchor="start">→ 정렬(매핑이 비면 findAll)</text>
+<text class="s" x="215.5" y="772" text-anchor="middle">11 순위 + LLM 메타</text>
+<path class="ln" d="M343 784 H90" marker-end="url(#a)"/>
+<rect class="mine" x="40" y="814" width="440" height="76" rx="12"/>
+<text class="hs" x="60" y="841">LLM 경계</text>
+<text class="b" x="60" y="864">입력에 장소 없음 · 출력은 95개 목록 안에서만</text>
+<rect class="mine" x="500" y="814" width="460" height="76" rx="12"/>
+<text class="hs" x="520" y="841">v1(공모전 제출본, 2025-09-10): LLM 없음</text>
+<text class="s" x="520" y="863">전체 장소 점수 → 감정 카테고리 18개(매핑 72)로</text>
+<text class="s" x="520" y="882">묶어 상위 6×6</text>
+<rect class="mine" x="40" y="910" width="22" height="14" rx="4"/>
+<text class="s" x="70" y="922">본인</text>
+<rect class="card" x="120" y="910" width="22" height="14" rx="4"/>
+<text class="s" x="150" y="922">외부·공용</text>
+</svg>

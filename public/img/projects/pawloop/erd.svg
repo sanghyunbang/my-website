@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 952" width="1000" height="952" role="img" aria-labelledby="t d">
+<title id="t">Pawloop 데이터 개요</title>
+<desc id="d">Pawloop 데이터 개요. Flyway 기준 38개 표 중 주요 표와 관계를 그렸다. 채팅 묶음(chat_room, chat_room_member, chat_message)은 묶음 밖의 표에 FK 없이 참조로만 붙는다. 방은 origin_kind·origin_ref로 가족 그룹과 크루를, 멤버는 user_id로 사용자를 가리킨다. 산책과 채팅 메시지의 재전송을 멱등하게 만드는 유니크 제약을 금색으로 표시했다.</desc>
+<style>
+.bg{fill:#f7f4ed}
+.card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+.core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+.mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+.part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+.band{fill:#9a6b12}
+.team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+.unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+.dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.chipr{fill:#f1ece1}
+.chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+.chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+.pill{fill:#f7f4ed}
+.title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.b{font:500 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+.s{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+.mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+.acc{fill:#9a6b12}
+.acc2{fill:#2f7d74}
+.ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+.lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+.ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+.lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+.lt{stroke:#2f7d74;stroke-width:2;fill:none}
+.ah{fill:#6b6457}
+.ahg{fill:#9a6b12}
+.aht{fill:#2f7d74}
+</style>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+<marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+<marker id="t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="aht"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1000" height="952" rx="18"/>
+<!-- groups -->
+<rect class="lgd" x="258" y="318" width="238" height="550" rx="16"/>
+<rect class="dash" x="768" y="682" width="210" height="186" rx="16"/>
+<path d="M40 888 H960" stroke="#cdc4b2" stroke-width="1"/>
+<!-- lines -->
+<path class="ln" d="M520 170 H484" marker-end="url(#a)"/>
+<path class="ln" d="M768 170 H732" marker-end="url(#a)"/>
+<path class="ld" d="M234 170 H270" marker-end="url(#a)"/>
+<path class="ld" d="M302 332 V230" marker-end="url(#a)"/>
+<path class="ln" d="M625 332 V230" marker-end="url(#a)"/>
+<path class="ln" d="M798 332 V313 H700 V230" marker-end="url(#a)"/>
+<path class="ln" d="M873 332 V296" marker-end="url(#a)"/>
+<path class="ln" d="M625 460 V494" marker-end="url(#a)"/>
+<path class="ln" d="M377 460 V494" marker-end="url(#a)"/>
+<path class="ln" d="M129 438 V494" marker-end="url(#a)"/>
+<path class="ld" d="M482 560 H518" marker-end="url(#a)"/>
+<path class="ld" d="M482 626 H625 V680" marker-end="url(#a)"/>
+<path class="ld" d="M768 550 H732" marker-end="url(#a)"/>
+<path class="ln" d="M377 682 V648" marker-end="url(#a)"/>
+<path class="ld" d="M129 682 V626" marker-end="url(#a)"/>
+<!-- boxes -->
+<rect class="card" x="24" y="100" width="210" height="106" rx="10"/>
+<path class="chipr" d="M25 130 V110 Q25 101 34 101 H224 Q233 101 233 110 V130 Z"/>
+<path d="M24 130 H234" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="272" y="100" width="210" height="128" rx="10"/>
+<path class="chipr" d="M273 130 V110 Q273 101 282 101 H472 Q481 101 481 110 V130 Z"/>
+<path d="M272 130 H482" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="520" y="100" width="210" height="128" rx="10"/>
+<path class="chipr" d="M521 130 V110 Q521 101 530 101 H720 Q729 101 729 110 V130 Z"/>
+<path d="M520 130 H730" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="768" y="100" width="210" height="194" rx="10"/>
+<path class="chipr" d="M769 130 V110 Q769 101 778 101 H968 Q977 101 977 110 V130 Z"/>
+<path d="M768 130 H978" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="24" y="332" width="210" height="106" rx="10"/>
+<path class="chipr" d="M25 362 V342 Q25 333 34 333 H224 Q233 333 233 342 V362 Z"/>
+<path d="M24 362 H234" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="272" y="332" width="210" height="128" rx="10"/>
+<path class="chipr" d="M273 362 V342 Q273 333 282 333 H472 Q481 333 481 342 V362 Z"/>
+<path d="M272 362 H482" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="520" y="332" width="210" height="128" rx="10"/>
+<path class="chipr" d="M521 362 V342 Q521 333 530 333 H720 Q729 333 729 342 V362 Z"/>
+<path d="M520 362 H730" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="768" y="332" width="210" height="106" rx="10"/>
+<path class="chipr" d="M769 362 V342 Q769 333 778 333 H968 Q977 333 977 342 V362 Z"/>
+<path d="M768 362 H978" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="24" y="496" width="210" height="128" rx="10"/>
+<path class="chipr" d="M25 526 V506 Q25 497 34 497 H224 Q233 497 233 506 V526 Z"/>
+<path d="M24 526 H234" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="272" y="496" width="210" height="150" rx="10"/>
+<path class="chipr" d="M273 526 V506 Q273 497 282 497 H472 Q481 497 481 506 V526 Z"/>
+<path d="M272 526 H482" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="520" y="496" width="210" height="106" rx="10"/>
+<path class="chipr" d="M521 526 V506 Q521 497 530 497 H720 Q729 497 729 506 V526 Z"/>
+<path d="M520 526 H730" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="768" y="496" width="210" height="150" rx="10"/>
+<path class="chipr" d="M769 526 V506 Q769 497 778 497 H968 Q977 497 977 506 V526 Z"/>
+<path d="M768 526 H978" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="24" y="682" width="210" height="128" rx="10"/>
+<path class="chipr" d="M25 712 V692 Q25 683 34 683 H224 Q233 683 233 692 V712 Z"/>
+<path d="M24 712 H234" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="272" y="682" width="210" height="172" rx="10"/>
+<path class="chipr" d="M273 712 V692 Q273 683 282 683 H472 Q481 683 481 692 V712 Z"/>
+<path d="M272 712 H482" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="520" y="682" width="210" height="128" rx="10"/>
+<path class="chipr" d="M521 712 V692 Q521 683 530 683 H720 Q729 683 729 692 V712 Z"/>
+<path d="M520 712 H730" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="780" y="712" width="186" height="30" rx="8"/>
+<rect class="chipr" x="781" y="713" width="184" height="28" rx="7"/>
+<rect class="card" x="780" y="748" width="186" height="54" rx="8"/>
+<path class="chipr" d="M781 776 V756 Q781 749 788 749 H958 Q965 749 965 756 V776 Z"/>
+<path d="M780 776 H966" stroke="#cdc4b2" stroke-width="1.5"/>
+<rect class="card" x="780" y="808" width="186" height="54" rx="8"/>
+<path class="chipr" d="M781 836 V816 Q781 809 788 809 H958 Q965 809 965 816 V836 Z"/>
+<path d="M780 836 H966" stroke="#cdc4b2" stroke-width="1.5"/>
+<!-- text -->
+<text class="title" x="40" y="48">Pawloop 데이터 개요</text>
+<text class="s" x="40" y="72">기준: Flyway V1–V3 (b0f89f6) · 표 38개 중 주요 표 · 실선 = FK, 점선 = FK 없는 참조</text>
+<text class="hs" x="36" y="121">device_token</text>
+<text class="mono" x="36" y="150">user_id</text>
+<text class="s" x="102.8125" y="150">FK 없음</text>
+<text class="mono" x="36" y="172">token UK</text>
+<text class="mono" x="36" y="194">platform · revoked_at</text>
+<text class="hs" x="284" y="121">users</text>
+<text class="mono" x="284" y="150">id PK</text>
+<text class="mono" x="284" y="172">provider, social_id UK</text>
+<text class="mono" x="284" y="194">email UK</text>
+<text class="mono" x="284" y="216">nickname</text>
+<text class="hs" x="532" y="121">dog</text>
+<text class="mono" x="532" y="150">id PK</text>
+<text class="mono" x="532" y="172">user_id FK</text>
+<text class="mono" x="532" y="194">species · size</text>
+<text class="mono" x="532" y="216">deleted_at</text>
+<text class="s" x="624.015625" y="216">소프트 삭제</text>
+<text class="hs" x="780" y="121">walk</text>
+<text class="mono" x="780" y="150">id PK</text>
+<text class="mono" x="780" y="172">dog_id FK</text>
+<text class="mono" x="780" y="194">distance_m, duration_s</text>
+<text class="mono" x="780" y="216">path LINESTRING NULL</text>
+<text class="s" x="780" y="238">좌표 미전송 시 NULL</text>
+<text class="mono acc" x="780" y="260">UK(dog_id,</text>
+<text class="mono acc" x="780" y="282" xml:space="preserve">   client_walk_id)</text>
+<text class="hs" x="36" y="353">comment · reaction</text>
+<text class="mono" x="36" y="382">post_id FK</text>
+<text class="mono" x="36" y="404">reaction UK(post_id,</text>
+<text class="mono" x="36" y="426" xml:space="preserve">   user_id, type)</text>
+<text class="hs" x="284" y="353">chat_room_member</text>
+<text class="mono" x="284" y="382">room_id FK</text>
+<text class="mono" x="284" y="404">user_id</text>
+<text class="s" x="350.8125" y="404">FK 없음</text>
+<text class="mono" x="284" y="426">role · last_read_seq</text>
+<text class="s" x="284" y="448">가족·크루 공용 멤버십</text>
+<text class="hs" x="532" y="353">care_log</text>
+<text class="mono" x="532" y="382">group_id FK</text>
+<text class="mono" x="532" y="404">dog_id FK</text>
+<text class="mono" x="532" y="426">done_by FK</text>
+<text class="mono" x="532" y="448">type · occurred_at</text>
+<text class="hs" x="780" y="353">walk_dog</text>
+<text class="mono" x="780" y="382">dog_id FK</text>
+<text class="mono" x="780" y="404">walk_id FK</text>
+<text class="s" x="780" y="426">함께 나간 아이들</text>
+<text class="hs" x="36" y="517">post</text>
+<text class="mono" x="36" y="546">user_id FK</text>
+<text class="mono" x="36" y="568">board</text>
+<text class="s" x="86.015625" y="568">5종</text>
+<text class="mono" x="36" y="590">dog_id FK</text>
+<text class="mono" x="36" y="612">title · body</text>
+<text class="hs" x="284" y="517">chat_room</text>
+<text class="mono" x="284" y="546">UK(origin_kind,</text>
+<text class="mono" x="284" y="568" xml:space="preserve">   origin_ref)</text>
+<text class="s" x="284" y="590">origin = FAMILY · CREW</text>
+<text class="mono" x="284" y="612">last_seq</text>
+<text class="mono" x="284" y="634">last_change_seq</text>
+<text class="hs" x="532" y="517">family_group</text>
+<text class="mono" x="532" y="546">id PK</text>
+<text class="mono" x="532" y="568">name</text>
+<text class="s" x="532" y="590">멤버·초대 컬럼 없음</text>
+<text class="hs" x="780" y="517">schedule</text>
+<text class="mono" x="780" y="546">owner_kind, owner_ref</text>
+<text class="s" x="780" y="568">owner = dog · group · room</text>
+<text class="mono" x="780" y="590">assignee FK</text>
+<text class="mono" x="780" y="612">repeat_kind</text>
+<text class="mono" x="780" y="634">version</text>
+<text class="s" x="846.8125" y="634">낙관적 잠금</text>
+<text class="hs" x="36" y="703">media_objects</text>
+<text class="mono" x="36" y="732">media_key</text>
+<text class="mono" x="36" y="754">category · status</text>
+<text class="mono" x="36" y="776">ref_type, ref_id</text>
+<text class="s" x="36" y="798">ref = 글 · 산책 · 채팅</text>
+<text class="hs" x="284" y="703">chat_message</text>
+<text class="mono" x="284" y="732">room_id FK</text>
+<text class="mono" x="284" y="754">UK(room_id, room_seq)</text>
+<text class="mono acc" x="284" y="776">UK(room_id,</text>
+<text class="mono acc" x="284" y="798" xml:space="preserve">   sender_user_id,</text>
+<text class="mono acc" x="284" y="820" xml:space="preserve">   client_msg_id)</text>
+<text class="mono" x="284" y="842">deleted_at, change_seq</text>
+<text class="hs" x="532" y="703">crew</text>
+<text class="mono" x="532" y="732">id PK</text>
+<text class="mono" x="532" y="754">neighborhood_code</text>
+<text class="mono" x="532" y="776">capacity</text>
+<text class="s" x="532" y="798">멤버 표 없음</text>
+<text class="s acc" x="318" y="308">chat 모듈 · 경계를 넘는 FK 0</text>
+<text class="s" x="782" y="702">장소 캐시 · 관계 없음</text>
+<text class="hs" x="790" y="732">place_catalog</text>
+<text class="s" x="790" y="794">0.02° 격자</text>
+<text class="hs" x="790" y="768">place_cell</text>
+<text class="mono" x="790" y="854">PK(day, pool)</text>
+<text class="hs" x="790" y="828">kto_call_budget</text>
+<text class="s" x="40" y="912">주요 표만 그렸습니다(38개 중). FK 일부는 생략했습니다(예: care_log·schedule·post → users·dog).</text>
+<text class="s" x="40" y="934">화살표는 자식 → 부모(N:1) · 금색 = 재전송을 멱등하게 만드는 유니크 제약</text>
+</svg>

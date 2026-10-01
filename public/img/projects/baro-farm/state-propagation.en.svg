@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 808" width="1000" height="808" role="img" aria-labelledby="t d">
+  <title id="t">When a status changes — one seller approval</title>
+  <desc id="d">When an admin approves a seller, auth-service sets users.user_type to SELLER inside a transaction and sends an event to the opa-hotlist-events topic keyed by subjectId, without waiting for the result. opa-bundle consumes it, drops duplicates by eventId and rewrites bundle.tar.gz. OPA pulls and activates the bundle by polling every 10–60 s, and seller-service updates seller_status from the same event.</desc>
+  <style>
+    .bg{fill:#f7f4ed}
+    .card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+    .core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+    .mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+    .part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+    .band{fill:#9a6b12}
+    .team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+    .unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+    .y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+    .dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+    .chipr{fill:#f1ece1}
+    .chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+    .chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+    .pill{fill:#f7f4ed}
+    .title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+    .b{font:500 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+    .s{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+    .mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+    .acc{fill:#9a6b12}
+    .acc2{fill:#2f7d74}
+    .ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+    .lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+    .ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+    .lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+    .lt{stroke:#2f7d74;stroke-width:2;fill:none}
+    .ah{fill:#6b6457}
+    .ahg{fill:#9a6b12}
+    .aht{fill:#2f7d74}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+    <marker id="t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="aht"/></marker>
+    <clipPath id="c0"><rect x="840.0" y="88" width="130" height="44" rx="10"/></clipPath>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1000" height="808" rx="18"/>
+  <text class="title" x="40" y="48">When a status changes — one seller approval</text>
+  <text class="s" x="40" y="72">Basis: 78eaa987 (2026-01-27) · 10–60 s is a setting, not measured</text>
+  <rect class="mine" x="522.5" y="61.0" width="22" height="12" rx="3" style="stroke-width:1.5"/>
+  <text class="s" x="550.5" y="72">mine</text>
+  <rect class="part" x="602.4" y="61.0" width="22" height="12" rx="3" style="stroke-width:1.5"/>
+  <rect class="band" x="602.4" y="61.0" width="5" height="12" rx="1.5"/>
+  <text class="s" x="630.4" y="72">partly mine</text>
+  <rect class="card" x="725.9" y="61.0" width="22" height="12" rx="3"/>
+  <text class="s" x="753.9" y="72">external / shared</text>
+  <path class="lgd" d="M885.4 67.0 H907.4" style="stroke-dasharray:4 3"/>
+  <text class="s" x="913.4" y="72">polling</text>
+  <rect class="card" x="30.0" y="88" width="80" height="44" rx="10"/>
+  <text class="hs" x="70" y="116" text-anchor="middle">Admin</text>
+  <rect class="mine" x="195.0" y="88" width="130" height="44" rx="10"/>
+  <text class="hs" x="260" y="116" text-anchor="middle">auth-service</text>
+  <rect class="card" x="390.0" y="88" width="100" height="44" rx="10"/>
+  <text class="hs" x="440" y="116" text-anchor="middle">Kafka</text>
+  <rect class="mine" x="550.0" y="88" width="120" height="44" rx="10"/>
+  <text class="hs" x="610" y="116" text-anchor="middle">opa-bundle</text>
+  <rect class="mine" x="720.0" y="88" width="100" height="44" rx="10"/>
+  <text class="hs" x="770" y="116" text-anchor="middle">OPA</text>
+  <rect class="part" x="840.0" y="88" width="130" height="44" rx="10"/>
+  <rect class="band" x="840.0" y="88" width="8" height="44" clip-path="url(#c0)"/>
+  <text class="hs" x="908" y="116" text-anchor="middle">seller-service</text>
+  <path class="dash" d="M70 132 V656"/>
+  <path class="dash" d="M260 132 V656"/>
+  <path class="dash" d="M440 132 V656"/>
+  <path class="dash" d="M610 132 V656"/>
+  <path class="dash" d="M770 132 V656"/>
+  <path class="dash" d="M905 132 V656"/>
+  <path class="ln" d="M70 164 H260" marker-end="url(#a)"/>
+  <text class="s" x="165.0" y="156" text-anchor="middle">1 POST /sellers/{id}/status</text>
+  <rect class="dash" x="136" y="174" width="294" height="150" rx="8"/>
+  <text class="s" x="148" y="194">transaction</text>
+  <rect class="chipm" x="149.0" y="204" width="222" height="28" rx="8"/>
+  <text class="s" x="260" y="223" text-anchor="middle">2 users.user_type = SELLER</text>
+  <rect class="pill" x="268.1" y="242.0" width="147.8" height="62" rx="6"/>
+  <text class="s" x="342.0" y="260.0" text-anchor="middle">3 opa-hotlist-events</text>
+  <text class="s" x="342.0" y="278.0" text-anchor="middle">key = subjectId</text>
+  <text class="s" x="342.0" y="296.0" text-anchor="middle">result not awaited</text>
+  <path class="lg" d="M260 310 H440" marker-end="url(#g)"/>
+  <path class="ln" d="M248 324 H272"/>
+  <text class="s" x="244" y="344" text-anchor="end">commit</text>
+  <rect class="pill" x="442.4" y="336.0" width="165.2" height="44" rx="6"/>
+  <text class="s" x="525.0" y="354.0" text-anchor="middle">4 consume · dedupe</text>
+  <text class="s" x="525.0" y="372.0" text-anchor="middle">by eventId, last 10,000</text>
+  <path class="lg" d="M440 386 H610" marker-end="url(#g)"/>
+  <rect class="chipm" x="503.0" y="396" width="214" height="46" rx="8"/>
+  <text class="s" x="610" y="415" text-anchor="middle">5 update in-memory hotlist</text>
+  <text class="s" x="610" y="433" text-anchor="middle">→ rewrite bundle.tar.gz</text>
+  <rect class="pill" x="620.0" y="450.0" width="139.9" height="44" rx="6"/>
+  <text class="s" x="690.0" y="468.0" text-anchor="middle">6 GET /opa/bundle</text>
+  <text class="s" x="690.0" y="486.0" text-anchor="middle">every 10–60 s</text>
+  <path class="lgd" d="M770 500 H610" marker-end="url(#g)"/>
+  <path class="lgd" d="M610 528 H770" marker-end="url(#g)"/>
+  <rect class="pill" x="659.5" y="517.0" width="61.1" height="22" rx="11"/>
+  <text class="s" x="690.0" y="533.0" text-anchor="middle">bundle</text>
+  <rect class="chipm" x="690.0" y="544" width="160" height="46" rx="8"/>
+  <text class="s" x="770" y="563" text-anchor="middle">7 activates bundle</text>
+  <text class="s" x="770" y="581" text-anchor="middle">data.hotlist replaced</text>
+  <rect class="pill" x="441.1" y="594.0" width="167.8" height="44" rx="6"/>
+  <text class="s" x="525.0" y="612.0" text-anchor="middle">8 same event</text>
+  <text class="s" x="525.0" y="630.0" text-anchor="middle">→ update seller_status</text>
+  <path class="lg" d="M440 644 H905" marker-end="url(#g)"/>
+  <rect class="mine" x="30" y="672" width="300" height="80" rx="10"/>
+  <text class="s" x="48" y="697">The token's role stays (7-day access);</text>
+  <text class="s" x="48" y="718">what must apply now goes via hotlist</text>
+  <text class="s" x="48" y="739">token's seller_status: always UNKNOWN</text>
+  <rect class="card" x="350" y="672" width="300" height="80" rx="10"/>
+  <text class="s" x="368" y="697">3 is sent inside the transaction:</text>
+  <text class="s" x="368" y="718">it may go out even on rollback,</text>
+  <text class="s" x="368" y="739">and a failed send is only logged</text>
+  <rect class="unk" x="670" y="672" width="300" height="80" rx="10"/>
+  <text class="s" x="688" y="697">Withdrawal uses the outbox (aside)</text>
+  <text class="s" x="688" y="718">outbox_event → 1 s scheduler</text>
+  <text class="s" x="688" y="739">→ user-events · ✕ no consumer</text>
+  <line x1="40" y1="770" x2="960" y2="770" stroke="#cdc4b2" stroke-width="1"/>
+  <text class="s" x="40" y="794">At the presentation commit (01-27) the policy allowed by default; the seller-approval rule was removed on 01-26 (see 'Current state').</text>
+</svg>

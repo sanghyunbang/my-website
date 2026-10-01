@@ -5,7 +5,8 @@
  *   <Clip src="/img/projects/oreum/demo-map.mp4" poster="/img/projects/oreum/demo-map-poster.webp"
  *         width={1280} height={714} label="…" caption="…" />
  *
- * 자동 재생하지 않는다. 재생 버튼을 눌러야 내려받기 시작한다(preload="none").
+ * 자동 재생하지 않는다. preload="metadata"로 길이와 첫 정보(mp4 앞쪽 색인, 클립당 약 8–14 KB)만 받아
+ * 플레이어가 0:00이 아니라 실제 길이를 보여 주게 하고, 본편은 재생 버튼을 눌러야 받는다.
  * 소리가 없는 클립이라 muted, 모바일에서 전체 화면으로 튀지 않게 playsinline.
  */
 interface Props {
@@ -30,7 +31,7 @@ const { src, poster, width, height, label, caption } = Astro.props;
     controls
     muted
     playsinline
-    preload="none"
+    preload="metadata"
   >
     <source src={src} type="video/mp4" />
   </video>

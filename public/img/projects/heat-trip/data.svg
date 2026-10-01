@@ -1,0 +1,208 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 912" width="1000" height="912" role="img" aria-labelledby="t d">
+<title id="t">장소 데이터: 수집과 모델</title>
+<desc id="d">위 띠는 장소 데이터 수집 순서다: 관광공사 지역 목록을 정제해 places에 배치 저장한 뒤, 한쪽으로는 Kakao로 링크·좌표를 보강하고 다른 쪽으로는 CAT3 특성 스냅숏을 만들어 search_text를 채운다. 아래는 주요 표의 개요 ERD다. 장소 쪽 표는 FK 없이 contentid와 cat3로 잇고, 사용자 쪽 표는 users에 FK로 붙는다. 금색은 본인, 회색은 팀원, 금색 띠는 일부 본인, 청록은 2026년 추가다.</desc>
+<style>
+.bg{fill:#f7f4ed}
+.card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+.core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+.mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+.part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+.band{fill:#9a6b12}
+.team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+.unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+.dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.chipr{fill:#f1ece1}
+.chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+.chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+.pill{fill:#f7f4ed}
+.title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.b{font:500 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+.s{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+.mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+.acc{fill:#9a6b12}
+.acc2{fill:#2f7d74}
+.ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+.lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+.ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+.lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+.lt{stroke:#2f7d74;stroke-width:2;fill:none}
+.ah{fill:#6b6457}
+.ahg{fill:#9a6b12}
+.aht{fill:#2f7d74}
+</style>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+<marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+<marker id="tq" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="aht"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1000" height="912" rx="18"/>
+<text class="title" x="40" y="48">장소 데이터: 수집과 모델</text>
+<text class="s" x="40" y="72">기준: 47d161f(2025) · 034c3dc(2026) · 규모는 2026-10-01 로컬 DB · 주요 표만</text>
+<!-- collection strip: places -> Kakao (side branch); places -> CAT3 snapshot -> search_text -->
+<rect class="chipm" x="40" y="88" width="112" height="46" rx="12"/>
+<text class="s" x="96.0" y="107" text-anchor="middle">Tour API</text>
+<text class="s" x="96.0" y="125" text-anchor="middle">지역 목록</text>
+<rect class="chipm" x="180" y="88" width="112" height="46" rx="12"/>
+<text class="s" x="236.0" y="116" text-anchor="middle">정제·절단</text>
+<rect class="chipm" x="320" y="88" width="112" height="46" rx="12"/>
+<text class="s" x="376.0" y="107" text-anchor="middle">places</text>
+<text class="s" x="376.0" y="125" text-anchor="middle">배치 저장</text>
+<rect class="chipm" x="460" y="88" width="112" height="46" rx="12"/>
+<text class="s" x="516.0" y="107" text-anchor="middle">Kakao 링크·</text>
+<text class="s" x="516.0" y="125" text-anchor="middle">좌표 보강</text>
+<rect class="chipm" x="600" y="88" width="112" height="46" rx="12"/>
+<text class="s" x="656.0" y="107" text-anchor="middle">CAT3</text>
+<text class="s" x="656.0" y="125" text-anchor="middle">특성 스냅숏</text>
+<rect class="chipt" x="740" y="88" width="112" height="46" rx="12"/>
+<text class="s" x="796.0" y="107" text-anchor="middle">search_text</text>
+<text class="s" x="796.0" y="125" text-anchor="middle">(2026)</text>
+<path class="lg" d="M155 111.0 H177" marker-end="url(#g)"/>
+<path class="lg" d="M295 111.0 H317" marker-end="url(#g)"/>
+<path class="lg" d="M715 111.0 H737" marker-end="url(#g)"/>
+<line class="lg" x1="433" y1="111.0" x2="441" y2="111.0"/>
+<circle cx="441" cy="111.0" r="3.5" class="ahg"/>
+<path class="lg" d="M441 111.0 H457" marker-end="url(#g)"/>
+<path class="lg" d="M441 111.0 V148 H656.0 V136" marker-end="url(#g)"/>
+<text class="s" x="866" y="107">스케줄러 꺼짐</text>
+<text class="s" x="866" y="125">수동 실행</text>
+<!-- G1 place catalog -->
+<rect class="dash" x="30" y="160" width="576" height="447" rx="16"/>
+<text class="s" x="46" y="182">장소 카탈로그</text>
+<rect class="mine" x="46" y="194" width="300" height="116" rx="10"/>
+<line x1="46" y1="224" x2="346" y2="224" stroke="#9a6b12" stroke-width="1.2"/>
+<text class="hs" x="58" y="215">place_traits</text>
+<text class="mono" x="58" y="243">place_id = cat3 PK</text>
+<text class="mono" x="58" y="262">name (카테고리 라벨)</text>
+<text class="mono" x="58" y="281">p·a·d_score · sociality · noise</text>
+<text class="s" x="58" y="300">95행</text>
+<rect class="mine" x="374" y="194" width="216" height="97" rx="10"/>
+<line x1="374" y1="224" x2="590" y2="224" stroke="#9a6b12" stroke-width="1.2"/>
+<text class="hs" x="386" y="215">place_trait_snapshots</text>
+<text class="mono" x="386" y="243">cat3 PK</text>
+<text class="mono" x="386" y="262">snapshot_at</text>
+<text class="s" x="386" y="281">search_text 재구성 원천</text>
+<rect class="mine" x="46" y="346" width="544" height="78" rx="10"/>
+<line x1="46" y1="376" x2="590" y2="376" stroke="#9a6b12" stroke-width="1.2"/>
+<text class="hs" x="58" y="367">places</text>
+<text class="s" x="578" y="367" text-anchor="end">50,098행</text>
+<text class="mono" x="58" y="395">contentid PK</text>
+<text class="mono" x="58" y="414">cat3 · areacode</text>
+<text class="mono" x="344" y="395">createdtime</text>
+<text class="mono acc2" x="344" y="414">search_text FULLTEXT(ngram)</text>
+<rect class="mine" x="46" y="468" width="270" height="97" rx="10"/>
+<line x1="46" y1="498" x2="316" y2="498" stroke="#9a6b12" stroke-width="1.2"/>
+<text class="hs" x="58" y="489">place_features</text>
+<text class="mono" x="58" y="517">link_id = contentid</text>
+<text class="mono" x="58" y="536">6축 특성 + conf_*</text>
+<text class="s" x="58" y="555">외부에서 가져온 값</text>
+<rect class="mine" x="344" y="468" width="246" height="78" rx="10"/>
+<line x1="344" y1="498" x2="590" y2="498" stroke="#9a6b12" stroke-width="1.2"/>
+<text class="hs" x="356" y="489">place_kakao_links</text>
+<text class="mono" x="356" y="517">id = contentid</text>
+<text class="mono" x="356" y="536">place_url · kakao_mapx/y</text>
+<!-- G2 emotion categories -->
+<rect class="dash" x="656" y="160" width="314" height="272" rx="16"/>
+<text class="s" x="670" y="182">감정 분류</text>
+<rect class="mine" x="670" y="194" width="286" height="97" rx="10"/>
+<line x1="670" y1="224" x2="956" y2="224" stroke="#9a6b12" stroke-width="1.2"/>
+<text class="hs" x="682" y="215">emotion_categories</text>
+<text class="mono" x="682" y="243">category_id PK</text>
+<text class="mono" x="682" y="262">category_name · category_emoji</text>
+<text class="s" x="682" y="281">18행</text>
+<rect class="mine" x="670" y="319" width="286" height="97" rx="10"/>
+<line x1="670" y1="349" x2="956" y2="349" stroke="#9a6b12" stroke-width="1.2"/>
+<text class="hs" x="682" y="340">cat3_category_mapping</text>
+<text class="mono" x="682" y="368">category_id</text>
+<text class="mono" x="682" y="387">cat3_code</text>
+<text class="s" x="682" y="406">72행</text>
+<!-- G3 emotion feedback -->
+<rect class="dash" x="656" y="444" width="314" height="163" rx="16"/>
+<text class="s" x="670" y="466">감정 피드백</text>
+<rect class="mine" x="670" y="476" width="286" height="115" rx="10"/>
+<line x1="670" y1="524" x2="956" y2="524" stroke="#9a6b12" stroke-width="1.2"/>
+<text class="hs" x="682" y="497">emotion_feedbacks ·</text>
+<text class="hs" x="682" y="516">emotion_reviews</text>
+<text class="mono" x="682" y="543">content_id</text>
+<text class="mono" x="682" y="562">before/after_emotion</text>
+<text class="mono" x="682" y="581">delta_valence·arousal·dominance</text>
+<!-- G4 users & content -->
+<rect class="dash" x="30" y="621" width="940" height="211" rx="16"/>
+<text class="s" x="46" y="643">사용자·콘텐츠</text>
+<text class="s" x="954" y="643" text-anchor="end">FK는 모두 N:1(journey → schedule은 0..1)</text>
+<rect class="mine" x="42" y="655" width="175" height="116" rx="10"/>
+<line x1="42" y1="685" x2="217" y2="685" stroke="#9a6b12" stroke-width="1.2"/>
+<text class="hs" x="54" y="676">users</text>
+<text class="mono" x="54" y="704">id PK</text>
+<text class="mono" x="54" y="723">email UK</text>
+<text class="mono" x="54" y="742">password (BCrypt)</text>
+<text class="mono" x="54" y="761">agree_* + 버전</text>
+<rect class="team" x="239" y="655" width="184" height="134" rx="10"/>
+<line x1="239" y1="703" x2="423" y2="703" stroke="#cdc4b2" stroke-width="1.2"/>
+<text class="hs" x="251" y="676">bookmarks ·</text>
+<text class="hs" x="251" y="695">collections (+items)</text>
+<text class="mono" x="251" y="722">user_id FK</text>
+<text class="mono" x="251" y="741">content_id</text>
+<text class="s" x="251" y="760">UK(user_id, content_id)</text>
+<text class="s" x="251" y="779">(팀원 B)</text>
+<rect class="team" x="445" y="655" width="120" height="116" rx="10"/>
+<line x1="445" y1="685" x2="565" y2="685" stroke="#cdc4b2" stroke-width="1.2"/>
+<text class="hs" x="457" y="676">schedule</text>
+<text class="mono" x="457" y="704">user_id FK</text>
+<text class="mono" x="457" y="723">date_from</text>
+<text class="mono" x="457" y="742">date_to</text>
+<text class="s" x="457" y="761">(팀원 A)</text>
+<rect class="part" x="587" y="655" width="192" height="135" rx="10"/>
+<rect class="band" x="588.5" y="656.5" width="8" height="132" rx="3"/>
+<line x1="595" y1="685" x2="779" y2="685" stroke="#9a6b12" stroke-width="1.2"/>
+<text class="hs" x="607" y="676">journey (+photos)</text>
+<text class="mono" x="607" y="704">user_id FK</text>
+<text class="mono" x="607" y="723">schedule_id FK NULL</text>
+<text class="mono" x="607" y="742">mood_label · body</text>
+<text class="s" x="607" y="761">엔티티 팀원 A</text>
+<text class="s" x="607" y="780">v2 API 본인</text>
+<rect class="mine" x="800" y="655" width="158" height="97" rx="10"/>
+<line x1="800" y1="685" x2="958" y2="685" stroke="#9a6b12" stroke-width="1.2"/>
+<text class="hs" x="812" y="676">media_objects</text>
+<text class="mono" x="812" y="704">media_key UK</text>
+<text class="mono" x="812" y="723">ref_type, ref_id</text>
+<text class="mono" x="812" y="742">deleted_at</text>
+<!-- relations: dashed = logical key without FK, solid = FK; arrow points to the referenced table -->
+<path class="ld" d="M181 346 V312" marker-end="url(#a)"/>
+<text class="s" x="191" y="334">N:1 · cat3</text>
+<path class="ld" d="M482 346 V293" marker-end="url(#a)"/>
+<text class="s" x="492" y="325">N:1 · cat3</text>
+<path class="ld" d="M181 468 V426" marker-end="url(#a)"/>
+<text class="s" x="191" y="452">1:1 · contentid</text>
+<path class="ld" d="M467 468 V426" marker-end="url(#a)"/>
+<text class="s" x="477" y="452">1:1 · contentid</text>
+<path class="ld" d="M590 385 H668" marker-end="url(#a)"/>
+<text class="s" x="631" y="377" text-anchor="middle">N:1</text>
+<path class="ld" d="M813 319 V293" marker-end="url(#a)"/>
+<text class="s" x="823" y="311">N:1</text>
+<path class="ld" d="M670 534 H631 V404 H592" marker-end="url(#a)"/>
+<path class="ld" d="M331 655 V426" marker-end="url(#a)"/>
+<text class="s" x="339" y="590">content_id</text>
+<path class="ln" d="M239 712 H219" marker-end="url(#a)"/>
+<path class="ln" d="M587 718 H567" marker-end="url(#a)"/>
+<path class="ld" d="M800 718 H781" marker-end="url(#a)"/>
+<path class="ln" d="M505 771 V806 H150 V773" marker-end="url(#a)"/>
+<path class="ln" d="M640 790 V818 H95 V773" marker-end="url(#a)"/>
+<line x1="40" y1="848" x2="960" y2="848" stroke="#cdc4b2" stroke-width="1"/>
+<rect class="mine" x="40" y="858" width="22" height="14" rx="4"/>
+<text class="s" x="70" y="870">본인</text>
+<rect class="part" x="120" y="858" width="22" height="14" rx="4"/>
+<rect class="band" x="121" y="859" width="5" height="12" rx="2"/>
+<text class="s" x="150" y="870">일부 본인</text>
+<rect class="team" x="233" y="858" width="22" height="14" rx="4"/>
+<text class="s" x="263" y="870">팀원 A·B</text>
+<rect class="y26" x="338" y="858" width="22" height="14" rx="4"/>
+<text class="s" x="368" y="870">2026 개인 추가</text>
+<path class="ln" d="M487 865 H513" marker-end="url(#a)"/>
+<text class="s" x="521" y="870">FK</text>
+<path class="ld" d="M560 865 H586" marker-end="url(#a)"/>
+<text class="s" x="594" y="870">FK 없는 논리 키</text>
+<text class="s" x="40" y="894">스키마는 Hibernate ddl-auto(마이그레이션 도구 없음) · FULLTEXT 인덱스는 수동 SQL · 그 밖의 표는 생략</text>
+</svg>

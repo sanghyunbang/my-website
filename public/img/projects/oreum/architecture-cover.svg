@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="t d">
+<title id="t">오름 시스템 구성</title>
+<desc id="d">웹 클라이언트(React)가 Spring Boot 서버에 REST로 붙고, 카카오 지도 SDK와 VWorld 등산로(CRA 개발 프록시 경유)를 브라우저에서 직접 쓴다. 서버는 기상청 API허브 산악 예보를 받아 Redis에 두고, 산 지점 153곳은 서버 메모리, 글은 MySQL, 경로 구간은 MongoDB, 미디어는 S3와 CloudFront, 로그인은 네이버·구글 OAuth를 쓴다. 금색은 본인이 맡은 부분, 회색은 팀원이 맡은 부분, 흰색은 외부 서비스와 공용 저장소다. 번호는 아래 목록의 흐름을 가리킨다.</desc>
+<style>
+.bg{fill:#f7f4ed}
+.card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+.core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+.mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+.part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+.band{fill:#9a6b12}
+.team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+.unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+.dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.chipr{fill:#f1ece1}
+.chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+.chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+.pill{fill:#f7f4ed}
+.title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.b{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+.s{font:500 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+.mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+.acc{fill:#9a6b12}
+.acc2{fill:#2f7d74}
+.ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+.lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+.ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+.lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+.lt{stroke:#2f7d74;stroke-width:2;fill:none}
+.ah{fill:#6b6457}
+.ahg{fill:#9a6b12}
+.aht{fill:#2f7d74}
+</style>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+<marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1200" height="675" rx="18"/>
+<text class="title" x="1160" y="48" text-anchor="end">오름 시스템 구성</text>
+<text class="s" x="1160" y="72" text-anchor="end">기준: 백엔드 ec805ca · 프론트 c663906 (2025-07-02) · 시연은 로컬, 배포 설정 없음</text>
+<rect class="card" x="40" y="100" width="170" height="76" rx="12"/>
+<text class="h" x="56" y="127">VWorld 등산로</text>
+<text class="mono" x="56" y="146">LT_L_FRSTCLIMB</text>
+<text class="s" x="56" y="164">GeoJSON</text>
+<rect class="mine" x="240" y="100" width="180" height="76" rx="12"/>
+<text class="h" x="256" y="127">CRA 개발 프록시</text>
+<text class="b" x="256" y="146">/vworld · npm start</text>
+<text class="s" x="256" y="164">개발 서버 전용</text>
+<rect class="part" x="460" y="100" width="340" height="110" rx="12"/>
+<path class="band" d="M472,101 H469 V209 H472 A11 11 0 0 1 461 198 V112 A11 11 0 0 1 472 101 z"/>
+<text class="h" x="486" y="127">웹 — React 18 (CRA)</text>
+<text class="b" x="486" y="146">Redux Toolkit · React Router 7</text>
+<text class="s" x="486" y="164">본인: 골격·지도·큐레이션 화면</text>
+<text class="s" x="486" y="182">팀원: 굿즈·일반 로그인·홈 피드</text>
+<rect class="card" x="840" y="100" width="320" height="54" rx="12"/>
+<text class="h" x="856" y="127">카카오 지도 JS SDK</text>
+<text class="s" x="856" y="145">지도·마커·경로선(브라우저)</text>
+<rect class="team" x="840" y="160" width="320" height="54" rx="12"/>
+<text class="h" x="856" y="187">아임포트 결제</text>
+<text class="s" x="856" y="205">팀원 담당</text>
+<path class="lg" d="M460,128 H420" marker-end="url(#g)"/>
+<circle class="mine" cx="440.0" cy="113" r="10"/>
+<text x="440.0" y="117.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">4</text>
+<path class="lg" d="M240,128 H210" marker-end="url(#g)"/>
+<path class="ln" d="M800,127 H840" marker-end="url(#a)"/>
+<path class="ln" d="M800,187 H840" marker-end="url(#a)"/>
+<rect class="core" x="340" y="262" width="500" height="234" rx="14"/>
+<text class="h" x="356" y="290">Spring Boot 3.5 · Java 17</text>
+<text class="b" x="356" y="311">단일 앱 · MyBatis · WebClient</text>
+<rect class="chipm" x="356" y="322" width="229.0" height="30" rx="14"/>
+<text class="s" x="370" y="341.68">map: 산 검색·예보·반경 조회</text>
+<rect class="chipm" x="595.0" y="322" width="229.0" height="30" rx="14"/>
+<text class="s" x="609.0" y="341.68">posts: 큐레이션(MongoDB)</text>
+<rect class="chipm" x="356" y="357" width="229.0" height="30" rx="14"/>
+<text class="s" x="370" y="376.68">auth: OAuth2 · JWT</text>
+<rect class="chipm" x="595.0" y="357" width="229.0" height="30" rx="14"/>
+<text class="s" x="609.0" y="376.68">external: S3 · 옛 예보 코드(꺼짐)</text>
+<rect class="chipr" x="356" y="392" width="468" height="30" rx="14"/>
+<path class="band" d="M370,392 H364 V422 H370 A14 14 0 0 1 356 408 V406 A14 14 0 0 1 370 392 z"/>
+<text class="s" x="376" y="411.68">community: 검색·내 커뮤니티</text>
+<rect class="chipr" x="356" y="427" width="468" height="30" rx="14"/>
+<text class="s" x="370" y="446.68">goods · 일반 로그인(팀원)</text>
+<text class="s" x="356" y="481">보안 필터: CORS → oauth2Login → LoginFilter(팀원) → JWTFilter</text>
+<rect class="card" x="40" y="262" width="224" height="54" rx="12"/>
+<text class="h" x="56" y="289">기상청 API허브</text>
+<text class="b" x="56" y="308">산악 지점 예보</text>
+<rect class="card" x="40" y="322" width="224" height="54" rx="12"/>
+<text class="h" x="56" y="349">S3 + CloudFront</text>
+<text class="s" x="56" y="367">UUID 키 → CloudFront URL</text>
+<rect class="card" x="40" y="382" width="224" height="54" rx="12"/>
+<text class="h" x="56" y="409">OAuth</text>
+<text class="b" x="56" y="428">네이버 · 구글</text>
+<rect class="card" x="40" y="442" width="224" height="54" rx="12"/>
+<text class="h" x="56" y="469">Flutter 앱</text>
+<text class="s" x="56" y="487">별도 레포</text>
+<rect class="card" x="936" y="262" width="224" height="54" rx="12"/>
+<text x="952" y="289"><tspan class="h">MySQL</tspan><tspan class="s">  매퍼 12개</tspan></text>
+<text class="s" x="952" y="307">글·회원·게시판 등</text>
+<rect class="mine" x="936" y="322" width="224" height="54" rx="12"/>
+<text class="h" x="952" y="349">MongoDB</text>
+<text class="b" x="952" y="368">큐레이션 구간 문서</text>
+<rect class="mine" x="936" y="382" width="224" height="54" rx="12"/>
+<text class="h" x="952" y="409">Redis</text>
+<text class="b" x="952" y="428">weather:{n} · 12시간</text>
+<rect class="mine" x="936" y="442" width="224" height="54" rx="12"/>
+<text class="h" x="952" y="469">서버 메모리</text>
+<text class="s" x="952" y="487">153지점 · mountains.json</text>
+<path class="ln" d="M560,210 V262" marker-end="url(#a)"/>
+<rect class="pill" x="566.0" y="224.5" width="115.0" height="23.0" rx="6"/>
+<text class="s" x="572" y="239.5" text-anchor="start">REST · 쿠키 포함</text>
+<path class="ln" d="M1090,214 V238 H820 V262" marker-end="url(#a)"/>
+<rect class="pill" x="901.7" y="226.5" width="106.6" height="23.0" rx="6"/>
+<text class="s" x="955.0" y="241.5" text-anchor="middle">결제 검증(팀원)</text>
+<path class="lg" d="M340,295.0 H264" marker-end="url(#g)"/>
+<circle class="mine" cx="302.0" cy="280.0" r="10"/>
+<text x="302.0" y="284.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">1</text>
+<path class="lg" d="M340,355.0 H264" marker-end="url(#g)"/>
+<circle class="mine" cx="302.0" cy="340.0" r="10"/>
+<text x="302.0" y="344.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">5</text>
+<path class="lg" d="M340,415.0 H264" marker-end="url(#g)"/>
+<circle class="mine" cx="302.0" cy="400.0" r="10"/>
+<text x="302.0" y="404.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">8</text>
+<path class="ln" d="M264,475.0 H340" marker-end="url(#a)"/>
+<text class="s" x="302.0" y="467.0" text-anchor="middle">산 검색 등</text>
+<path class="lg" d="M840,295.0 H936" marker-end="url(#g)"/>
+<circle class="mine" cx="865.0" cy="280.0" r="10"/>
+<text x="865.0" y="284.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">5</text>
+<circle class="mine" cx="888.0" cy="280.0" r="10"/>
+<text x="888.0" y="284.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">6</text>
+<circle class="mine" cx="911.0" cy="280.0" r="10"/>
+<text x="911.0" y="284.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">7</text>
+<path class="lg" d="M840,355.0 H936" marker-end="url(#g)"/>
+<circle class="mine" cx="876.5" cy="340.0" r="10"/>
+<text x="876.5" y="344.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">5</text>
+<circle class="mine" cx="899.5" cy="340.0" r="10"/>
+<text x="899.5" y="344.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">6</text>
+<path class="lg" d="M840,415.0 H936" marker-end="url(#g)" marker-start="url(#g)"/>
+<circle class="mine" cx="876.5" cy="400.0" r="10"/>
+<text x="876.5" y="404.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">1</text>
+<circle class="mine" cx="899.5" cy="400.0" r="10"/>
+<text x="899.5" y="404.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">2</text>
+<path class="lg" d="M840,475.0 H936" marker-end="url(#g)"/>
+<circle class="mine" cx="888.0" cy="460.0" r="10"/>
+<text x="888.0" y="464.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">3</text>
+<line x1="40" y1="510" x2="1160" y2="510" stroke="#cdc4b2" stroke-width="1"/>
+<rect class="mine" x="40" y="520" width="22" height="14" rx="3"/>
+<path class="lg" d="M68,527 H90" marker-end="url(#g)"/>
+<text class="s" x="98" y="532">본인 담당</text>
+<rect class="part" x="175.28" y="520" width="22" height="14" rx="3"/>
+<rect class="band" x="175.28" y="520" width="5" height="14" rx="1"/>
+<text class="s" x="203.28" y="532">일부 본인</text>
+<rect class="team" x="280.56" y="520" width="22" height="14" rx="3"/>
+<text class="s" x="308.56" y="532">팀원 담당</text>
+<rect class="card" x="385.84000000000003" y="520" width="22" height="14" rx="3"/>
+<text class="s" x="413.84000000000003" y="532">외부·공용</text>
+<circle class="mine" cx="50" cy="551" r="10"/>
+<text x="50" y="555.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">1</text>
+<text class="s" x="68" y="556">예보 일괄 수집: 153지점, 5개씩 순차, 500ms 간격 → Redis 12시간</text>
+<circle class="mine" cx="620" cy="551" r="10"/>
+<text x="620" y="555.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">2</text>
+<text class="s" x="638" y="556">예보 조회: 지도 API는 Redis만 읽음</text>
+<circle class="mine" cx="50" cy="572" r="10"/>
+<text x="50" y="576.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">3</text>
+<text class="s" x="68" y="577">산 검색: 서버 메모리 목록</text>
+<circle class="mine" cx="620" cy="572" r="10"/>
+<text x="620" y="576.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">4</text>
+<text class="s" x="638" y="577">등산로: 브라우저가 개발 프록시로 VWorld 호출</text>
+<circle class="mine" cx="50" cy="593" r="10"/>
+<text x="50" y="597.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">5</text>
+<text class="s" x="68" y="598">큐레이션 저장: posts → 구간별 S3 → MongoDB</text>
+<circle class="mine" cx="620" cy="593" r="10"/>
+<text x="620" y="597.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">6</text>
+<text class="s" x="638" y="598">큐레이션 검색: MongoDB 정규식 → postId → MySQL IN</text>
+<circle class="mine" cx="50" cy="614" r="10"/>
+<text x="50" y="618.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">7</text>
+<text class="s" x="68" y="619">반경 3km 작성자: searchGeo + SQL 구면 거리</text>
+<circle class="mine" cx="620" cy="614" r="10"/>
+<text x="620" y="618.7" text-anchor="middle" style="font:700 13px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" class="acc">8</text>
+<text class="s" x="638" y="619">소셜 로그인: 네이버·구글 → JWT HttpOnly 쿠키</text>
+<text class="s" x="40" y="643">팀 발표 자료의 구성도와 다른 점: 로그인은 네이버·구글, VWorld는 브라우저가 호출, 예보는 서버가 받아 Redis에 씀</text>
+<text class="s" x="40" y="663">배포 경계는 근거가 없어 그리지 않음</text>
+</svg>

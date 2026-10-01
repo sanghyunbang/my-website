@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 740" width="1000" height="740" role="img" aria-labelledby="t d">
+<title id="t">Where the data lives</title>
+<desc id="d">A curation post keeps its common fields in the MySQL posts table and its route segments in MongoDB curationSegmentDoc documents, linked by postId in application code (no foreign key). Mountain forecasts live in Redis under weather:{mountainNum} for 12 hours, the 153 mountain points in server memory, and media files in S3 with only their URLs stored. The route and description columns of the original MySQL detail table curation_details moved to MongoDB segment documents on 2025-06-24 to 06-26, and the code stopped using that table. The inset shows the route model: N markers become 2N−1 segments (odd = point, even = path). Main tables only.</desc>
+<style>
+.bg{fill:#f7f4ed}
+.card{fill:#ffffff;stroke:#cdc4b2;stroke-width:1.5}
+.core{fill:#ffffff;stroke:#1f1d1a;stroke-width:2}
+.mine{fill:#fbf1dc;stroke:#9a6b12;stroke-width:2.5}
+.part{fill:#ffffff;stroke:#9a6b12;stroke-width:2}
+.band{fill:#9a6b12}
+.team{fill:#f1ece1;stroke:#cdc4b2;stroke-width:1.5}
+.unk{fill:#ffffff;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.y26{fill:#e6f2ef;stroke:#2f7d74;stroke-width:2}
+.dash{fill:none;stroke:#b7ab94;stroke-width:1.5;stroke-dasharray:6 5}
+.chipr{fill:#f1ece1}
+.chipm{fill:#fbf1dc;stroke:#9a6b12;stroke-width:1}
+.chipt{fill:#e6f2ef;stroke:#2f7d74;stroke-width:1}
+.pill{fill:#f7f4ed}
+.title{font:800 24px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.h{font:700 18px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.hs{font:700 16px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#1f1d1a}
+.b{font:500 15px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#5f584b}
+.s{font:500 14px 'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;fill:#7a7263}
+.mono{font:500 14px ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;fill:#5f584b}
+.acc{fill:#9a6b12}
+.acc2{fill:#2f7d74}
+.ln{stroke:#6b6457;stroke-width:1.8;fill:none}
+.lg{stroke:#9a6b12;stroke-width:2.2;fill:none}
+.ld{stroke:#6b6457;stroke-width:1.6;fill:none;stroke-dasharray:6 5}
+.lgd{stroke:#9a6b12;stroke-width:2;fill:none;stroke-dasharray:6 5}
+.lt{stroke:#2f7d74;stroke-width:2;fill:none}
+.ah{fill:#6b6457}
+.ahg{fill:#9a6b12}
+.aht{fill:#2f7d74}
+</style>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+<marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahg"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1000" height="740" rx="18"/>
+<text class="title" x="40" y="48">Where the data lives</text>
+<text class="s" x="40" y="72">Basis: backend ec805ca · frontend c663906 (2025-07-02) · team SQL notes and mappers · solid = FK, dashed = linked in code only</text>
+<rect class="dash" x="30" y="96" width="460" height="568" rx="16"/>
+<text class="hs" x="46" y="120">MySQL</text>
+<rect class="card" x="46" y="132" width="140" height="106" rx="10"/>
+<path class="card" d="M46,162 V142 A10 10 0 0 1 56 132 H176 A10 10 0 0 1 186 142 V162 Z"/>
+<text class="hs" x="58" y="153">boards</text>
+<text class="mono" x="58" y="182">board_id PK</text>
+<text class="mono" x="58" y="202">title UK</text>
+<text class="mono" x="58" y="222">creator_id FK</text>
+<rect class="card" x="222" y="132" width="248" height="126" rx="10"/>
+<path class="card" d="M222,162 V142 A10 10 0 0 1 232 132 H460 A10 10 0 0 1 470 142 V162 Z"/>
+<text class="hs" x="234" y="153">users</text>
+<text class="mono" x="234" y="182">user_id PK</text>
+<text class="mono" x="234" y="202">email UK</text>
+<text x="234" y="222"><tspan class="mono">password_hash</tspan><tspan class="s"> (NULL for social)</tspan></text>
+<text x="234" y="242"><tspan class="mono">nickname</tspan><tspan class="s"> (generated for social)</tspan></text>
+<rect class="card" x="46" y="286" width="270" height="146" rx="10"/>
+<path class="card" d="M46,316 V296 A10 10 0 0 1 56 286 H306 A10 10 0 0 1 316 296 V316 Z"/>
+<text class="hs" x="58" y="307">posts</text>
+<text class="mono" x="58" y="336">post_id PK</text>
+<text class="mono" x="58" y="356">user_id FK · board_id FK</text>
+<text x="58" y="376"><tspan class="mono">type</tspan><tspan class="s"> (general · curation · meeting)</tspan></text>
+<text x="58" y="396"><tspan class="mono acc">searchGeo "lat,lon"</tspan><tspan class="s acc">  added 06-30</tspan></text>
+<text class="mono" x="58" y="416">is_deleted</text>
+<rect class="card" x="46" y="476" width="170" height="86" rx="10"/>
+<path class="card" d="M46,506 V486 A10 10 0 0 1 56 476 H206 A10 10 0 0 1 216 486 V506 Z"/>
+<text class="hs" x="58" y="497">comments</text>
+<text class="mono" x="58" y="526">post_id FK</text>
+<text class="mono" x="58" y="546">parent_id</text>
+<rect class="card" x="236" y="476" width="180" height="106" rx="10"/>
+<path class="card" d="M236,506 V486 A10 10 0 0 1 246 476 H406 A10 10 0 0 1 416 486 V506 Z"/>
+<text class="hs" x="248" y="497">post_media</text>
+<text class="mono" x="248" y="526">media_url</text>
+<text class="mono" x="248" y="546">media_type</text>
+<text class="mono" x="248" y="566">post_id FK</text>
+<rect class="team" x="46" y="600" width="424" height="52" rx="10"/>
+<text class="b" x="60" y="621">7 goods / cart / order / review tables (teammates)</text>
+<text class="s" x="60" y="642">feedbacks (JPA) · myfeed · feedname</text>
+<path class="ln" d="M186,217 H222" marker-end="url(#a)"/>
+<path class="ln" d="M116,286 V238" marker-end="url(#a)"/>
+<text class="s" x="124" y="267">N:1</text>
+<path class="ln" d="M290,286 V258" marker-end="url(#a)"/>
+<text class="s" x="298" y="277">N:1</text>
+<path class="ln" d="M130,476 V432" marker-end="url(#a)"/>
+<path class="ln" d="M296,476 V432" marker-end="url(#a)"/>
+<path class="ln" d="M72,562 V578 H150 V562" marker-end="url(#a)"/>
+<text class="s" x="160" y="583">self</text>
+<path class="lgd" d="M316,331 H514" marker-end="url(#g)"/>
+<text class="s acc" x="410" y="296" text-anchor="middle">postId · no FK</text>
+<text class="s acc" x="410" y="315" text-anchor="middle">linked in code</text>
+<text class="s acc" x="330" y="360">Lon/lat order differs</text>
+<text class="s acc" x="330" y="379">GeoJSON [lon, lat]</text>
+<text class="s acc" x="330" y="398">searchGeo "lat,lon"</text>
+<rect class="unk" x="514" y="120" width="236" height="106" rx="10"/>
+<path class="unk" d="M514,150 V130 A10 10 0 0 1 524 120 H740 A10 10 0 0 1 750 130 V150 Z"/>
+<text class="hs" x="526" y="141">Retired: curation_details</text>
+<text class="mono" x="526" y="170">geo_json · caution</text>
+<text class="mono" x="526" y="190">route_description …</text>
+<text class="s" x="526" y="210">moved to MongoDB, 06-24–26</text>
+<path class="ld" d="M694,226 V286" marker-end="url(#a)"/>
+<text class="s" x="704" y="261">moved</text>
+<text class="hs" x="514" y="278">MongoDB</text>
+<rect class="mine" x="514" y="286" width="236" height="206" rx="10"/>
+<path class="mine" d="M514,316 V296 A10 10 0 0 1 524 286 H740 A10 10 0 0 1 750 296 V316 Z"/>
+<text class="hs" x="526" y="307">curationSegmentDoc</text>
+<text class="mono" x="526" y="336">postId</text>
+<text class="mono" x="526" y="356">segmentKey · order</text>
+<text class="mono" x="526" y="376">pointerName</text>
+<text class="mono" x="526" y="396">difficulty · caution</text>
+<text class="mono" x="526" y="416">description · facility[]</text>
+<text class="mono" x="526" y="436">geometry  GeoJSON</text>
+<text class="s" x="526" y="456">  Point · LineString, [lon, lat]</text>
+<text class="mono" x="526" y="476">media[]  CloudFront URL</text>
+<rect class="mine" x="786" y="116" width="184" height="104" rx="10"/>
+<path class="mine" d="M786,146 V126 A10 10 0 0 1 796 116 H960 A10 10 0 0 1 970 126 V146 Z"/>
+<text class="hs" x="798" y="137">Redis</text>
+<text class="mono" x="798" y="166">weather:{mountainNum}</text>
+<text class="mono" x="798" y="186">WeatherDTO[] JSON</text>
+<text x="798" y="206"><tspan class="mono">EX 43200</tspan><tspan class="s"> (12 h)</tspan></text>
+<rect class="mine" x="786" y="270" width="184" height="104" rx="10"/>
+<path class="mine" d="M786,300 V280 A10 10 0 0 1 796 270 H960 A10 10 0 0 1 970 280 V300 Z"/>
+<text class="hs" x="798" y="291">Server memory</text>
+<text class="mono" x="798" y="320">mountainList (153)</text>
+<text class="mono" x="798" y="340">mountainNum · name</text>
+<text class="mono" x="798" y="360">lat · lon · alt</text>
+<path class="ld" d="M836,270 V220" marker-end="url(#a)"/>
+<text class="s" x="846" y="251">mountainNum</text>
+<rect class="card" x="786" y="436" width="184" height="84" rx="10"/>
+<path class="card" d="M786,466 V446 A10 10 0 0 1 796 436 H960 A10 10 0 0 1 970 446 V466 Z"/>
+<text class="hs" x="798" y="457">S3</text>
+<text class="mono" x="798" y="486">UUID_originalName</text>
+<text class="s" x="798" y="506">only URLs stored</text>
+<path class="ld" d="M786,471 H750" marker-end="url(#a)"/>
+<text class="s" x="768.0" y="462" text-anchor="middle">URL</text>
+<path class="ld" d="M786,511 H416" marker-end="url(#a)"/>
+<rect class="pill" x="612.5" y="499.0" width="39.0" height="24.0" rx="6"/>
+<text class="s" x="632" y="514.9" text-anchor="middle">URL</text>
+<rect class="card" x="514" y="530" width="456" height="134" rx="12"/>
+<text class="hs" x="530" y="554">Route segment model</text>
+<text class="s" x="530" y="574">N markers → 2N−1 segments (odd = point, even = path)</text>
+<polyline class="lg" points="566,620 666,610 766,620"/>
+<circle cx="566" cy="620" r="7" fill="#ffffff" stroke="#9a6b12" stroke-width="2.5"/>
+<circle cx="666" cy="610" r="7" fill="#ffffff" stroke="#9a6b12" stroke-width="2.5"/>
+<circle cx="766" cy="620" r="7" fill="#ffffff" stroke="#9a6b12" stroke-width="2.5"/>
+<rect class="chipm" x="530.5" y="631" width="71.0" height="24" rx="12"/>
+<text class="s" x="566" y="648" text-anchor="middle">1 point</text>
+<rect class="chipm" x="630.5" y="631" width="71.0" height="24" rx="12"/>
+<text class="s" x="666" y="648" text-anchor="middle">3 point</text>
+<rect class="chipm" x="730.5" y="631" width="71.0" height="24" rx="12"/>
+<text class="s" x="766" y="648" text-anchor="middle">5 point</text>
+<rect class="chipr" x="583.1" y="581" width="65.8" height="24" rx="12"/>
+<text class="s" x="616.0" y="598" text-anchor="middle">2 path</text>
+<rect class="chipr" x="683.1" y="581" width="65.8" height="24" rx="12"/>
+<text class="s" x="716.0" y="598" text-anchor="middle">4 path</text>
+<text class="s" x="820" y="604">Segment 5 holds</text>
+<text class="s" x="820" y="623">the whole route</text>
+<text class="s" x="820" y="642">as a LineString</text>
+<line x1="40" y1="680" x2="960" y2="680" stroke="#cdc4b2" stroke-width="1"/>
+<rect class="mine" x="40" y="690" width="22" height="14" rx="3"/>
+<text class="s" x="68" y="702">my part</text>
+<rect class="card" x="141.12" y="690" width="22" height="14" rx="3"/>
+<text class="s" x="169.12" y="702">shared</text>
+<rect class="team" x="236.0" y="690" width="22" height="14" rx="3"/>
+<text class="s" x="264.0" y="702">teammates</text>
+<rect class="unk" x="362.08" y="690" width="22" height="14" rx="3"/>
+<text class="s" x="390.08" y="702">retired table</text>
+<text x="498.56" y="702"><tspan class="s acc">gold text = column I added</tspan></text>
+<text class="s" x="40" y="726">Main tables only · not verified that the documented indexes and FKs existed in the actual DB</text>
+</svg>
