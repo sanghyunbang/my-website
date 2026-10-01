@@ -6,12 +6,13 @@ interface Props {
   badge: string;
 }
 const { title, href, description, badge } = Astro.props;
+const external = /^https?:\/\//.test(href);
 ---
 
 <a
   href={href}
-  target="_blank"
-  rel="noreferrer"
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noreferrer' : undefined}
   class="group flex items-center justify-between gap-4 rounded-2xl border border-line bg-surface px-6 py-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-line-strong"
 >
   <div class="min-w-0">
@@ -24,6 +25,6 @@ const { title, href, description, badge } = Astro.props;
     <p class="mt-1 truncate text-sm text-muted">{description}</p>
   </div>
   <span class="shrink-0 text-muted transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent">
-    ↗
+    {external ? '↗' : '→'}
   </span>
 </a>

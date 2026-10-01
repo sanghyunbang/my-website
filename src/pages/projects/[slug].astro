@@ -1,15 +1,14 @@
 ---
-import { getCollection } from 'astro:content';
 import ProjectDetail from '../../components/views/ProjectDetail.astro';
+import { getProjects, projectSlug } from '../../lib/content';
 
+// kind: brief(짧은 항목)는 상세 페이지를 만들지 않는다
 export async function getStaticPaths() {
-  const projects = await getCollection('projects');
-  return projects
-    .filter((p) => p.id.startsWith('ko/'))
-    .map((p) => ({
-      params: { slug: p.id.split('/').pop() },
-      props: { project: p },
-    }));
+  const projects = await getProjects('ko', 'case');
+  return projects.map((p) => ({
+    params: { slug: projectSlug(p) },
+    props: { project: p },
+  }));
 }
 const { project } = Astro.props;
 ---

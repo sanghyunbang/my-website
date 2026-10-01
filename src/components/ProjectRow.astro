@@ -1,6 +1,7 @@
 ---
 import TechBadge from './TechBadge.astro';
-import { localize, type Lang } from '../i18n';
+import { localize, useT, type Lang } from '../i18n';
+import { getAward, formatAward, type AwardId } from '../data/profile';
 
 interface Props {
   title: string;
@@ -8,16 +9,19 @@ interface Props {
   summary: string;
   tech: string[];
   highlight?: string;
-  award?: string;
+  /** src/data/profile.ts awards id */
+  award?: AwardId;
   cover?: string;
   coverAlt?: string;
   index?: number;
   lang?: Lang;
   cta?: string;
 }
-const { title, slug, summary, tech, highlight, award, cover, coverAlt, index = 0, lang = 'ko', cta = '자세히 보기' } =
+const { title, slug, summary, tech, highlight, award, cover, coverAlt, index = 0, lang = 'ko', cta } =
   Astro.props;
+const t = useT(lang);
 const href = localize(`/projects/${slug}`, lang);
+const awardTitle = award ? formatAward(getAward(award), lang) : undefined;
 
 const gradients = [
   'from-blue-500 via-indigo-500 to-violet-600',
@@ -30,16 +34,17 @@ const monogram = title.trim().charAt(0).toUpperCase();
 
 <a
   href={href}
-  class="group grid items-stretch gap-7 sm:grid-cols-[300px_1fr]"
+  class="group grid items-center gap-7 sm:grid-cols-[320px_1fr]"
 >
-  {/* thumbnail — tall enough to match content */}
-  <div class="relative aspect-square overflow-hidden rounded-2xl border border-line sm:aspect-auto sm:min-h-[280px]">
+  {/* thumbnail — 16:9 frame; covers are contained (never cropped) on a neutral background */}
+  <div class="relative aspect-video w-full overflow-hidden rounded-2xl border border-line bg-neutral-100">
     {cover ? (
       <img
         src={cover}
         alt={coverAlt ?? title}
-        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]"
         loading="lazy"
+        decoding="async"
       />
     ) : (
       <div
@@ -51,9 +56,12 @@ const monogram = title.trim().charAt(0).toUpperCase();
         <span class="display text-7xl text-white/95">{monogram}</span>
       </div>
     )}
-    {award && (
-      <span class="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-amber-700 backdrop-blur">
-        🏆 수상
+    {awardTitle && (
+      <span
+        class="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-amber-700 backdrop-blur"
+        title={awardTitle}
+      >
+        🏆 {t('award.badge')}
       </span>
     )}
   </div>
@@ -70,8 +78,8 @@ const monogram = title.trim().charAt(0).toUpperCase();
       </p>
     )}
     <div class="mt-4 flex flex-wrap gap-1.5">
-      {tech.slice(0, 6).map((t) => (
-        <TechBadge label={t} />
+      {tech.slice(0, 6).map((x) => (
+        <TechBadge label={x} />
       ))}
       {tech.length > 6 && (
         <span class="inline-flex items-center rounded-lg border border-line px-2.5 py-1 text-xs font-medium text-muted">
@@ -80,7 +88,7 @@ const monogram = title.trim().charAt(0).toUpperCase();
       )}
     </div>
     <span class="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-ink transition-all duration-300 group-hover:gap-2">
-      {cta} <span class="text-accent">→</span>
+      {cta ?? t('proj.viewmore')} <span class="text-accent">→</span>
     </span>
   </div>
 </a>

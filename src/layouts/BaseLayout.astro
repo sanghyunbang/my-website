@@ -2,30 +2,65 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { getLang, langPaths } from '../i18n';
+import { person, positioning, site } from '../data/profile';
 
 interface Props {
+  /** 없으면 홈 제목(이름 — 포지셔닝) */
   title?: string;
   description?: string;
   canonical?: string;
+  /** og:image (public 절대경로 또는 URL). 없으면 site.ogImage */
+  image?: string;
+  imageAlt?: string;
+  /** ko/en 짝 페이지가 있을 때 hreflang alternate를 넣는다 (블로그·404는 false) */
+  alternates?: boolean;
+  noindex?: boolean;
+  type?: 'website' | 'article';
 }
 
+const lang = getLang(Astro.url);
 const {
-  title = 'SangHyun Bang',
-  description = 'SangHyun Bang — Software Engineer. Spring 백엔드부터 Flutter 앱까지 제품이 되는 소프트웨어를 만듭니다.',
+  title,
+  description = positioning.meta.home[lang],
   canonical,
+  image,
+  imageAlt,
+  alternates = true,
+  noindex = false,
+  type = 'website',
 } = Astro.props;
 
-const fullTitle =
-  title === 'SangHyun Bang' ? title : `${title} — SangHyun Bang`;
-const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
+const fullTitle = title
+  ? `${title} — ${person.latinName}`
+  : lang === 'ko'
+    ? `${person.koreanName} ${person.latinName} — ${positioning.role.ko}`
+    : `${person.latinName} — ${positioning.role.en}`;
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const canonicalUrl = canonical ?? pageUrl;
+const ogImage = new URL(image ?? site.ogImage, Astro.site).href;
+const ogImageAlt = image ? (imageAlt ?? title ?? person.latinName) : `${person.latinName} — ${positioning.role[lang]}`;
+const ogLocale = lang === 'ko' ? 'ko_KR' : 'en_US';
+const ogLocaleAlt = lang === 'ko' ? 'en_US' : 'ko_KR';
+
+const paths = langPaths(Astro.url);
+const alt = alternates
+  ? {
+      ko: new URL(paths.ko, Astro.site).href,
+      en: new URL(paths.en, Astro.site).href,
+    }
+  : null;
 ---
 
 <!doctype html>
-<html lang="ko">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/png" href="/img/cat_profile.png" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,12 +72,36 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Kaushan+Script&display=swap"
     />
-    <link rel="canonical" href={canonicalUrl} />
+    {!noindex && <link rel="canonical" href={canonicalUrl} />}
+    {alt && (
+      <>
+        <link rel="alternate" hreflang="ko" href={alt.ko} />
+        <link rel="alternate" hreflang="en" href={alt.en} />
+        <link rel="alternate" hreflang="x-default" href={alt.ko} />
+      </>
+    )}
+    {noindex && <meta name="robots" content="noindex" />}
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <meta property="og:site_name" content={person.latinName} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:locale" content={ogLocale} />
+    {alt && <meta property="og:locale:alternate" content={ogLocaleAlt} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    {!image && (
+      <>
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+      </>
+    )}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     <meta name="generator" content={Astro.generator} />
   </head>
   <body>

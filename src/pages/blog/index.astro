@@ -1,11 +1,10 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
+import { getPublishedPosts } from '../../lib/content';
 
-const posts = (await getCollection('blog'))
-  .filter((p) => !p.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+// draft는 제외. 공개 글이 0편이면 빈 상태를 보여 주고 noindex (사이트맵에서도 빠진다: astro.config.mjs)
+const posts = await getPublishedPosts();
 
 const counts = new Map<string, number>();
 for (const p of posts) {
@@ -19,16 +18,21 @@ const filters = [
 ];
 ---
 
-<BaseLayout title="Blog" description="SangHyun Bang의 개발 블로그 — Java/Spring 리팩토링, 성능, 단위 테스트.">
+<BaseLayout title="Blog" description="방상현(SangHyun Bang)의 개발 블로그 — 프로젝트를 만들며 확인한 것들." alternates={false} noindex={posts.length === 0}>
   <section class="pt-28 pb-8 sm:pt-32">
     <p class="font-mono text-sm text-accent-ink">Blog</p>
     <h1 class="display mt-3 text-5xl text-ink sm:text-6xl">개발 블로그</h1>
     <p class="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">
-      velog에 쓰던 글을 이곳으로 차츰 옮기고 있습니다. 프로젝트를 리팩토링하며
-      파고든 Java/Spring 개념들을 정리합니다.
+      프로젝트를 만들고 고치며 확인한 것을 정리합니다.
     </p>
 
-    <div class="mt-8 flex flex-wrap gap-2">
+    {posts.length === 0 && (
+      <p class="mt-10 rounded-2xl border border-line bg-surface px-6 py-8 text-center text-sm text-muted">
+        아직 공개된 글이 없습니다.
+      </p>
+    )}
+
+    <div class:list={['mt-8 flex flex-wrap gap-2', posts.length === 0 && 'hidden']}>
       {filters.map((f, i) => (
         <button
           type="button"

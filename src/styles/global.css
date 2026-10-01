@@ -16,8 +16,9 @@
 
   --font-sans: "Pretendard Variable", Pretendard, ui-sans-serif, system-ui,
     -apple-system, "Segoe UI", Roboto, "Apple SD Gothic Neo", sans-serif;
+  /* 한글 글리프는 고정폭 폰트에 없으므로 Pretendard로 받는다 (GulimChe 등 시스템 폴백 방지) */
   --font-mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo,
-    Consolas, monospace;
+    Consolas, "Pretendard Variable", Pretendard, monospace;
 }
 
 /* ── Base ── */
@@ -33,6 +34,8 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   letter-spacing: -0.011em;
+  /* .full-bleed(100vw)가 세로 스크롤바 폭만큼 가로 스크롤을 만들지 않게 */
+  overflow-x: clip;
 }
 
 ::selection {
@@ -78,12 +81,43 @@ body {
   );
 }
 
-/* Print (resume → PDF) */
+/* Print (resume → PDF). scripts/build-resume-pdf.mjs가 이 스타일로 public/resume-{ko,en}.pdf를 만든다 */
+@page {
+  size: A4;
+  margin: 12mm 13mm;
+}
 @media print {
-  .no-print { display: none !important; }
-  body { background: #fff !important; }
-  .resume { padding-top: 0 !important; }
+  html { font-size: 12px; scroll-behavior: auto; }
+  body {
+    min-height: 0;
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  /* header · footer · nav · buttons */
+  .no-print,
+  body > header,
+  body > footer,
+  nav,
+  button { display: none !important; }
+  main { max-width: none !important; padding: 0 !important; margin: 0 !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .resume { max-width: none !important; padding: 0 !important; }
   .resume a { color: inherit !important; text-decoration: none !important; }
+  .resume .text-accent-ink { color: var(--color-accent-ink) !important; }
+  /* 항목이 페이지 경계에서 잘리지 않게 */
+  .resume header,
+  .resume-entry,
+  .resume li { break-inside: avoid; page-break-inside: avoid; }
+  .resume h2 { break-after: avoid; page-break-after: avoid; }
+  /* 짧은 섹션(교육·학력·기술·자격·수상)은 통째로 다음 쪽으로 */
+  .resume-keep { break-inside: avoid; page-break-inside: avoid; }
+  .resume-sections > * + * { margin-top: 1.1rem !important; }
+  /* 인쇄에서는 grid 대신 block + float: Chrome이 grid 컨테이너의 break-inside: avoid를 지키지 않는다 */
+  .resume .resume-section { display: block; padding-top: 1.1rem; }
+  .resume .resume-section::after { content: ''; display: table; clear: both; }
+  .resume .resume-section > h2 { float: left; width: 120px; }
+  .resume .resume-section > :not(h2) { margin-left: 130px; }
 }
 
 /* Slow up/down float */

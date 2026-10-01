@@ -1,13 +1,18 @@
 ---
-import { getLang, localize, altLangPath, useT, GITHUB_URL, PORTFOLIO_URL } from '../i18n';
+import { getLang, localize, altLangPath, useT } from '../i18n';
+import { links, person } from '../data/profile';
+import { getPublishedPosts } from '../lib/content';
 
 const lang = getLang(Astro.url);
 const t = useT(lang);
 
-const links = [
+// 공개 글이 0편이면 Blog 메뉴를 숨긴다
+const hasPosts = (await getPublishedPosts()).length > 0;
+
+const nav = [
   { href: localize('/about', lang), label: t('nav.about'), match: '/about' },
   { href: localize('/projects', lang), label: t('nav.work'), match: '/projects' },
-  { href: '/blog', label: t('nav.blog'), match: '/blog' }, // 블로그는 한국어만
+  ...(hasPosts ? [{ href: '/blog', label: t('nav.blog'), match: '/blog' }] : []), // 블로그는 한국어만
   { href: localize('/resume', lang), label: t('nav.resume'), match: '/resume' },
 ];
 
@@ -25,15 +30,15 @@ const enHref = altLangPath(Astro.url, 'en');
   >
     <a href={localize('/', lang)} class="flex items-center gap-2 rounded-full py-1 pl-1.5 pr-2.5">
       <img
-        src="/img/cat_profile.png"
-        alt="SangHyun"
-        width="30"
-        height="30"
+        src={person.avatar.src}
+        alt={person.avatar.alt}
+        width="28"
+        height="28"
         class="h-7 w-7 rounded-full object-cover"
       />
-      <span class="text-sm font-extrabold tracking-tight text-ink">SANGHYUN</span>
+      <span class="hidden text-sm font-extrabold tracking-tight text-ink sm:inline">{person.brand}</span>
     </a>
-    {links.map((l) => (
+    {nav.map((l) => (
       <a
         href={l.href}
         class:list={[
@@ -49,25 +54,27 @@ const enHref = altLangPath(Astro.url, 'en');
     <div class="ml-1 flex items-center rounded-full bg-black/[0.04] p-0.5 text-xs font-bold">
       <a
         href={koHref}
+        hreflang="ko"
         class:list={['rounded-full px-2 py-1 transition-colors', lang === 'ko' ? 'bg-ink text-white' : 'text-muted hover:text-ink']}
       >KO</a>
       <a
         href={enHref}
+        hreflang="en"
         class:list={['rounded-full px-2 py-1 transition-colors', lang === 'en' ? 'bg-ink text-white' : 'text-muted hover:text-ink']}
       >EN</a>
     </div>
   </nav>
 </div>
 
-{/* 우측 상단 소셜/링크 (GitHub · Portfolio) */}
+{/* 우측 상단 링크 (GitHub · 이력서 PDF) */}
 <div class="no-print pointer-events-none fixed right-4 top-4 z-50 hidden lg:flex">
   <div class="pointer-events-auto flex items-center gap-0.5 rounded-full border border-black/5 bg-white/80 p-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md">
     <a
-      href={GITHUB_URL}
+      href={links.github.href}
       target="_blank"
       rel="noreferrer"
-      aria-label="GitHub"
-      title="GitHub"
+      aria-label={links.github.label}
+      title={links.github.label}
       class="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-black/5 hover:text-ink"
     >
       <svg viewBox="0 0 16 16" fill="currentColor" class="h-[18px] w-[18px]" aria-hidden="true">
@@ -75,18 +82,15 @@ const enHref = altLangPath(Astro.url, 'en');
       </svg>
     </a>
     <a
-      href={PORTFOLIO_URL}
-      target="_blank"
-      rel="noreferrer"
-      aria-label="Portfolio"
-      title="Portfolio (Notion)"
+      href={links.resumePdf[lang]}
+      title={t('nav.pdf.title')}
       class="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-sm font-semibold text-ink-soft transition-colors hover:bg-black/5 hover:text-ink"
     >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[17px] w-[17px]" aria-hidden="true">
-        <rect x="3" y="7" width="18" height="13" rx="2" />
-        <path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" />
+        <path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z" />
+        <path d="M14 3v5h5M12 12v6M9 15l3 3 3-3" />
       </svg>
-      Portfolio
+      {t('nav.pdf')}
     </a>
   </div>
 </div>

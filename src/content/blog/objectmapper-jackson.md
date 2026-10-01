@@ -6,6 +6,8 @@ tags: [Java, 단위 테스트, Jackson]
 series: "[Heat Trip] 프로젝트 리펙토링"
 seriesOrder: 6
 canonicalUrl: "https://velog.io/@sanghyunbang/ObjectMapper%EB%8A%94-%EB%8B%A8%EC%88%9C-JSON-%EB%B3%80%ED%99%98%EA%B8%B0%EA%B0%80-%EC%95%84%EB%8B%88%EC%97%88%EB%8B%A4-Tour-API-%ED%8C%8C%EC%8B%B1-%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%A1%9C-%EB%B3%B4%EB%8A%94-Jackson-%EB%A6%AC%ED%94%8C%EB%A0%89%EC%85%98-%EB%8F%99%EC%8B%9C%EC%84%B1"
+# 2026-10-01: 사이트에서 내림(개념 정리 글, 원문은 velog). 되돌리려면 false로.
+draft: true
 ---
 
 ## 테스트 개괄

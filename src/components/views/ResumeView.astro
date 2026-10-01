@@ -1,106 +1,83 @@
 ---
+/**
+ * 이력서. 모든 사실은 src/data/profile.ts에서 읽는다.
+ * public/resume-{ko,en}.pdf는 이 페이지를 인쇄해 만든다: npm run pdf (scripts/build-resume-pdf.mjs)
+ * 인쇄 스타일: src/styles/global.css @media print
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useT, localize, GITHUB_URL, PORTFOLIO_URL, type Lang } from '../../i18n';
+import { useT, localize, type Lang } from '../../i18n';
+import {
+  person,
+  positioning,
+  links,
+  site,
+  experience,
+  training,
+  education,
+  educationDetail,
+  certs,
+  languages,
+  awards,
+  skills,
+  skillText,
+  resumeProjects,
+  formatDate,
+  formatPeriod,
+  formatProjectPeriods,
+  formatAward,
+  getAward,
+  getApp,
+} from '../../data/profile';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useT(lang);
 
-const D = {
-  ko: {
-    experience: [
-      { org: '레이시스', role: '백엔드 개발자', period: '2026.07 – 현재', bullets: ['ERP 회계 모듈 · Node.js, MariaDB'] },
-      { org: '중앙대학교 산학협력단', role: '학생연구원', period: '2023.09 – 2024.08', bullets: ['Multi-Armed Bandit / 강화학습 연구 보조 — 이론 분석, 실험 정리, 연구과제 수행 지원', '정량적 실험 설계와 결과 해석을 통해 데이터 기반으로 문제를 바라보는 습관을 다짐'] },
-      { org: '중앙대학교', role: '연구 인턴', period: '2023.01 – 2023.08', bullets: ['Bandit Algorithm / Reinforcement Learning 연구 인턴'] },
-      { org: '다올투자증권㈜', role: '경영기획 인턴', period: '2022.01 – 2022.02', bullets: ['경영기획 업무 지원 — 비즈니스·데이터가 의사결정으로 이어지는 흐름을 경험'] },
-    ],
-    training: [
-      { name: '프로그래머스 데브코스 · MSA 기반 Spring AI 심화 캠프', detail: 'Spring Cloud · Spring AI · MSA 백엔드 — BARO FARM 프로젝트', period: '2025.11 – 2026.01' },
-      { name: '강남 하이미디어 · KDT 풀스택 캠프', detail: 'Spring · React · Flutter 풀스택 — 졸업 프로젝트 우수상 (오름 · 등산 커뮤니티)', period: '2025.01 – 2025.07' },
-    ],
-    projects: [
-      { name: 'HeatTrip — 감정 기반 여행지 추천 서비스 (팀 리드)', period: '2025.07–11 공모전(3인, 우수상) · 2026.03–06 개인 리팩토링', bullets: ['LLM 역할 한정 — 장소 추천에서 LLM은 카테고리(cat3)만 고르고, 실제 장소는 cat3로 거른 뒤 감정 특성·인기도·거리 점수로 Spring 안에서 랭킹. 프론트가 cat3Filter를 넘기면 LLM 단계를 건너뜀', '장소 목록 조회를 Offset / Cursor 페이지네이션으로 분리 (createdtime + contentid 복합 키, Base64 cursor, size+1로 hasNext 판단)', '(개인 리팩토링) 장소 검색 — EXPLAIN ANALYZE로 병목이 count 쿼리(전체 스캔 + 상관 서브쿼리 반복, 약 755ms)임을 확인, search_text 반정규화 + FULLTEXT(ngram) + MATCH…AGAINST로 전환해 count 전체 스캔 제거, 목록 약 4.9ms', '(개인 리팩토링) 관측성 구축 — AOP 요청/예외 수집, fingerprint 중복 억제 후 Slack 알림, correlation id, JaCoCo 커버리지 리포트 · Qodana(GitHub Actions)', 'Java 21 / Spring Boot 3.5 / Spring Security·OAuth2·JWT / JPA / MySQL 8 / AWS S3·CloudFront / Docker Compose'] },
-      { name: 'BARO FARM — MSA 커머스 백엔드 (회원·인증, Gateway, OPA 인가)', period: '2025.11.29–2026.01.27 · 팀 프로젝트', bullets: ['Spring Cloud Gateway·Redis·Kafka·OPA 기반 MSA에서 회원·인증 서비스, Gateway, OPA 인가 담당', '간헐적 403을 게이트웨이 오류가 아닌 "JWT 권한과 사용자 상태 불일치" 구조 문제로 진단', 'Kafka hotlist 이벤트로 상태 변경을 전파하고 OPA 번들 갱신과 연결해, 권한 반영 시차를 OPA 폴링 주기(10~60초) 안으로 줄임', '회원탈퇴는 같은 트랜잭션의 outbox + 스케줄러 발행(5회 실패 시 FAILED)으로 구현, (이후 개인 리팩토링 2026.02–03) 판매자 승인은 커밋 후 OPA 전파를 비동기로 분리 — 유실 비용 기준으로 구분하고 ADR 작성'] },
-    ],
-    education: [
-      { school: '학점은행제 (4년제)', detail: '컴퓨터공학 학사 (4.05 / 4.5)', period: '2025.07 – 2026.08' },
-      { school: '서강대학교', detail: '경영학 / 경제학 복수전공 (3.75 / 4.3)', period: '2015.03 – 2022.05' },
-      { school: '중앙대학교 대학원', detail: 'AI학과 석사과정 (휴학)', period: '2022.09 –' },
-    ],
-    certs: ['정보처리기사 (2026.06)', 'SQL개발자 SQLD (2026.06)', 'ADsP (2022.09)', '투자자산운용사 (2022.11)'],
-    languages: ['IELTS 7.0 (2024.12)', 'OPIc IH (2026.03)'],
-    awards: ['한국관광공사 관광데이터 활용 공모전 우수상 (2025.12)', '강남 하이미디어 졸업 프로젝트 우수상 (2025.07)', 'DB 금융경제 공모전 가작 (2023.05)', '한국은행 통화정책 경시대회 예선 — 서울 상위 11개팀 (2022.07)'],
-    langLabel: '어학',
-  },
-  en: {
-    experience: [
-      { org: '레이시스', role: 'Backend Developer', period: '2026.07 – present', bullets: ['ERP accounting module · Node.js, MariaDB'] },
-      { org: 'Chung-Ang Univ. Industry-Academic Cooperation Foundation', role: 'Student Researcher', period: '2023.09 – 2024.08', bullets: ['Assisted Multi-Armed Bandit / reinforcement-learning research — theory analysis, experiment organization, project support', 'Built the habit of viewing problems quantitatively through experiment design and interpretation'] },
-      { org: 'Chung-Ang University', role: 'Research Intern', period: '2023.01 – 2023.08', bullets: ['Bandit Algorithm / Reinforcement Learning research intern'] },
-      { org: 'Daol Investment & Securities', role: 'Management Planning Intern', period: '2022.01 – 2022.02', bullets: ['Supported management-planning work — experienced how business and data connect to decisions'] },
-    ],
-    training: [
-      { name: 'Programmers Dev Course · MSA Spring AI Intensive', detail: 'Spring Cloud · Spring AI · MSA backend — BARO FARM project', period: '2025.11 – 2026.01' },
-      { name: 'Gangnam HiMedia · KDT Full-stack Bootcamp', detail: 'Spring · React · Flutter — Excellence Award for the graduation project (OREUM, hiking community)', period: '2025.01 – 2025.07' },
-    ],
-    projects: [
-      { name: 'HeatTrip — Emotion-based travel recommendation (Team Lead)', period: '2025.07–11 competition (team of 3, Excellence Award) · 2026.03–06 solo refactoring', bullets: ['Scoped the LLM role — for place recommendation the LLM picks only the category (cat3); actual places are filtered by cat3 and ranked inside Spring by emotion-feature, popularity and distance scores. When the frontend sends cat3Filter, the LLM step is skipped', 'Split place-list pagination into Offset / Cursor (createdtime + contentid composite key, Base64 cursor, size+1 for hasNext)', '(Solo refactoring) Place search — EXPLAIN ANALYZE showed the bottleneck was the count query (full scan + repeated correlated subquery, ~755ms); switched to search_text denormalization + FULLTEXT (ngram) + MATCH…AGAINST, removing the count full scan; list ~4.9ms', '(Solo refactoring) Built observability — AOP request/exception collection, fingerprint dedup → Slack alerts, correlation id, JaCoCo coverage reports · Qodana (GitHub Actions)', 'Java 21 / Spring Boot 3.5 / Spring Security·OAuth2·JWT / JPA / MySQL 8 / AWS S3·CloudFront / Docker Compose'] },
-      { name: 'BARO FARM — MSA commerce backend (member/auth, Gateway, OPA authorization)', period: '2025.11.29–2026.01.27 · team project', bullets: ['Owned the member/auth service, the Gateway and OPA authorization in an MSA on Spring Cloud Gateway·Redis·Kafka·OPA', 'Diagnosed intermittent 403s as a structural "JWT permission vs user-state mismatch," not a gateway error', 'Propagated state changes via Kafka hotlist events wired to OPA bundle refresh, reducing the permission lag to within the OPA polling interval (10–60s)', 'Implemented member withdrawal with an outbox event in the same transaction, published by a scheduler (FAILED after 5 failures); (later solo refactoring, 2026.02–03) seller approval commits first and propagates to OPA asynchronously — split by the cost of losing each event, recorded in an ADR'] },
-    ],
-    education: [
-      { school: 'Credit Bank System (4-yr)', detail: 'B.S. in Computer Science (4.05 / 4.5)', period: '2025.07 – 2026.08' },
-      { school: 'Sogang University', detail: 'Business & Economics, double major (3.75 / 4.3)', period: '2015.03 – 2022.05' },
-      { school: 'Chung-Ang Univ. Graduate School', detail: 'M.S. in AI (on leave)', period: '2022.09 –' },
-    ],
-    certs: ['Engineer Information Processing (2026.06)', 'SQL Developer, SQLD (2026.06)', 'ADsP — Data Analysis Semi-Pro (2022.09)', 'Certified Investment Manager (2022.11)'],
-    languages: ['IELTS 7.0 (2024.12)', 'OPIc IH (2026.03)'],
-    awards: ['Excellence Award, Korea Tourism Data Utilization Competition (2025.12)', 'Excellence Award, Gangnam HiMedia graduation project (2025.07)', 'Honorable Mention, DB Financial & Economics Competition (2023.05)', 'Bank of Korea Monetary Policy Competition — preliminary, top-11 teams in Seoul (2022.07)'],
-    langLabel: 'Language',
-  },
-}[lang];
+const fullProjects = resumeProjects.filter((p) => p.size === 'full');
+const lineProjects = resumeProjects.filter((p) => p.size === 'line');
+// PDF 안의 링크가 localhost를 가리키지 않도록 사이트 절대 URL을 쓴다
+const abs = (path: string) => new URL(localize(path, lang), site.url).href;
 
-const skills = [
-  { label: 'Backend', items: 'Java, Spring, Spring Boot, Spring Security, Spring Cloud Gateway, JPA / Hibernate' },
-  { label: 'Infra / MSA', items: 'Kafka, Redis, OPA, MySQL, Docker, AWS (S3 / CloudFront), GitHub Actions' },
-  { label: 'Data / AI', items: 'Python, LLM 연동, Data Analysis, Reinforcement Learning' },
-  { label: 'Mobile / Etc.', items: 'Android, Kotlin, Flutter, Git' },
-];
-
-const Section = 'grid gap-2 border-t border-line pt-6 sm:grid-cols-[130px_1fr]';
+const Section = 'resume-section grid gap-2 border-t border-line pt-6 sm:grid-cols-[130px_1fr]';
+const Keep = `${Section} resume-keep`;
+const H2 = 'font-mono text-xs uppercase tracking-wider text-muted';
 ---
 
-<BaseLayout title="Resume" description="SangHyun Bang — Software Engineer resume.">
+<BaseLayout title={t('resume.title')} description={positioning.meta.resume[lang]}>
   <div class="resume mx-auto max-w-3xl pt-28 pb-8 sm:pt-32">
-    <div class="no-print mb-8 flex items-center justify-between">
+    <div class="no-print mb-8 flex flex-wrap items-center justify-between gap-3">
       <a href={localize('/about', lang)} class="font-mono text-sm text-muted transition-colors hover:text-ink">← About</a>
-      <button type="button" id="print-btn" class="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5">{t('resume.print')}</button>
+      <div class="flex items-center gap-2">
+        <a href={links.resumePdf[lang]} class="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5">{t('resume.pdf')}</a>
+        <button type="button" id="print-btn" class="rounded-full border border-line-strong px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink">{t('resume.print')}</button>
+      </div>
     </div>
 
     <header class="border-b border-line pb-6">
       <h1 class="text-3xl font-extrabold tracking-tight text-ink">
-        SangHyun Bang <span class="text-xl font-bold text-muted">방상현</span>
+        {person.latinName} <span class="text-xl font-bold text-muted">{person.koreanName}</span>
       </h1>
-      <p class="mt-1 font-mono text-sm text-accent-ink">Software Engineer</p>
+      <p class="mt-1 font-mono text-sm text-accent-ink">{positioning.role[lang]}</p>
       <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-ink-soft">
-        <a href={GITHUB_URL} target="_blank" rel="noreferrer" class="hover:text-ink">github.com/sanghyunbang</a>
-        <a href={PORTFOLIO_URL} target="_blank" rel="noreferrer" class="hover:text-ink">Portfolio (Notion)</a>
+        <a href={links.github.href} target="_blank" rel="noreferrer" class="hover:text-ink">{links.github.display}</a>
+        <a href={links.site.href} class="hover:text-ink">{links.site.display}</a>
       </div>
-      <p class="mt-4 max-w-2xl text-sm leading-relaxed text-ink-soft">{t('resume.summary')}</p>
+      <p class="mt-4 max-w-2xl text-sm leading-relaxed text-ink-soft">{positioning.summary[lang]}</p>
     </header>
 
-    <div class="mt-6 space-y-6">
+    <div class="resume-sections mt-6 space-y-6">
       <section class={Section}>
-        <h2 class="font-mono text-xs uppercase tracking-wider text-muted">Experience</h2>
+        <h2 class={H2}>{t('resume.experience')}</h2>
         <div class="space-y-5">
-          {D.experience.map((e) => (
-            <div>
+          {experience.map((e) => (
+            <div class="resume-entry">
               <div class="flex flex-wrap items-baseline justify-between gap-2">
-                <p class="font-bold text-ink">{e.org}</p>
-                <span class="font-mono text-xs text-muted">{e.period}</span>
+                <p class="font-bold text-ink">{e.org[lang]}</p>
+                <span class="font-mono text-xs text-muted">{formatPeriod(e.start, e.end, lang)}</span>
               </div>
-              <p class="text-sm font-medium text-accent-ink">{e.role}</p>
+              <p class="text-sm font-medium text-accent-ink">{e.role[lang]}</p>
               <ul class="mt-1.5 list-disc space-y-1 pl-4 text-sm leading-relaxed text-ink-soft">
-                {e.bullets.map((b) => <li>{b}</li>)}
+                {e.bullets[lang].map((b) => <li>{b}</li>)}
               </ul>
             </div>
           ))}
@@ -108,75 +85,112 @@ const Section = 'grid gap-2 border-t border-line pt-6 sm:grid-cols-[130px_1fr]';
       </section>
 
       <section class={Section}>
-        <h2 class="font-mono text-xs uppercase tracking-wider text-muted">Projects</h2>
+        <h2 class={H2}>{t('resume.projects')}</h2>
         <div class="space-y-5">
-          {D.projects.map((p) => (
-            <div>
-              <div class="flex flex-wrap items-baseline justify-between gap-2">
-                <p class="font-bold text-ink">{p.name}</p>
-                <span class="font-mono text-xs text-muted">{p.period}</span>
+          {fullProjects.map((p) => {
+            const award = p.award ? getAward(p.award) : undefined;
+            const app = p.app ? getApp(p.app) : undefined;
+            return (
+              <div class="resume-entry">
+                <div class="flex flex-wrap items-baseline justify-between gap-2">
+                  <p class="font-bold text-ink">{p.name[lang]}</p>
+                  <span class="font-mono text-xs text-muted">{formatProjectPeriods(p, lang)}</span>
+                </div>
+                {(p.slug || app || p.note) && (
+                  <p class="mt-0.5 flex flex-wrap gap-x-3 font-mono text-xs text-ink-soft">
+                    {p.slug && <a href={abs(`/projects/${p.slug}`)} class="text-accent-ink hover:underline">{t('resume.casestudy')} ↗</a>}
+                    {app && <a href={app.href} target="_blank" rel="noreferrer" class="text-accent-ink hover:underline">{app.store[lang]} ↗</a>}
+                    {p.note && <span>{p.note[lang]}</span>}
+                  </p>
+                )}
+                {award && (
+                  <p class="mt-1 text-sm font-medium text-ink">🏆 {formatAward(award, lang)}</p>
+                )}
+                <ul class="mt-1.5 list-disc space-y-1 pl-4 text-sm leading-relaxed text-ink-soft">
+                  {p.bullets?.[lang].map((b) => <li>{b}</li>)}
+                </ul>
               </div>
-              <ul class="mt-1.5 list-disc space-y-1 pl-4 text-sm leading-relaxed text-ink-soft">
-                {p.bullets.map((b) => <li>{b}</li>)}
+            );
+          })}
+
+          {lineProjects.length > 0 && (
+            <div class="resume-entry">
+              <p class="font-semibold text-ink">{t('resume.otherProjects')}</p>
+              <ul class="mt-1.5 list-disc space-y-1.5 pl-4 text-sm leading-relaxed text-ink-soft">
+                {lineProjects.map((p) => {
+                  const award = p.award ? getAward(p.award) : undefined;
+                  return (
+                    <li>
+                      <span class="font-semibold text-ink">{p.name[lang]}</span>
+                      <span class="font-mono text-xs text-muted"> ({formatProjectPeriods(p, lang)})</span>
+                      {' — '}{p.summary?.[lang]}
+                      {award && <span> {t('resume.awardLine')}: {formatAward(award, lang)}.</span>}
+                      {p.disclaimer && <span class="text-muted"> {p.disclaimer[lang]}</span>}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
-          ))}
+          )}
         </div>
       </section>
 
-      <section class={Section}>
-        <h2 class="font-mono text-xs uppercase tracking-wider text-muted">Training</h2>
+      <section class={Keep}>
+        <h2 class={H2}>{t('resume.training')}</h2>
         <div class="space-y-3">
-          {D.training.map((t2) => (
-            <div class="flex flex-wrap items-baseline justify-between gap-2">
+          {training.map((x) => (
+            <div class="resume-entry flex flex-wrap items-baseline justify-between gap-2">
               <div>
-                <p class="font-semibold text-ink">{t2.name}</p>
-                <p class="text-sm text-ink-soft">{t2.detail}</p>
+                <p class="font-semibold text-ink">{x.name[lang]}</p>
+                <p class="text-sm text-ink-soft">{x.detail[lang]}</p>
               </div>
-              <span class="font-mono text-xs text-muted">{t2.period}</span>
+              <span class="font-mono text-xs text-muted">{formatPeriod(x.start, x.end, lang)}</span>
             </div>
           ))}
         </div>
       </section>
 
-      <section class={Section}>
-        <h2 class="font-mono text-xs uppercase tracking-wider text-muted">Education</h2>
+      <section class={Keep}>
+        <h2 class={H2}>{t('resume.education')}</h2>
         <div class="space-y-3">
-          {D.education.map((e) => (
-            <div class="flex flex-wrap items-baseline justify-between gap-2">
+          {education.map((e) => (
+            <div class="resume-entry flex flex-wrap items-baseline justify-between gap-2">
               <div>
-                <p class="font-semibold text-ink">{e.school}</p>
-                <p class="text-sm text-ink-soft">{e.detail}</p>
+                <p class="font-semibold text-ink">{e.school[lang]}</p>
+                <p class="text-sm text-ink-soft">{educationDetail(e, lang)}</p>
               </div>
-              <span class="font-mono text-xs text-muted">{e.period}</span>
+              <span class="font-mono text-xs text-muted">{formatPeriod(e.start, e.end, lang)}</span>
             </div>
           ))}
         </div>
       </section>
 
-      <section class={Section}>
-        <h2 class="font-mono text-xs uppercase tracking-wider text-muted">Skills</h2>
+      <section class={Keep}>
+        <h2 class={H2}>{t('resume.skills')}</h2>
         <div class="space-y-2.5">
-          {skills.map((s) => (
-            <div class="text-sm"><span class="font-semibold text-ink">{s.label}</span><span class="text-ink-soft"> — {s.items}</span></div>
+          {skills.groups.map((s) => (
+            <div class="text-sm"><span class="font-semibold text-ink">{s.label[lang]}</span><span class="text-ink-soft"> — {s.items.map((i) => skillText(i, lang)).join(', ')}</span></div>
           ))}
         </div>
       </section>
 
-      <section class={Section}>
-        <h2 class="font-mono text-xs uppercase tracking-wider text-muted">Certifications</h2>
+      <section class={Keep}>
+        <h2 class={H2}>{t('resume.certs')}</h2>
         <div class="space-y-3 text-sm text-ink-soft">
           <ul class="list-disc space-y-1 pl-4">
-            {D.certs.map((c) => <li>{c}</li>)}
+            {certs.map((c) => <li>{c.name[lang]} ({formatDate(c.date, lang)})</li>)}
           </ul>
-          <div><span class="font-semibold text-ink">{D.langLabel}</span><span> — {D.languages.join(' · ')}</span></div>
+          <div>
+            <span class="font-semibold text-ink">{t('resume.languages')}</span>
+            <span> — {languages.map((l) => `${l.name} ${l.score} (${formatDate(l.date, lang)})`).join(' · ')}</span>
+          </div>
         </div>
       </section>
 
-      <section class={Section}>
-        <h2 class="font-mono text-xs uppercase tracking-wider text-muted">Awards</h2>
+      <section class={Keep}>
+        <h2 class={H2}>{t('resume.awards')}</h2>
         <ul class="list-disc space-y-1 pl-4 text-sm leading-relaxed text-ink-soft">
-          {D.awards.map((a) => <li>{a}</li>)}
+          {awards.map((a) => <li>{formatAward(a, lang, { work: true })}</li>)}
         </ul>
       </section>
     </div>

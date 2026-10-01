@@ -1,31 +1,50 @@
 ---
-import { render } from 'astro:content';
+import { render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Metric from '../Metric.astro';
 import RoleBar from '../RoleBar.astro';
 import TechBadge from '../TechBadge.astro';
 import { useT, localize, type Lang } from '../../i18n';
+import { getAward, formatAward, formatDate, storeLinksFor } from '../../data/profile';
+import { getProjects, projectSlug } from '../../lib/content';
 
 interface Props {
   lang: Lang;
-  project: any;
+  project: CollectionEntry<'projects'>;
 }
 const { lang, project } = Astro.props;
 const { data } = project;
+const slug = projectSlug(project);
 const { Content } = await render(project);
 const t = useT(lang);
+
+// 수상: 명칭·날짜는 profile.ts 한 곳에서
+const award = data.award ? getAward(data.award) : undefined;
+const metrics = [
+  ...(award
+    ? [{ value: award.prize[lang], label: award.event[lang], note: [award.issuer?.[lang], formatDate(award.date)].filter(Boolean).join(' · ') }]
+    : []),
+  ...data.metrics,
+];
+
+// 링크: frontmatter + profile.ts의 스토어 링크
+const links = [...data.links, ...storeLinksFor(slug, lang)];
+
+// 다른 언어판이 있을 때만 hreflang
+const other: Lang = lang === 'ko' ? 'en' : 'ko';
+const hasOther = (await getProjects(other, 'case')).some((p) => projectSlug(p) === slug);
 ---
 
-<BaseLayout title={data.title} description={data.summary}>
-  <article class="py-14">
+<BaseLayout title={data.title} description={data.summary} image={data.cover} imageAlt={data.coverAlt} alternates={hasOther} type="article">
+  <article class="pt-28 pb-14 sm:pt-32">
     <a href={localize('/projects', lang)} class="font-mono text-sm text-muted transition-colors hover:text-ink">
       {t('proj.detail.back')}
     </a>
 
     <header class="mt-6 border-b border-line pb-10">
-      {data.award && (
+      {award && (
         <span class="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
-          🏆 {data.award}
+          🏆 {formatAward(award, lang)}
         </span>
       )}
       <h1 class="display mt-4 text-5xl text-ink sm:text-6xl">{data.title}</h1>
@@ -47,12 +66,12 @@ const t = useT(lang);
       </div>
 
       <div class="mt-6 flex flex-wrap gap-2">
-        {data.tech.map((x: string) => <TechBadge label={x} />)}
+        {data.tech.map((x) => <TechBadge label={x} />)}
       </div>
 
-      {data.links.length > 0 && (
+      {links.length > 0 && (
         <div class="mt-6 flex flex-wrap gap-4">
-          {data.links.map((l: any) => (
+          {links.map((l) => (
             <a href={l.href} target="_blank" rel="noreferrer" class="link-underline text-sm font-semibold text-accent-ink">
               {l.label} ↗
             </a>
@@ -61,9 +80,20 @@ const t = useT(lang);
       )}
     </header>
 
-    {data.metrics.length > 0 && (
+    {data.cover && (
+      <img
+        src={data.cover}
+        alt={data.coverAlt ?? data.title}
+        class="mt-10 aspect-video w-full rounded-2xl border border-line bg-neutral-100 object-contain"
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
+    )}
+
+    {metrics.length > 0 && (
       <div class="mt-10 grid gap-4 sm:grid-cols-3">
-        {data.metrics.map((m: any) => <Metric value={m.value} label={m.label} note={m.note} />)}
+        {metrics.map((m) => <Metric value={m.value} label={m.label} note={m.note} />)}
       </div>
     )}
 

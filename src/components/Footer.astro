@@ -1,20 +1,22 @@
 ---
-import { getLang, localize, GITHUB_URL, PORTFOLIO_URL } from '../i18n';
+import { getLang, localize, useT } from '../i18n';
+import { links, person } from '../data/profile';
 const lang = getLang(Astro.url);
+const t = useT(lang);
 const year = new Date().getFullYear();
-const links = [
-  { href: GITHUB_URL, label: 'GitHub' },
-  { href: localize('/resume', lang), label: 'Resume' },
-  { href: PORTFOLIO_URL, label: 'Portfolio' },
+const items = [
+  { href: links.github.href, label: links.github.label },
+  { href: localize('/resume', lang), label: t('nav.resume') },
+  { href: links.resumePdf[lang], label: t('nav.pdf') },
 ];
 const isExternal = (href: string) => href.startsWith('http');
 ---
 
 <footer class="no-print mt-32 border-t border-line">
   <div class="mx-auto flex max-w-4xl flex-col items-center justify-between gap-4 px-6 py-10 sm:flex-row">
-    <p class="text-sm text-muted">© {year} SangHyun Bang</p>
+    <p class="text-sm text-muted">© {year} {person.latinName}</p>
     <div class="flex gap-5">
-      {links.map((l) => (
+      {items.map((l) => (
         <a
           href={l.href}
           target={isExternal(l.href) ? '_blank' : undefined}

@@ -6,6 +6,8 @@ tags: [Java, Stream]
 series: "[Heat Trip] 프로젝트 리펙토링"
 seriesOrder: 3
 canonicalUrl: "https://velog.io/@sanghyunbang/Stream%EC%9D%B4-%EB%AD%90%EC%98%80%EB%8D%94%EB%9D%BC-map-flatMap-%EA%B7%B8%EB%A6%AC%EA%B3%A0-%EB%A9%94%EB%AA%A8%EB%A6%AC-%EA%B5%AC%EC%A1%B0%EA%B9%8C%EC%A7%80"
+# 2026-10-01: 사이트에서 내림(개념 정리 글, 원문은 velog). 되돌리려면 false로.
+draft: true
 ---
 
 ## 0. 의문의 시작

@@ -1,15 +1,14 @@
 ---
-import { getCollection } from 'astro:content';
 import ProjectDetail from '../../../components/views/ProjectDetail.astro';
+import { getProjects, projectSlug } from '../../../lib/content';
 
+// kind: brief entries get no detail page
 export async function getStaticPaths() {
-  const projects = await getCollection('projects');
-  return projects
-    .filter((p) => p.id.startsWith('en/'))
-    .map((p) => ({
-      params: { slug: p.id.split('/').pop() },
-      props: { project: p },
-    }));
+  const projects = await getProjects('en', 'case');
+  return projects.map((p) => ({
+    params: { slug: projectSlug(p) },
+    props: { project: p },
+  }));
 }
 const { project } = Astro.props;
 ---

@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { AWARD_IDS } from './data/profile';
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
@@ -11,6 +12,7 @@ const blog = defineCollection({
     series: z.string().optional(),
     seriesOrder: z.number().optional(),
     canonicalUrl: z.string().url().optional(),
+    /** true면 목록·홈·사이트맵에서 빠지고 /blog/[slug] 페이지도 만들지 않는다 */
     draft: z.boolean().default(false),
   }),
 });
@@ -18,6 +20,8 @@ const blog = defineCollection({
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
   schema: z.object({
+    /** case = 상세 페이지가 있는 케이스 스터디, brief = /projects 하단 "그 밖의 프로젝트" 짧은 항목(상세 페이지 없음) */
+    kind: z.enum(['case', 'brief']).default('case'),
     title: z.string(),
     summary: z.string(),
     role: z.string().optional(),
@@ -26,9 +30,13 @@ const projects = defineCollection({
     highlight: z.string().optional(),
     featured: z.boolean().default(false),
     order: z.number().default(99),
+    /** public 절대경로 (예: /img/projects/<slug>/cover.webp), 16:9 권장 */
     cover: z.string().optional(),
     coverAlt: z.string().optional(),
-    award: z.string().optional(),
+    /** src/data/profile.ts의 awards id (날짜·명칭은 profile에서 가져온다) */
+    award: z.enum(AWARD_IDS).optional(),
+    /** 짧은 항목 아래에 붙일 한 줄 고지 (예: 투자 자문이 아닙니다) */
+    disclaimer: z.string().optional(),
     roleBreakdown: z
       .array(z.object({ area: z.string(), pct: z.number() }))
       .default([]),

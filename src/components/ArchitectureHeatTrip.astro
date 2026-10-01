@@ -3,8 +3,8 @@
 import { getLang } from '../i18n';
 const lang = getLang(Astro.url);
 const L = lang === 'en'
-  ? { cdn: 'Image CDN', tour: 'Tourism / Location', slack: 'Slack alerts', cross: 'Cross-cutting', caption: 'HeatTrip backend architecture' }
-  : { cdn: '이미지 CDN', tour: '관광/위치 데이터', slack: 'Slack 알림', cross: 'Cross-cutting', caption: 'HeatTrip 백엔드 아키텍처' };
+  ? { cdn: 'Image CDN', tour: 'Tourism / Location', slack: 'Slack alerts', cross: 'Cross-cutting', caption: 'HeatTrip backend architecture', aria: 'HeatTrip system architecture diagram' }
+  : { cdn: '이미지 CDN', tour: '관광/위치 데이터', slack: 'Slack 알림', cross: 'Cross-cutting', caption: 'HeatTrip 백엔드 아키텍처', aria: 'HeatTrip 시스템 아키텍처 다이어그램' };
 ---
 
 <figure class="my-8 not-prose">
@@ -12,7 +12,7 @@ const L = lang === 'en'
     <svg
       viewBox="0 0 900 470"
       role="img"
-      aria-label="HeatTrip 시스템 아키텍처 다이어그램"
+      aria-label={L.aria}
       class="block h-auto w-full"
       font-family="var(--font-sans)"
     >

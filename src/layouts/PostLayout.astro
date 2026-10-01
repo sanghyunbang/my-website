@@ -30,7 +30,7 @@ const dateStr = date.toISOString().slice(0, 10);
 const hasToc = toc.length >= 3;
 ---
 
-<BaseLayout title={title} description={description} canonical={canonicalUrl}>
+<BaseLayout title={title} description={description} canonical={canonicalUrl} alternates={false} type="article">
   <div class="pt-28 sm:pt-32">
     {/* header */}
     <header class="mx-auto max-w-2xl">

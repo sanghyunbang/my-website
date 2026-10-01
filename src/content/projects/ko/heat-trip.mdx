@@ -4,19 +4,16 @@ summary: 사용자의 감정 상태를 기반으로 여행지를 추천하고 �
 role: 팀 리드 · 백엔드 중심
 period: 2025.07–11 공모전(3인) · 2026.03–06 개인 리팩토링
 tech: [Java 21, Spring Boot 3.5, Spring Security, JPA, MySQL 8, OAuth2 / JWT, OpenAI API, AWS S3 / CloudFront, Docker]
-highlight: 수만 건의 장소를 LLM에 넣지 않고 카테고리(cat3)만 고르게 설계, 한국관광공사 관광데이터 활용 공모전 우수상 수상
+highlight: 수만 건의 장소를 LLM에 넣지 않고 카테고리(cat3)만 고르게 설계, 2025 관광데이터 활용 공모전(한국관광공사) 우수상 수상
 featured: true
 order: 1
-award: 한국관광공사 관광데이터 활용 공모전 우수상 (2025.12)
+award: tour-data-2025
 roleBreakdown:
   - { area: "Backend (로그인·검색·추천·다이어리)", pct: 85 }
   - { area: "Infra · 배포 (FE/BE 전체)", pct: 100 }
   - { area: "ML / AI (크롤링·LLM 연동·프롬프트)", pct: 100 }
   - { area: "Frontend (홈·검색·추천·다이어리)", pct: 65 }
 metrics:
-  - value: 우수상
-    label: 한국관광공사 관광데이터 활용 공모전
-    note: "2025.12"
   - value: LLM 역할 한정
     label: 장소 대신 카테고리(cat3)만 추천
     note: 랭킹은 Spring에서 (감정 특성·인기도·거리)
@@ -141,6 +138,3 @@ LLM과 Spring의 책임을 나눴습니다. LLM은 **카테고리(`cat3`)** 만 
 
 </Callout>
 
----
-
-공모전 이후 리팩토링(단위 테스트, LLM 연동부 일부 Kotlin 전환)을 하며 배운 내용을 [블로그](/blog)에 시리즈로 정리하고 있습니다.

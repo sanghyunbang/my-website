@@ -1,34 +1,57 @@
 ---
+/**
+ * 본문 이미지 한 장. .mdx에서:
+ *   import Figure from '../../../components/Figure.astro';
+ *   <Figure src="/img/projects/pawloop/cover.webp" alt="…" caption="…" />
+ *
+ * src가 없으면 프로덕션 빌드에서는 아무것도 렌더하지 않는다.
+ * (개발 서버에서만 점선 자리표시를 보여 준다 — 자리표시가 배포되는 일을 막기 위해)
+ * ratio를 주면 그 비율 틀에 맞추고(잘리지 않게 contain), 주지 않으면 원본 비율 그대로.
+ */
 interface Props {
   src?: string;
   alt?: string;
   caption?: string;
-  /** when no real asset yet, render a labeled placeholder slot */
+  /** dev 전용 자리표시 설명 */
   placeholder?: string;
-  ratio?: string; // e.g. "16/9", "4/3"
+  /** 예: "16/9", "4/3" */
+  ratio?: string;
+  width?: number;
+  height?: number;
 }
-const { src, alt = '', caption, placeholder, ratio = '16/9' } = Astro.props;
+const { src, alt = '', caption, placeholder, ratio, width, height } = Astro.props;
+const showPlaceholder = !src && import.meta.env.DEV;
 ---
 
-<figure class="my-6">
-  {src ? (
-    <img
-      src={src}
-      alt={alt}
-      class="w-full rounded-2xl border border-line object-cover"
-      style={`aspect-ratio:${ratio}`}
-      loading="lazy"
-    />
-  ) : (
-    <div
-      class="flex w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line-strong bg-surface text-center"
-      style={`aspect-ratio:${ratio}`}
-    >
-      <span class="font-mono text-xs uppercase tracking-wider text-muted">image slot</span>
-      {placeholder && <span class="max-w-xs px-4 text-sm text-muted">{placeholder}</span>}
-    </div>
-  )}
-  {caption && (
-    <figcaption class="mt-2 text-center font-mono text-xs text-muted">{caption}</figcaption>
-  )}
-</figure>
+{(src || showPlaceholder) && (
+  <figure class="my-6">
+    {src ? (
+      <img
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        class:list={['figure-img w-full rounded-2xl border border-line', ratio ? 'bg-neutral-100 object-contain' : 'h-auto']}
+        style={ratio ? `aspect-ratio:${ratio}` : undefined}
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <div
+        class="flex w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line-strong bg-surface text-center"
+        style={`aspect-ratio:${ratio ?? '16/9'}`}
+      >
+        <span class="font-mono text-xs uppercase tracking-wider text-muted">image slot (dev only)</span>
+        {placeholder && <span class="max-w-xs px-4 text-sm text-muted">{placeholder}</span>}
+      </div>
+    )}
+    {caption && (
+      <figcaption class="mt-2 text-center font-mono text-xs text-muted">{caption}</figcaption>
+    )}
+  </figure>
+)}
+
+<style>
+  /* .prose img의 위아래 여백을 덮어쓴다 */
+  figure :global(img.figure-img) { margin: 0; }
+</style>
