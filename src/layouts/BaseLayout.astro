@@ -58,6 +58,8 @@ const alt = alternates
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- JS가 돌 때만 .reveal을 숨겼다가 보여 준다(global.css '.js .reveal'). JS가 없으면 처음부터 보인다 -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />

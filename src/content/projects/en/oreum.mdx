@@ -4,6 +4,8 @@
 # Commit counts and shares are not role shares, so they are not published (no roleBreakdown).
 # Period and resume bullets come from src/data/profile.ts (resumeProjects.oreum); the status badge from projectStatus.oreum.
 # Images are slides from the team deck (Figma, 2025.07) that show no real names (s4, s6, s9, s10, s11); captions give the slide number and whose area it is.
+# The cover is the s6 diagram cropped onto a white background (top-left left empty for the card's award chip); the same diagram is no longer repeated in the body.
+# Before publishing (merge to main): confirm the team agrees to the use of the team deck.
 kind: case
 title: OREUM
 summary: A hiking-community web service for recording and sharing trails on a map, built by a team of four as the graduation project of the KDT Full-stack Bootcamp (Gangnam HiMedia); it received the graduation-project Excellence Award. I worked on the backend and frontend of the map (mountain search, KMA mountain forecast, trail display), curation posts (route segments stored in MongoDB and drawn on the map), social login (OAuth2 + JWT) and S3 media upload.
@@ -13,10 +15,11 @@ highlight: Curation route segments stored as MongoDB documents (coordinates as G
 award: kdt-2025
 order: 5
 cover: /img/projects/oreum/cover.webp
-coverWidth: 1504
-coverHeight: 846
-coverAlt: OREUM web screen — a sub-community page with hiking post cards and a photo of an autumn mountain, with a curation banner and joined communities in the left sidebar
-coverCaption: Team presentation deck, slide 11 — sub-community and feed screens (mainly built by teammates), local development build
+coverWidth: 1600
+coverHeight: 900
+coverAlt: OREUM service infrastructure diagram — a Flutter app and a React/Tailwind web client using Kakao Map; a Spring Boot, Spring Security and JWT server connected to Naver/Kakao login, S3 and CloudFront, MySQL, MongoDB and Redis, VWorld trail GeoJSON and the KMA API Hub summit weather (labels in Korean)
+coverCaption: Service infrastructure — team presentation deck, slide 6 (diagram as presented; in the code the social login providers are Naver and Google)
+ogImage: /img/projects/oreum/og.jpg
 metrics:
   - value: N markers → 2N−1 segments
     label: Curation route model
@@ -37,14 +40,6 @@ Below are the decisions behind each feature, together with the limitations I con
 
 The React (Tailwind CSS) web client calls a Spring Boot server. The server authenticates with Spring Security and JWT, keeps board data in MySQL through MyBatis, curation route segments in MongoDB and weather forecasts in Redis. Media goes to S3 and is served through CloudFront. External data comes from the KMA API Hub (mountain forecast), VWorld (hiking trails) and the Kakao Maps SDK.
 
-<Figure
-  src="/img/projects/oreum/infra.webp"
-  width={1504}
-  height={846}
-  alt="OREUM service infrastructure diagram: a Flutter app and a React/Tailwind web client using Kakao Map; a Spring Boot, Spring Security and JWT server connected to Naver/Kakao login, S3 and CloudFront, MySQL, MongoDB and Redis, VWorld trail GeoJSON and the KMA API Hub summit weather"
-  caption="Service infrastructure — team presentation deck, slide 6 (diagram as presented; in the code the social login providers are Naver and Google)"
-/>
-
 ## Contribution 1 — Map and mountain forecast: taking external API calls off the request path
 
 <Callout kind="problem">
@@ -64,8 +59,8 @@ Calling the KMA API every time a user picks a mountain would tie page latency to
 
 <Figure
   src="/img/projects/oreum/map-feature.webp"
-  width={1504}
-  height={846}
+  width={1502}
+  height={845}
   alt="Team deck slide 'Map-based hiking information: public data and user data', with a description of map UI, weather and public data on the left and the OREUM home feed on the right"
   caption="Team presentation deck, slide 10 — the map feature, my area (the screen on the right is the first frame of the demo video, the home feed)"
 />
@@ -74,7 +69,7 @@ Calling the KMA API every time a user picks a mountain would tie page latency to
 
 External API calls are no longer on the page request path.
 
-**Limitation — refresh trigger:** one full refresh makes 153 calls to the KMA API. Because of the call quota, both the scheduled run and the run-on-startup are disabled in the final code, so the final code has no path that fills the forecast cache.
+**Limitation — refresh trigger:** one full refresh makes 153 calls to the KMA API. The scheduled run was commented out from the first version (the method comment says to use it only when the API quota allows), and the full refresh on startup was enabled in a 2025-06-18 commit and commented out again in a commit the next day. So the final code has no path that fills the forecast cache.
 
 **Limitation — retry:** re-reading the code, the fetch method converts every error into an empty list, so the backoff retry (up to 2 attempts) placed after it never runs. As a result, a failed mountain gets an empty value cached for 12 hours. The fix is to move the error conversion after the retry, keep the previous value on failure, and set a response timeout per call.
 
@@ -99,8 +94,8 @@ A curation post records a hiking route as alternating points and path segments. 
 
 <Figure
   src="/img/projects/oreum/curation-write.webp"
-  width={1504}
-  height={846}
+  width={1502}
+  height={845}
   alt="Team deck slide 'Regular posts and curation posts', describing user-experience content and curation posts that link map, media and facility information, with the OREUM home feed on the right"
   caption="Team presentation deck, slide 9 — regular and curation posts (curation posts are my area; the screen on the right is the first frame of the demo video)"
 />
@@ -127,18 +122,28 @@ Posts can now show a route on the map together with per-segment descriptions and
 
 <Callout kind="result">
 
-**Limitations:** the access-token lifetime on the social login path is set to about 20.8 days (the comment says 30 minutes), and the refresh token is issued but never used to renew. Authentication uses cookies with CSRF protection disabled, and the code does not check uploads for type or size. The fix is a short-lived access token with a server-stored refresh token rotated on use, an explicit SameSite cookie attribute, and upload validation.
+**Limitations:** the access-token lifetime on the social login path is set to about 20.8 days (the comment says 30 minutes), and the refresh token is issued but never used to renew. Authentication uses cookies with CSRF protection disabled. Uploads are not checked for type, and size is capped only by the global servlet multipart limit in configuration. The fix is a short-lived access token with a server-stored refresh token rotated on use, an explicit SameSite cookie attribute, and upload validation.
 
 </Callout>
 
 ## Team work and schedule
 
-The board screens, sub-communities and feeds, goods, cart, orders and payment, and regular sign-up and login were built mainly by other team members. The community screen in the cover image is also mainly their work. The schedule ran from planning and role assignment (6/2–6/4) through design and development (6/4–6/25) and design unification and testing (6/25–6/30) to the final presentation (7/3).
+The board screens, sub-communities and feeds, goods, cart, orders and payment, and regular sign-up and login were built mainly by other team members. The sub-community screen below is also mainly their work.
+
+<Figure
+  src="/img/projects/oreum/community.webp"
+  width={1502}
+  height={845}
+  alt="Team deck slide 'Creating sub-communities and customizing feeds', with the OREUM sub-community page on the right — hiking post cards and a photo of an autumn mountain, with a curation banner and joined communities in the left sidebar"
+  caption="Team presentation deck, slide 11 — sub-community and feed screens (mainly built by teammates), local development build"
+/>
+
+The schedule ran from planning and role assignment (6/2–6/4) through design and development (6/4–6/25) and design unification and testing (6/25–6/30) to the final presentation (7/3).
 
 <Figure
   src="/img/projects/oreum/process.webp"
-  width={1504}
-  height={846}
+  width={1502}
+  height={809}
   alt="Project timeline: 6/2–6/4 planning and role assignment, 6/4–6/25 design and feature development, 6/25–6/30 design unification and deployment, 7/1 presentation preparation, 7/3 final presentation"
   caption="Project timeline (2025-06-02 to 07-03) — team presentation deck, slide 4"
 />

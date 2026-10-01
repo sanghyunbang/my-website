@@ -33,9 +33,8 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useT(lang);
 
+// 'full'(불릿)과 'line'(요약 한 문단)을 같은 '프로젝트' 절에 profile.ts 순서대로 싣는다(별도 소제목 없음)
 const projects = publishedResumeProjects();
-const fullProjects = projects.filter((p) => p.size === 'full');
-const lineProjects = projects.filter((p) => p.size === 'line');
 // PDF 안의 링크가 localhost를 가리키지 않도록 사이트 절대 URL을 쓴다
 const abs = (path: string) => new URL(localize(path, lang), site.url).href;
 
@@ -88,15 +87,16 @@ const H2 = 'font-mono text-xs uppercase tracking-wider text-muted';
       <section class={Section}>
         <h2 class={H2}>{t('resume.projects')}</h2>
         <div class="space-y-5">
-          {fullProjects.map((p) => {
+          {projects.map((p) => {
             const award = p.award ? getAward(p.award) : undefined;
             const app = p.app ? getApp(p.app) : undefined;
             return (
               <div class="resume-entry">
-                <div class="resume-entry-head">
+                {/* 기간은 제목 아래 메타 줄에 둔다(긴 제목·여러 기간에서도 정렬이 흔들리지 않게). 라벨은 한글이 섞여 sans로.
+                    'line' 항목은 이름이 짧아 이름 옆에 이어 쓴다(PDF 2쪽 유지) */}
+                <div class:list={['resume-entry-head', p.size === 'line' && 'flex flex-wrap items-baseline gap-x-3']}>
                   <p class="font-bold text-ink">{p.name[lang]}</p>
-                  {/* 기간은 제목 아래 메타 줄에 둔다(긴 제목·여러 기간에서도 정렬이 흔들리지 않게). 라벨은 한글이 섞여 sans로 */}
-                  <p class="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 font-mono text-xs text-ink-soft">
+                  <p class:list={['flex flex-wrap gap-x-3 gap-y-0.5 font-mono text-xs text-ink-soft', p.size === 'full' && 'mt-0.5']}>
                     <span class="text-muted">
                       {p.periods.map((x, i) => (
                         <>{i > 0 && ' · '}{formatPeriod(x.start, x.end, lang)}{x.label && <span class="font-sans"> ({x.label[lang]})</span>}</>
@@ -110,37 +110,19 @@ const H2 = 'font-mono text-xs uppercase tracking-wider text-muted';
                 {award && (
                   <p class="mt-1 text-sm font-medium text-ink">🏆 {formatAward(award, lang)}</p>
                 )}
-                <ul class="mt-1.5 list-disc space-y-1 pl-4 text-sm leading-relaxed text-ink-soft">
-                  {p.bullets?.[lang].map((b) => <li>{b}</li>)}
-                </ul>
+                {p.size === 'full' ? (
+                  <ul class="mt-1.5 list-disc space-y-1 pl-4 text-sm leading-relaxed text-ink-soft">
+                    {p.bullets?.[lang].map((b) => <li>{b}</li>)}
+                  </ul>
+                ) : (
+                  <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">
+                    {p.summary?.[lang]}
+                    {p.disclaimer && <span class="text-muted"> {p.disclaimer[lang]}</span>}
+                  </p>
+                )}
               </div>
             );
           })}
-
-          {lineProjects.length > 0 && (
-            <div class="resume-entry">
-              <p class="font-semibold text-ink">{t('resume.otherProjects')}</p>
-              <ul class="mt-1.5 list-disc space-y-1.5 pl-4 text-sm leading-relaxed text-ink-soft">
-                {lineProjects.map((p) => {
-                  const award = p.award ? getAward(p.award) : undefined;
-                  return (
-                    <li>
-                      <span class="font-semibold text-ink">{p.name[lang]}</span>
-                      <span class="text-xs text-muted">
-                        {' · '}
-                        {p.periods.map((x, i) => (
-                          <>{i > 0 && ' · '}<span class="font-mono">{formatPeriod(x.start, x.end, lang)}</span>{x.label && ` (${x.label[lang]})`}</>
-                        ))}
-                      </span>
-                      {' — '}{p.summary?.[lang]}
-                      {award && <span> {t('resume.awardLine')}: {formatAward(award, lang)}.</span>}
-                      {p.disclaimer && <span class="text-muted"> {p.disclaimer[lang]}</span>}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
         </div>
       </section>
 

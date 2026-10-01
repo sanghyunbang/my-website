@@ -24,13 +24,15 @@ const isExternal = (href: string) => href.startsWith('http');
     <h1 class="sr-only">{person.name[lang]} — {positioning.role[lang]}</h1>
     <div class="group relative mx-auto w-fit">
       <img src={person.avatar.src} alt={person.avatar.alt} width="288" height="288" class="h-64 w-64 rounded-3xl object-cover transition-all duration-500 group-hover:scale-[1.02] group-hover:grayscale sm:h-72 sm:w-72" />
-      <ul class="font-impact pointer-events-none absolute left-full top-1/2 ml-10 hidden -translate-y-1/2 space-y-1.5 text-2xl leading-tight text-ink lg:block xl:text-3xl">
-        {keywords.map((k, i) => (
-          <li class="whitespace-nowrap translate-x-4 opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100" style={`transition-delay:${i * 80}ms`}>
-            <span class="text-accent">#</span>{k.slice(1)}
-          </li>
-        ))}
-      </ul>
+      {keywords.length > 0 && (
+        <ul class="font-impact pointer-events-none absolute left-full top-1/2 ml-10 hidden -translate-y-1/2 space-y-1.5 text-2xl leading-tight text-ink lg:block xl:text-3xl">
+          {keywords.map((k, i) => (
+            <li class="whitespace-nowrap translate-x-4 opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100" style={`transition-delay:${i * 80}ms`}>
+              <span class="text-accent">#</span>{k.slice(1)}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   </section>
 

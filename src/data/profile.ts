@@ -96,18 +96,22 @@ export const positioning = {
   intro: {
     ko: [
       'Java · Spring Boot로 서비스를 만들며, 동시에 온 요청이 같은 번호를 받는 문제, 권한이 바뀌었는데 이미 발급된 토큰은 그대로인 문제, 이벤트가 사라져 서비스 사이 데이터가 어긋나는 문제처럼 "기능은 동작하는데 데이터가 틀리는" 지점을 주로 다뤄 왔습니다. 개인 프로젝트는 AI 코딩 에이전트와 함께 만들었기 때문에, "통과했다"는 보고보다 테스트가 실제로 무엇을 확인하는지를 먼저 봅니다.',
-      "경영·경제를 먼저 공부한 덕에 '왜 이 데이터가 필요한가'를 함께 생각하고, 데이터 분석 경험으로 정량적으로 문제를 바라보는 습관을 들였습니다.",
+      '경영학·경제학을 먼저 전공했고, 데이터 분석과 강화학습 연구 보조를 경험했습니다.',
     ],
     en: [
       'I build services with Java and Spring Boot, and most of my work has been on spots where “the feature works but the data is wrong” — concurrent requests getting the same sequence number, permissions that changed while already-issued tokens stayed the same, events that went missing and left services out of sync. I built my personal projects together with AI coding agents, so I look at what a test actually verifies before trusting a “passed” report.',
-      'Studying business and economics first taught me to ask “why is this data needed,” and data analysis gave me the habit of looking at problems quantitatively.',
+      'I studied business administration and economics first, and have experience in data analysis and in assisting reinforcement-learning research.',
     ],
   } satisfies L10nList,
-  /** About 이미지 hover 키워드 */
+  /**
+   * About 이미지 hover 키워드. 빈 배열이면 렌더하지 않는다.
+   * 자기 규정 해시태그(#구조적사고, #계속만든다 등)는 어투 기준에 맞지 않아 비웠다.
+   * 다시 넣는다면 사이트에 이미 있는 사실(기술 이름 등)만 쓴다.
+   */
   keywords: {
-    ko: ['#구조적사고', '#데이터기반', '#계속만든다'],
-    en: ['#StructuralThinking', '#DataDriven', '#AlwaysBuilding'],
-  } satisfies L10nList,
+    ko: [],
+    en: [],
+  } as L10nList,
   /** 페이지별 meta description */
   meta: {
     home: {
@@ -238,11 +242,9 @@ export const experience: ExperienceItem[] = [
     bullets: {
       ko: [
         'Multi-Armed Bandit / 강화학습 연구 보조 — 이론 분석, 실험 정리, 연구과제 수행 지원',
-        '정량적 실험 설계와 결과 해석을 통해 데이터 기반으로 문제를 바라보는 습관을 다짐',
       ],
       en: [
         'Assisted Multi-Armed Bandit / reinforcement-learning research — theory analysis, experiment organization, project support',
-        'Built the habit of viewing problems quantitatively through experiment design and interpretation',
       ],
     },
     blurb: {
@@ -562,7 +564,7 @@ export interface ResumeProject {
   periods: { start: DateStr; end: PeriodEnd; label?: L10n }[];
   award?: AwardId;
   app?: AppId;
-  /** 'full' = 불릿 목록, 'line' = 한 줄 요약(그 밖의 프로젝트) */
+  /** 'full' = 불릿 목록, 'line' = 불릿 없이 요약 한 문단(같은 '프로젝트' 절, 별도 소제목 없음) */
   size: 'full' | 'line';
   bullets?: L10nList;
   summary?: L10n;
@@ -627,7 +629,7 @@ export const resumeProjects: ResumeProject[] = [
         '(이후 개인 리팩토링 2026.02–03) 판매자 승인의 관리자 경로를 커밋 후 비동기 전파로 분리하고 결정을 ADR로 기록',
       ],
       en: [
-        'Member/auth service, Gateway and OPA authorization in an MSA on Spring Cloud Gateway·Redis·Kafka·OPA',
+        'Worked on the member/auth service, Gateway and OPA authorization in an MSA on Spring Cloud Gateway·Redis·Kafka·OPA',
         'Diagnosed intermittent 403s as a structural "JWT permission vs user-state mismatch," not a gateway error, and designed and implemented a Kafka hotlist event → OPA bundle refresh path to cut the permission lag to within the polling interval (10–60s)',
         'Wrote the member-withdrawal event to an outbox inside the withdrawal transaction, published by a scheduler (FAILED after 5 failures)',
         '(Later solo refactoring, 2026.02–03) Split the admin seller-approval path into commit-then-async propagation and recorded the decision in an ADR',
@@ -673,10 +675,10 @@ export const resumeProjects: ResumeProject[] = [
     id: 'oreum',
     slug: 'oreum',
     name: {
-      ko: '오름 (OREUM) — 지도 기반 등산 커뮤니티 웹 서비스',
-      en: 'OREUM — map-based hiking community web service',
+      ko: '오름 (OREUM) — 지도 기반 등산 커뮤니티 웹 서비스 (4인 팀)',
+      en: 'OREUM — map-based hiking community web service (team of 4)',
     },
-    periods: [{ start: '2025-06', end: '2025-07', label: { ko: 'KDT 졸업 프로젝트 · 4인 팀', en: 'KDT graduation project · team of 4' } }],
+    periods: [{ start: '2025-06', end: '2025-07', label: { ko: 'KDT 졸업 프로젝트', en: 'KDT graduation project' } }],
     award: 'kdt-2025',
     size: 'full',
     bullets: {
@@ -699,8 +701,8 @@ export const resumeProjects: ResumeProject[] = [
     periods: [{ start: '2026-05', end: 'present', label: { ko: '1인 개발 · 출시 전', en: 'solo · pre-launch' } }],
     size: 'line',
     summary: {
-      ko: '공개 가치평가 방법론(DCF · 몬테카를로)으로 적정가치 범위를 계산하는 서비스. 순수 Kotlin 엔진 + Spring Boot API(PostgreSQL · Testcontainers) + Flutter 앱. 사업화를 준비 중인 비공개 프로젝트라 소스는 공개하지 않습니다.',
-      en: 'A valuation service that estimates a fair-value range with public valuation methods (DCF · Monte Carlo). Pure Kotlin engine + Spring Boot API (PostgreSQL · Testcontainers) + Flutter app. A private project being prepared for launch; the source is not public.',
+      ko: '공개 가치평가 방법론(DCF · 몬테카를로)으로 적정가치 범위를 계산하는 서비스(AI 코딩 에이전트와 함께 작성, 커밋 공저 표기). 순수 Kotlin 엔진 + Spring Boot API(PostgreSQL · Testcontainers) + Flutter 앱. 사업화를 준비 중인 비공개 프로젝트라 소스는 공개하지 않습니다.',
+      en: 'A valuation service that estimates a fair-value range with public valuation methods (DCF · Monte Carlo), written with an AI coding agent (co-authorship marked in commits). Pure Kotlin engine + Spring Boot API (PostgreSQL · Testcontainers) + Flutter app. A private project being prepared as a business; the source is not public.',
     },
     disclaimer: { ko: '투자 자문이 아닙니다.', en: 'Not investment advice.' },
   },
@@ -736,19 +738,22 @@ export type ProjectStatus = (typeof PROJECT_STATUSES)[number];
 
 export interface ProjectStatusEntry {
   status: ProjectStatus;
-  /** 배지에 ' · '로 이어 붙는 짧은 보충 (예: 팀 프로젝트) */
+  /**
+   * 배지에 ' · '로 이어 붙는 짧은 상태 보충 (예: 개선 예정).
+   * 팀/개인 같은 프로젝트 성격은 상태가 아니므로 넣지 않는다(상세 페이지 역할 줄에 있다).
+   */
   note?: L10n;
 }
 
 export const projectStatus: Record<string, ProjectStatusEntry> = {
   // 2026-10-01 운영 API 응답 확인, 원스토어 등록(위 apps.pawloop)
   pawloop: { status: 'live' },
-  'baro-farm': { status: 'completed', note: { ko: '팀 프로젝트', en: 'team project' } },
+  'baro-farm': { status: 'completed' },
   // 원스토어 리스팅은 남아 있으나 운영 API가 내려가 있다(위 apps['heat-trip'].status와 같은 사실)
   'heat-trip': { status: 'ended' },
   // 출시 전 (resumeProjects.scout 기간 라벨 '1인 개발 · 출시 전')
   scout: { status: 'preparing' },
-  oreum: { status: 'completed', note: { ko: 'KDT 졸업 프로젝트', en: 'KDT graduation project' } },
+  oreum: { status: 'completed' },
 };
 
 export function getProjectStatus(slug: string): ProjectStatusEntry {
