@@ -18,8 +18,8 @@ src/
 ├── lib/content.ts      # 공개 글/프로젝트 조회 헬퍼 (draft·kind 필터)
 ├── content/
 │   ├── blog/           # 블로그 글 (.md/.mdx) — draft: true면 어디에도 나오지 않음
-│   └── projects/{ko,en}/  # kind: case(상세 페이지) | brief(“그 밖의 프로젝트” 짧은 항목)
-├── components/         # Header, Footer, ProjectRow, ProjectBrief, Figure, Gallery, …
+│   └── projects/{ko,en}/  # kind: case(상세 페이지, 홈·/projects 목록) | brief(목록에 안 나옴)
+├── components/         # Header, Footer, ProjectRow, StatusBadge, Figure, Gallery, …
 │   └── views/          # Home/About/Resume/Projects/ProjectDetail/NotFound (ko·en 공용)
 ├── layouts/            # BaseLayout(메타·OG·hreflang), PostLayout
 └── pages/              # ko는 /, en은 /en/
@@ -49,8 +49,9 @@ npm run pdf       # 빌드 → preview → 로컬 Chrome(없으면 Edge) headles
 
 - **경력·학력·자격·수상·스킬·포지셔닝·외부 링크**: `src/data/profile.ts`만 고칩니다. 날짜는 `'YYYY-MM'`으로 한 번만 쓰고 화면에는 `formatPeriod()`로 표시됩니다. 고친 뒤 `npm run pdf`로 PDF도 다시 만듭니다.
 - **프로젝트**: `src/content/projects/{ko,en}/<slug>.md(x)`. ko와 en을 함께 추가합니다.
-  - `kind: case`(기본) → `/projects/<slug>` 상세 페이지, `featured: true`면 홈에 노출, `order`로 정렬.
-  - `kind: brief` → 상세 페이지 없이 `/projects` 하단 “그 밖의 프로젝트”에 한 단락으로.
+  - `kind: case`(기본) → `/projects/<slug>` 상세 페이지. 홈 Projects 섹션과 `/projects`에 모두 나오고 `order`로 정렬.
+  - `kind: brief` → 상세 페이지도 목록도 없음(지금은 쓰지 않음).
+  - **상태 배지**: frontmatter가 아니라 `src/data/profile.ts`의 `projectStatus`에 slug로 한 줄 추가합니다(ko/en 공통). 값은 `live`(운영 중) · `preparing`(출시 준비 중) · `completed`(완료) · `ended`(완료 · 서버 종료), 보충 문구는 `note: { ko, en }`(예: 팀 프로젝트). 항목이 빠지면 빌드가 실패합니다. 라벨 문구는 `src/i18n.ts`의 `status.*`.
   - `award`는 `profile.ts`의 수상 id(예: `tour-data-2025`)를 씁니다. 명칭과 날짜는 profile에서 가져옵니다.
   - `cover`: `public/img/projects/<slug>/cover.webp` 같은 public 절대경로(16:9 권장). 카드·상세 히어로에 쓰입니다. `coverWidth`·`coverHeight`에 실제 픽셀 크기를 적습니다(img width/height 속성).
   - `coverCaption`: 상세 페이지 커버 아래 한 줄 캡션(예: 화면이 어느 빌드·단계인지).

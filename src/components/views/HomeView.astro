@@ -17,7 +17,8 @@ const linkCards = [
   { title: links.github.label, href: links.github.href, description: t('links.github.desc'), badge: 'Code' },
 ];
 
-const projects = (await getProjects(lang, 'case')).filter((p) => p.data.featured);
+// 홈과 /projects는 같은 목록(상세 페이지가 있는 프로젝트 전부, order 순)을 보여 준다. 상태는 카드 위 배지로 구분
+const projects = await getProjects(lang, 'case');
 const recent = (await getPublishedPosts()).slice(0, 2);
 const badge = positioning.statusBadge;
 
@@ -72,15 +73,10 @@ const sectionLabel = (key: string) => `${String(sections.indexOf(key) + 1).padSt
     )}
   </section>
 
-  {/* ── Selected Work ── */}
+  {/* ── Projects ── */}
   <section class="reveal border-t border-line pt-14">
-    <div class="flex items-end justify-between">
-      <div>
-        <p class="font-mono text-sm text-accent-ink">{sectionLabel('home.work.label')}</p>
-        <h2 class="display mt-2 text-3xl text-ink">{t('home.work.title')}</h2>
-      </div>
-      <a href={localize('/projects', lang)} class="link-underline text-sm font-semibold text-ink">{t('home.work.all')}</a>
-    </div>
+    <p class="font-mono text-sm text-accent-ink">{sectionLabel('home.work.label')}</p>
+    <h2 class="display mt-2 text-3xl text-ink">{t('home.work.title')}</h2>
     <div class="mt-8 space-y-12">
       {projects.map((p, i) => (
         <ProjectRow

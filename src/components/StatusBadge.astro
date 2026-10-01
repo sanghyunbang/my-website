@@ -1,0 +1,37 @@
+---
+/**
+ * 프로젝트 상태 배지 (운영 중 / 출시 준비 중 / 완료 / 완료 · 서버 종료).
+ * 값은 src/data/profile.ts projectStatus(slug 기준), 라벨은 src/i18n.ts status.*.
+ * 색만으로 구분하지 않도록 글자로 상태를 쓰고, 화면 낭독기에는 "프로젝트 상태:"를 앞에 붙인다.
+ */
+import { useT, type Lang } from '../i18n';
+import { getProjectStatus, type ProjectStatus } from '../data/profile';
+
+interface Props {
+  slug: string;
+  lang: Lang;
+}
+const { slug, lang } = Astro.props;
+const t = useT(lang);
+const { status, note } = getProjectStatus(slug);
+const text = [t(`status.${status}`), note?.[lang]].filter(Boolean).join(' · ');
+
+const tone: Record<ProjectStatus, { pill: string; dot: string }> = {
+  live: { pill: 'border-emerald-200 bg-emerald-50 text-emerald-800', dot: 'bg-emerald-500' },
+  preparing: { pill: 'border-amber-200 bg-amber-50 text-amber-800', dot: 'bg-amber-500' },
+  completed: { pill: 'border-slate-200 bg-slate-100 text-slate-700', dot: 'bg-slate-500' },
+  ended: { pill: 'border-gray-200 bg-gray-50 text-gray-600', dot: 'border border-gray-400 bg-transparent' },
+};
+const c = tone[status];
+---
+
+<span
+  class:list={[
+    'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold leading-5',
+    c.pill,
+  ]}
+  data-status={status}
+>
+  <span aria-hidden="true" class:list={['inline-block h-1.5 w-1.5 shrink-0 rounded-full', c.dot]}></span>
+  <span class="sr-only">{t('status.sr')}</span>{text}
+</span>

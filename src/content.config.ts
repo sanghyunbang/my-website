@@ -20,7 +20,12 @@ const blog = defineCollection({
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
   schema: z.object({
-    /** case = 상세 페이지가 있는 케이스 스터디, brief = /projects 하단 "그 밖의 프로젝트" 짧은 항목(상세 페이지 없음) */
+    /**
+     * case = 상세 페이지가 있는 프로젝트. 홈 Projects 섹션과 /projects에 order 순으로 모두 나온다.
+     * brief = 상세 페이지 없는 짧은 항목. 목록(홈·/projects)은 case만 싣기 때문에 brief는 어디에도 나오지 않는다.
+     * 상태 배지(운영 중 · 출시 준비 중 · 완료 · 완료 · 서버 종료)는 frontmatter가 아니라
+     * src/data/profile.ts projectStatus(slug 기준, ko/en 공통)에 적는다.
+     */
     kind: z.enum(['case', 'brief']).default('case'),
     title: z.string(),
     summary: z.string(),
@@ -28,7 +33,6 @@ const projects = defineCollection({
     period: z.string().optional(),
     tech: z.array(z.string()).default([]),
     highlight: z.string().optional(),
-    featured: z.boolean().default(false),
     order: z.number().default(99),
     /** public 절대경로 (예: /img/projects/<slug>/cover.webp), 16:9 권장 */
     cover: z.string().optional(),

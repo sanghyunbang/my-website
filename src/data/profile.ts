@@ -700,6 +700,47 @@ export function formatProjectPeriods(p: ResumeProject, lang: Lang): string {
 /** 이력서·PDF에 싣는 프로젝트(게시 보류 제외) */
 export const publishedResumeProjects = (): ResumeProject[] => resumeProjects.filter((p) => !p.hold);
 
+/* ───────────────────────── project status ───────────────────────── */
+
+/**
+ * 프로젝트 카드(홈·/projects)와 상세 페이지 머리에 붙는 상태 배지의 단일 출처.
+ * 값은 ko/en 공통이라 프로젝트 frontmatter(언어별 2벌)가 아니라 여기에 한 번만 적는다.
+ * 라벨 문구('운영 중' 등)는 UI 문구라 src/i18n.ts의 status.* 키에 있다.
+ *
+ *   live      = 운영 중 — 지금 받아서 쓸 수 있다(운영 API 응답 + 스토어 등록)
+ *   preparing = 출시 준비 중 — 아직 공개 출시 전
+ *   completed = 완료 — 계획한 범위를 마쳤고 운영 서비스는 아니다
+ *   ended     = 완료 · 서버 종료 — 출시했었지만 지금은 서버가 내려가 있다
+ *
+ * 새 프로젝트를 올릴 때는 slug(파일 이름)로 한 줄을 더한다. 빠지면 빌드가 실패한다.
+ * 상태가 바뀌면(예: 서버 종료) 이 값과, 스토어 링크가 있으면 위 apps[].status도 같이 고친다.
+ */
+export const PROJECT_STATUSES = ['live', 'preparing', 'completed', 'ended'] as const;
+export type ProjectStatus = (typeof PROJECT_STATUSES)[number];
+
+export interface ProjectStatusEntry {
+  status: ProjectStatus;
+  /** 배지에 ' · '로 이어 붙는 짧은 보충 (예: 팀 프로젝트) */
+  note?: L10n;
+}
+
+export const projectStatus: Record<string, ProjectStatusEntry> = {
+  // 2026-10-01 운영 API 응답 확인, 원스토어 등록(위 apps.pawloop)
+  pawloop: { status: 'live' },
+  'baro-farm': { status: 'completed', note: { ko: '팀 프로젝트', en: 'team project' } },
+  // 원스토어 리스팅은 남아 있으나 운영 API가 내려가 있다(위 apps['heat-trip'].status와 같은 사실)
+  'heat-trip': { status: 'ended' },
+  // 출시 전 (resumeProjects.scout 기간 라벨 '1인 개발 · 출시 전')
+  scout: { status: 'preparing' },
+  oreum: { status: 'completed', note: { ko: 'KDT 졸업 프로젝트', en: 'KDT graduation project' } },
+};
+
+export function getProjectStatus(slug: string): ProjectStatusEntry {
+  const s = projectStatus[slug];
+  if (!s) throw new Error(`[profile] projectStatus에 '${slug}' 항목이 없습니다 — src/data/profile.ts에 상태를 추가하세요`);
+  return s;
+}
+
 /* ───────────────────────── About 여정 ───────────────────────── */
 
 type JourneyRef =
