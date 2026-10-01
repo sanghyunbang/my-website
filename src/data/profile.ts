@@ -324,6 +324,7 @@ export const training: TrainingItem[] = [
     start: '2025-01',
     end: '2025-07',
     award: 'kdt-2025',
+    project: 'oreum',
   },
 ];
 
@@ -468,6 +469,7 @@ export const awards: AwardItem[] = [
     issuer: { ko: '강남 하이미디어', en: 'Gangnam HiMedia' },
     date: '2025-07',
     work: { ko: '오름', en: 'OREUM' },
+    project: 'oreum',
   },
   {
     id: 'db-fec-2023',
@@ -664,6 +666,33 @@ export const resumeProjects: ResumeProject[] = [
     },
   },
   {
+    // 상세 페이지: src/content/projects/{ko,en}/oreum.mdx. 불릿은 그 페이지와 같은 사실만 쓴다.
+    // 근거: _site-refresh/refresh3/oreum-site-draft.md, interview-prep/05-oreum(백엔드 ec805ca, 프론트 c663906).
+    // 레포는 비공개 팀 레포라 링크 없음. 4인 팀은 팀 발표 자료(팀 구성 슬라이드)로 확인.
+    // 2026-10-01 본인이 키 폐기 완료를 알려 와 게시.
+    id: 'oreum',
+    slug: 'oreum',
+    name: {
+      ko: '오름 (OREUM) — 지도 기반 등산 커뮤니티 웹 서비스',
+      en: 'OREUM — map-based hiking community web service',
+    },
+    periods: [{ start: '2025-06', end: '2025-07', label: { ko: 'KDT 졸업 프로젝트 · 4인 팀', en: 'KDT graduation project · team of 4' } }],
+    award: 'kdt-2025',
+    size: 'full',
+    bullets: {
+      ko: [
+        '지도(산 검색 · 산악 예보 · 등산로), 큐레이션 글, 소셜 로그인(OAuth2 · JWT) · S3 업로드의 백엔드와 프론트 담당 (Spring Boot · React)',
+        '산악 예보는 산 153곳을 묶어 수집해 Redis(TTL 12시간)에 두고, 지도 API는 Redis만 읽게 분리 (최종 코드는 자동 갱신 꺼짐)',
+        '큐레이션 글은 공통 정보를 MySQL에, 경로 구간(GeoJSON 좌표)을 MongoDB에 두고 postId로 연결해 지도 위에 경로 표시',
+      ],
+      en: [
+        'Backend and frontend for the map (mountain search · mountain forecast · trails), curation posts, social login (OAuth2 · JWT) and S3 upload (Spring Boot · React)',
+        'Forecasts for 153 mountains collected in batches and kept in Redis (12-hour TTL); the map’s forecast API reads only from Redis (the automatic refresh trigger is off in the final code)',
+        'Curation posts keep post metadata in MySQL and route segments (GeoJSON coordinates) in MongoDB, linked by postId and drawn as a route on the map',
+      ],
+    },
+  },
+  {
     // 공개 범위: project-briefs.md §1 — 레포 링크·종목명·수치·호스팅 정보 없음
     id: 'scout',
     name: { ko: 'SCOUT', en: 'SCOUT' },
@@ -674,19 +703,6 @@ export const resumeProjects: ResumeProject[] = [
       en: 'A valuation service that estimates a fair-value range with public valuation methods (DCF · Monte Carlo). Pure Kotlin engine + Spring Boot API (PostgreSQL · Testcontainers) + Flutter app. A private project being prepared for launch; the source is not public.',
     },
     disclaimer: { ko: '투자 자문이 아닙니다.', en: 'Not investment advice.' },
-  },
-  {
-    // project-briefs.md §2 — 레포 링크 없음. 4인 팀은 팀 발표 자료(팀 구성 슬라이드)로 확인.
-    // 2026-10-01 본인이 키 폐기 완료를 알려 와 게시.
-    id: 'oreum',
-    name: { ko: '오름 (OREUM)', en: 'OREUM' },
-    periods: [{ start: '2025-06', end: '2025-07', label: { ko: 'KDT 졸업 프로젝트 · 4인 팀', en: 'KDT graduation project · team of 4' } }],
-    award: 'kdt-2025',
-    size: 'line',
-    summary: {
-      ko: '등산 코스를 지도 위에 기록하고 나누는 등산 커뮤니티 웹 서비스. 지도·산 검색·기상청 단기예보, 큐레이션 글(MongoDB · 지도 경로), 소셜 로그인(OAuth2 · JWT), S3 미디어 업로드 담당 (Spring Boot · React).',
-      en: 'A hiking-community web service for recording and sharing trails on a map. Owned the map, mountain search and KMA short-term forecast, curation posts (MongoDB · route on map), social login (OAuth2 · JWT) and S3 media upload (Spring Boot · React).',
-    },
   },
 ];
 
