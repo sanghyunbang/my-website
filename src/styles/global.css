@@ -38,6 +38,17 @@ body {
   overflow-x: clip;
 }
 
+/* 한국어는 어절 단위로 줄바꿈(단어 중간에서 끊기지 않게). 긴 코드·URL은 넘치지 않게 끊는다 */
+:lang(ko) {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
 ::selection {
   background: color-mix(in srgb, var(--color-accent) 22%, transparent);
 }
@@ -70,15 +81,18 @@ body {
   margin-right: calc(50% - 50vw);
 }
 
-/* Sky gradient hero (blue → white) */
+/* Sky gradient hero (blue → white). 작은 글자(역할·헤드라인·칩)는 .hero-ink(진한 남색)로 대비를 확보한다 */
 .hero-sky {
   background: linear-gradient(
     180deg,
-    #5aa7ec 0%,
-    #84bff1 40%,
-    #bfdcf9 72%,
+    #4f9de8 0%,
+    #7db9ef 42%,
+    #bfdcf9 76%,
     #ffffff 100%
   );
+}
+.hero-ink {
+  color: #0b2545;
 }
 
 /* Print (resume → PDF). scripts/build-resume-pdf.mjs가 이 스타일로 public/resume-{ko,en}.pdf를 만든다 */
@@ -105,14 +119,21 @@ body {
   .resume { max-width: none !important; padding: 0 !important; }
   .resume a { color: inherit !important; text-decoration: none !important; }
   .resume .text-accent-ink { color: var(--color-accent-ink) !important; }
-  /* 항목이 페이지 경계에서 잘리지 않게 */
+  /* 항목 머리·불릿 하나·짧은 항목은 페이지 경계에서 잘리지 않게. 긴 프로젝트 항목은 불릿 사이에서 넘어갈 수 있다 */
   .resume header,
-  .resume-entry,
+  .resume-entry-head,
+  .resume-keep .resume-entry,
   .resume li { break-inside: avoid; page-break-inside: avoid; }
+  .resume-entry-head { break-after: avoid; page-break-after: avoid; }
   .resume h2 { break-after: avoid; page-break-after: avoid; }
   /* 짧은 섹션(교육·학력·기술·자격·수상)은 통째로 다음 쪽으로 */
   .resume-keep { break-inside: avoid; page-break-inside: avoid; }
   .resume-sections > * + * { margin-top: 1.1rem !important; }
+  /* 영문은 같은 내용이 더 길다 → 조금 더 촘촘하게(A4 2쪽) */
+  html:lang(en) { font-size: 11.25px; }
+  .resume:lang(en) .resume-sections > * + * { margin-top: 0.8rem !important; }
+  .resume:lang(en) .resume-section { padding-top: 0.8rem; }
+  .resume:lang(en) .space-y-5 > :not(:last-child) { margin-bottom: 0.9rem; }
   /* 인쇄에서는 grid 대신 block + float: Chrome이 grid 컨테이너의 break-inside: avoid를 지키지 않는다 */
   .resume .resume-section { display: block; padding-top: 1.1rem; }
   .resume .resume-section::after { content: ''; display: table; clear: both; }
@@ -162,6 +183,10 @@ body {
   color: var(--color-ink-soft);
   line-height: 1.8;
   font-size: 1.02rem;
+}
+.prose h2,
+.prose h3 {
+  line-height: 1.35;
 }
 .prose h2 {
   margin: 2.6rem 0 1rem;
@@ -237,18 +262,66 @@ body {
   width: 100%;
   margin: 1.5rem 0;
   border-collapse: collapse;
+  table-layout: fixed;
   font-size: 0.92rem;
+  line-height: 1.65;
 }
 .prose th,
 .prose td {
   border: 1px solid var(--color-line);
   padding: 0.6rem 0.85rem;
   text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
 }
 .prose th {
   background: #f5f5f5;
   font-weight: 700;
   color: var(--color-ink);
+}
+/* 좁은 화면: 표의 각 행을 "지금 상태 → 다음에 할 것" 카드로 쌓는다.
+   td의 data-label은 astro.config.mjs의 rehypeTableLabels가 열 머리글에서 채운다 */
+@media (max-width: 639px) {
+  .prose table,
+  .prose tbody,
+  .prose tr,
+  .prose td {
+    display: block;
+    width: 100%;
+  }
+  .prose thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .prose tr {
+    margin: 0 0 0.75rem;
+    border: 1px solid var(--color-line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .prose td {
+    border: none;
+    padding: 0.7rem 0.9rem;
+  }
+  .prose td + td {
+    border-top: 1px dashed var(--color-line);
+    background: #fafafa;
+  }
+  .prose td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 0.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
 }
 .prose img {
   border-radius: 12px;

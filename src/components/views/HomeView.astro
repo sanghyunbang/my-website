@@ -20,27 +20,31 @@ const linkCards = [
 const projects = (await getProjects(lang, 'case')).filter((p) => p.data.featured);
 const recent = (await getPublishedPosts()).slice(0, 2);
 const badge = positioning.statusBadge;
+
+// 섹션 번호는 실제로 보이는 섹션 기준으로 매긴다(공개 글이 없으면 Writing이 빠진다)
+const sections = ['home.work.label', ...(recent.length > 0 ? ['home.writing.label'] : []), 'home.links.label'];
+const sectionLabel = (key: string) => `${String(sections.indexOf(key) + 1).padStart(2, '0')} — ${t(key)}`;
 ---
 
 <BaseLayout description={positioning.meta.home[lang]}>
   {/* ── Hero (sky) ── */}
   <section class="full-bleed hero-sky">
-    <div class="mx-auto flex min-h-[92vh] max-w-5xl flex-col px-6 pb-8 pt-28 sm:pt-32">
+    <div class="mx-auto flex min-h-[min(92vh,960px)] max-w-5xl flex-col px-6 pb-8 pt-28 sm:pt-32">
       <div class="flex flex-1 flex-col items-center gap-8 md:flex-row md:items-center md:justify-between">
         <div class="text-center md:text-left">
-          <p class="text-lg font-semibold text-white/90">
-            {t('home.hey')}<span class="font-extrabold text-white">{person.firstName}</span>
+          <p class="hero-ink text-lg font-semibold">
+            {t('home.hey')}<span class="font-extrabold">{person.firstName}</span>
           </p>
           <h1 class="mt-3 text-white">
             <span class="display block text-6xl sm:text-7xl lg:text-[5.5rem]">{positioning.heroWords.top}</span>
             <span class="font-script floaty -mt-1 block text-7xl leading-tight sm:text-8xl lg:text-[7rem]">{positioning.heroWords.script}</span>
             <span class="sr-only"> — {positioning.role[lang]}</span>
           </h1>
-          <p class="mt-5 font-mono text-sm font-semibold text-white/95">{positioning.role[lang]}</p>
-          <p class="mt-3 max-w-xl text-lg font-medium text-white/95">{positioning.headline[lang]}</p>
+          <p class="hero-ink mt-5 font-mono text-sm font-semibold">{positioning.role[lang]}</p>
+          <p class="hero-ink mt-3 max-w-xl text-lg font-medium">{positioning.headline[lang]}</p>
           <div class="mt-6 flex flex-wrap justify-center gap-2 md:justify-start">
             {skills.hero.map((s) => (
-              <span class="rounded-full border border-white/40 bg-white/15 px-3 py-1 font-mono text-xs font-medium text-white backdrop-blur-sm">{s}</span>
+              <span class="hero-ink rounded-full border border-sky-900/15 bg-white/55 px-3 py-1 font-mono text-xs font-medium backdrop-blur-sm">{s}</span>
             ))}
           </div>
         </div>
@@ -52,7 +56,7 @@ const badge = positioning.statusBadge;
       </div>
       <div class="mt-10 flex items-center justify-between font-mono text-xs uppercase tracking-wider text-ink-soft">
         <span>{person.location[lang]}</span>
-        <span class="hidden sm:inline">Build + Operate</span>
+        <span class="hidden sm:inline">Build + Verify</span>
       </div>
     </div>
   </section>
@@ -72,7 +76,7 @@ const badge = positioning.statusBadge;
   <section class="reveal border-t border-line pt-14">
     <div class="flex items-end justify-between">
       <div>
-        <p class="font-mono text-sm text-accent-ink">{t('home.work.label')}</p>
+        <p class="font-mono text-sm text-accent-ink">{sectionLabel('home.work.label')}</p>
         <h2 class="display mt-2 text-3xl text-ink">{t('home.work.title')}</h2>
       </div>
       <a href={localize('/projects', lang)} class="link-underline text-sm font-semibold text-ink">{t('home.work.all')}</a>
@@ -94,7 +98,7 @@ const badge = positioning.statusBadge;
     <section class="reveal mt-24 border-t border-line pt-14">
       <div class="flex items-end justify-between">
         <div>
-          <p class="font-mono text-sm text-accent-ink">{t('home.writing.label')}</p>
+          <p class="font-mono text-sm text-accent-ink">{sectionLabel('home.writing.label')}</p>
           <h2 class="display mt-2 text-3xl text-ink">{t('home.writing.title')}</h2>
         </div>
         <a href="/blog" class="link-underline text-sm font-semibold text-ink">{t('home.writing.all')}</a>
@@ -109,7 +113,7 @@ const badge = positioning.statusBadge;
 
   {/* ── Elsewhere ── */}
   <section class="reveal mt-24 border-t border-line pt-14">
-    <p class="font-mono text-sm text-accent-ink">{t('home.links.label')}</p>
+    <p class="font-mono text-sm text-accent-ink">{sectionLabel('home.links.label')}</p>
     <h2 class="display mt-2 text-3xl text-ink">{t('home.links.title')}</h2>
     <div class="mt-8 grid gap-3">
       {linkCards.map((card) => <LinkCard {...card} />)}

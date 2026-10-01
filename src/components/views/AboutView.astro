@@ -11,9 +11,9 @@ const keywords = positioning.keywords[lang];
 const intro = positioning.intro[lang];
 const steps = journey(lang);
 
+// '이력서 보기' 버튼이 /resume로 가므로 같은 곳으로 가는 텍스트 링크는 두지 않는다
 const contacts = [
   { label: links.github.label, href: links.github.href },
-  { label: t('nav.resume'), href: localize('/resume', lang) },
   { label: t('nav.pdf'), href: links.resumePdf[lang] },
 ];
 const isExternal = (href: string) => href.startsWith('http');

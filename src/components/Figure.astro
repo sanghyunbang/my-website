@@ -7,7 +7,9 @@
  * src가 없으면 프로덕션 빌드에서는 아무것도 렌더하지 않는다.
  * (개발 서버에서만 점선 자리표시를 보여 준다 — 자리표시가 배포되는 일을 막기 위해)
  * ratio를 주면 그 비율 틀에 맞추고(잘리지 않게 contain), 주지 않으면 원본 비율 그대로.
+ * 그림은 원본 파일로 가는 링크로 감싸, 작은 글씨가 있는 도식을 새 탭에서 원본 크기로 볼 수 있게 한다.
  */
+import { getLang } from '../i18n';
 interface Props {
   src?: string;
   alt?: string;
@@ -21,21 +23,24 @@ interface Props {
 }
 const { src, alt = '', caption, placeholder, ratio, width, height } = Astro.props;
 const showPlaceholder = !src && import.meta.env.DEV;
+const openTitle = getLang(Astro.url) === 'en' ? 'Open full size in a new tab' : '새 탭에서 원본 크기로 보기';
 ---
 
 {(src || showPlaceholder) && (
   <figure class="my-6">
     {src ? (
-      <img
-        src={src}
-        alt={alt}
-        width={width}
-        height={height}
-        class:list={['figure-img w-full rounded-2xl border border-line', ratio ? 'bg-neutral-100 object-contain' : 'h-auto']}
-        style={ratio ? `aspect-ratio:${ratio}` : undefined}
-        loading="lazy"
-        decoding="async"
-      />
+      <a href={src} target="_blank" rel="noopener" title={openTitle} class="figure-link block cursor-zoom-in">
+        <img
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          class:list={['figure-img w-full rounded-2xl border border-line', ratio ? 'bg-neutral-100 object-contain' : 'h-auto']}
+          style={ratio ? `aspect-ratio:${ratio}` : undefined}
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
     ) : (
       <div
         class="flex w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line-strong bg-surface text-center"
@@ -54,4 +59,6 @@ const showPlaceholder = !src && import.meta.env.DEV;
 <style>
   /* .prose img의 위아래 여백을 덮어쓴다 */
   figure :global(img.figure-img) { margin: 0; }
+  .figure-link { text-decoration: none; }
+  .figure-link:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 1rem; }
 </style>

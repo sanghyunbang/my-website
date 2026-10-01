@@ -45,8 +45,8 @@ export function formatPeriod(start: DateStr, end: PeriodEnd, lang: Lang): string
 export const site = {
   url: 'https://betterworldwithlucas.com',
   host: 'betterworldwithlucas.com',
-  /** og:image 기본값 (1200×630) */
-  ogImage: '/og/default.jpg',
+  /** og:image 기본값 (1200×630). 영문 페이지는 영문 문구판을 쓴다 */
+  ogImage: { ko: '/og/default.jpg', en: '/og/default-en.jpg' } satisfies L10n,
 } as const;
 
 export const person = {
@@ -306,8 +306,8 @@ export const training: TrainingItem[] = [
       en: 'Gangnam HiMedia · KDT Full-stack Bootcamp',
     },
     detail: {
-      ko: 'Spring · React · Flutter 풀스택 — 졸업 프로젝트 우수상 (오름 · 등산 커뮤니티)',
-      en: 'Spring · React · Flutter — Excellence Award for the graduation project (OREUM, hiking community)',
+      ko: 'Spring · React 풀스택 — 졸업 프로젝트 우수상 (오름 · 등산 커뮤니티)',
+      en: 'Spring · React full-stack — Excellence Award for the graduation project (OREUM, hiking community)',
     },
     start: '2025-01',
     end: '2025-07',
@@ -544,7 +544,8 @@ export interface ResumeProject {
   /** 케이스 스터디가 있으면 slug */
   slug?: string;
   name: L10n;
-  periods: { start: DateStr; end: PeriodEnd; label: L10n }[];
+  /** label은 기간 뒤 괄호로 붙는다. 이름과 겹치면(예: '1인 개발') 생략한다 */
+  periods: { start: DateStr; end: PeriodEnd; label?: L10n }[];
   award?: AwardId;
   app?: AppId;
   /** 'full' = 불릿 목록, 'line' = 한 줄 요약(그 밖의 프로젝트) */
@@ -553,6 +554,11 @@ export interface ResumeProject {
   summary?: L10n;
   note?: L10n;
   disclaimer?: L10n;
+  /**
+   * true면 이력서·PDF에서 뺀다(게시 보류). 본인 확인이 끝나면 지운다.
+   * 수상 줄(awards)은 이 값과 상관없이 남는다.
+   */
+  hold?: boolean;
 }
 
 export const resumeProjects: ResumeProject[] = [
@@ -565,7 +571,7 @@ export const resumeProjects: ResumeProject[] = [
       ko: 'Pawloop (포루프) — 반려견 산책·가족 케어 앱 (1인 개발)',
       en: 'Pawloop — dog-walking & family-care app (solo)',
     },
-    periods: [{ start: '2026-06', end: 'present', label: { ko: '1인 개발', en: 'solo' } }],
+    periods: [{ start: '2026-06', end: 'present' }],
     app: 'pawloop',
     size: 'full',
     note: { ko: '소스 비공개 · 요청 시 시연', en: 'Source is private · demo on request' },
@@ -603,14 +609,16 @@ export const resumeProjects: ResumeProject[] = [
       ko: [
         'Spring Cloud Gateway·Redis·Kafka·OPA 기반 MSA에서 회원·인증 서비스, Gateway, OPA 인가 담당',
         '간헐적 403을 게이트웨이 오류가 아닌 "JWT 권한과 사용자 상태 불일치" 구조 문제로 진단',
-        'Kafka hotlist 이벤트로 상태 변경을 전파하고 OPA 번들 갱신과 연결해, 권한 반영 시차를 OPA 폴링 주기(10~60초) 안으로 줄임',
-        '회원탈퇴는 같은 트랜잭션의 outbox + 스케줄러 발행(5회 실패 시 FAILED)으로 구현, (이후 개인 리팩토링 2026.02–03) 판매자 승인은 커밋 후 OPA 전파를 비동기로 분리 — 유실 비용 기준으로 구분하고 ADR 작성',
+        'Kafka hotlist 이벤트 → OPA 번들 갱신으로 권한 반영 시차를 폴링 주기(10~60초) 안으로 줄이도록 설계·구현(정책 규칙은 2026-01-22–25 동작). 마감 전날 정책 기본값을 허용으로 바꿔 main에서는 비활성',
+        '회원탈퇴 outbox(프로젝트 중 구현) — 탈퇴 트랜잭션 안에서 적재, 스케줄러 발행, 5회 실패 시 FAILED. 소비 서비스는 아직 없음(설계만)',
+        '판매자 승인은 이후 개인 리팩토링(2026.02–03)에서 관리자 승인 경로를 커밋 후 비동기 전파로 분리하고 그 결정을 ADR로 남김(미병합 브랜치, 테스트 없음, 토큰 유효기간 7일이라 최악의 복구 시간도 7일)',
       ],
       en: [
         'Owned the member/auth service, the Gateway and OPA authorization in an MSA on Spring Cloud Gateway·Redis·Kafka·OPA',
         'Diagnosed intermittent 403s as a structural "JWT permission vs user-state mismatch," not a gateway error',
-        'Propagated state changes via Kafka hotlist events wired to OPA bundle refresh, reducing the permission lag to within the OPA polling interval (10–60s)',
-        'Implemented member withdrawal with an outbox event in the same transaction, published by a scheduler (FAILED after 5 failures); (later solo refactoring, 2026.02–03) seller approval commits first and propagates to OPA asynchronously — split by the cost of losing each event, recorded in an ADR',
+        'Designed and implemented Kafka hotlist events → OPA bundle refresh to cut the permission lag to within the polling interval (10–60s); the policy rule ran 2026-01-22 to 01-25. The policy default was switched to allow the day before the deadline, so it is inactive on main',
+        'Member-withdrawal outbox (built during the project) — written inside the withdrawal transaction, published by a scheduler, FAILED after 5 failures. No consuming service yet (design only)',
+        'Seller approval, in later solo refactoring (2026.02–03): split the admin approval path into commit-then-async propagation and recorded that decision in an ADR (unmerged branch, no tests; tokens live 7 days, so worst-case recovery is also 7 days)',
       ],
     },
   },
@@ -622,7 +630,7 @@ export const resumeProjects: ResumeProject[] = [
       en: 'HeatTrip — Emotion-based travel recommendation (Team Lead)',
     },
     periods: [
-      { start: '2025-07', end: '2025-11', label: { ko: '공모전 (팀 Hit다Heat, 3인)', en: 'competition (team Hit다Heat, 3 people)' } },
+      { start: '2025-07', end: '2025-11', label: { ko: '공모전 · 팀 Hit다Heat, 3인', en: 'competition · team Hit다Heat, 3 people' } },
       { start: '2026-03', end: '2026-06', label: { ko: '개인 리팩토링', en: 'solo refactoring' } },
     ],
     award: 'tour-data-2025',
@@ -630,17 +638,17 @@ export const resumeProjects: ResumeProject[] = [
     size: 'full',
     bullets: {
       ko: [
-        'LLM 역할 한정 — 장소 추천에서 LLM은 카테고리(cat3)만 고르고, 실제 장소는 cat3로 거른 뒤 감정 특성·인기도·거리 점수로 Spring 안에서 랭킹. 프론트가 cat3Filter를 넘기면 LLM 단계를 건너뜀',
+        'LLM 역할 한정 — 장소 추천에서 LLM은 카테고리(cat3)만 고르고, 실제 장소는 cat3로 거른 뒤 감정 특성·인기도·거리 점수로 Spring 안에서 랭킹. cat3Filter를 받으면 LLM을 건너뛰는 서버 경로도 둠(현재 앱은 보내지 않음). 감정 입력은 앱(실수)과 서버(정수)의 계약이 어긋나 대부분 0이 되는 한계가 있어 수정 예정',
         '장소 목록 조회를 Offset / Cursor 페이지네이션으로 분리 (createdtime + contentid 복합 키, Base64 cursor, size+1로 hasNext 판단)',
-        '(개인 리팩토링) 장소 검색 — EXPLAIN ANALYZE로 병목이 count 쿼리(전체 스캔 + 상관 서브쿼리 반복, 약 755ms)임을 확인, search_text 반정규화 + FULLTEXT(ngram) + MATCH…AGAINST로 전환해 count 전체 스캔 제거, 목록 약 4.9ms',
-        '(개인 리팩토링) 관측성 구축 — AOP 요청/예외 수집, fingerprint 중복 억제 후 Slack 알림, correlation id, JaCoCo 커버리지 리포트 · Qodana(GitHub Actions)',
+        '(개인 리팩토링) 장소 검색 — EXPLAIN ANALYZE로 병목이 count 쿼리(전체 스캔 + 상관 서브쿼리 반복, 약 755ms)임을 확인, search_text 반정규화 + FULLTEXT(ngram) + MATCH…AGAINST로 전환. 문서의 실행 계획 기준 count 전체 스캔이 사라졌고, 목록은 약 4.9ms(\'카페\' 1회 측정)',
+        '(개인 리팩토링) 단위 테스트와 관측성 코드 추가 — AOP 요청/예외 수집, fingerprint 중복 억제 후 Slack 알림, correlation id, JaCoCo 커버리지 리포트 · Qodana(GitHub Actions). 관측성 코드는 아직 테스트와 실제 알림 발송 기록이 없음',
         'Java 21 / Spring Boot 3.5 / Spring Security·OAuth2·JWT / JPA / MySQL 8 / AWS S3·CloudFront / Docker Compose',
       ],
       en: [
-        'Scoped the LLM role — for place recommendation the LLM picks only the category (cat3); actual places are filtered by cat3 and ranked inside Spring by emotion-feature, popularity and distance scores. When the frontend sends cat3Filter, the LLM step is skipped',
+        'Scoped the LLM role — for place recommendation the LLM picks only the category (cat3); actual places are filtered by cat3 and ranked inside Spring by emotion-feature, popularity and distance scores. A server path skips the LLM when cat3Filter is sent (the current app does not send it). Known limitation to fix: the emotion-input contract mismatches (app sends floats, server takes ints), so most emotion values become 0',
         'Split place-list pagination into Offset / Cursor (createdtime + contentid composite key, Base64 cursor, size+1 for hasNext)',
-        '(Solo refactoring) Place search — EXPLAIN ANALYZE showed the bottleneck was the count query (full scan + repeated correlated subquery, ~755ms); switched to search_text denormalization + FULLTEXT (ngram) + MATCH…AGAINST, removing the count full scan; list ~4.9ms',
-        '(Solo refactoring) Built observability — AOP request/exception collection, fingerprint dedup → Slack alerts, correlation id, JaCoCo coverage reports · Qodana (GitHub Actions)',
+        '(Solo refactoring) Place search — EXPLAIN ANALYZE showed the bottleneck was the count query (full scan + repeated correlated subquery, ~755ms); switched to search_text denormalization + FULLTEXT (ngram) + MATCH…AGAINST. Per the documented plan the count full scan is gone; list ~4.9ms (single measurement for \'카페\')',
+        '(Solo refactoring) Added unit tests and observability code — AOP request/exception collection, fingerprint dedup → Slack alerts, correlation id, JaCoCo coverage reports · Qodana (GitHub Actions). The observability code has no tests and no record of a sent alert yet',
         'Java 21 / Spring Boot 3.5 / Spring Security·OAuth2·JWT / JPA / MySQL 8 / AWS S3·CloudFront / Docker Compose',
       ],
     },
@@ -659,7 +667,10 @@ export const resumeProjects: ResumeProject[] = [
   },
   {
     // project-briefs.md §2 — 레포 링크 없음
+    // 게시 보류: §4 #1(오름 레포 키 폐기·교체)과 #2(팀 인원 "4인")가 본인 확인 전이다.
+    // 확인되면 hold를 지우고 src/content/projects/{ko,en}/oreum.md의 draft도 지운다.
     id: 'oreum',
+    hold: true,
     name: { ko: '오름 (OREUM)', en: 'OREUM' },
     periods: [{ start: '2025-06', end: '2025-07', label: { ko: 'KDT 졸업 프로젝트 · 4인 팀', en: 'KDT graduation project · team of 4' } }],
     award: 'kdt-2025',
@@ -671,10 +682,15 @@ export const resumeProjects: ResumeProject[] = [
   },
 ];
 
-/** 'YYYY.MM – YYYY.MM 라벨 · …' */
+/** 'YYYY.MM – YYYY.MM (라벨) · …' — 라벨이 없으면 기간만 */
 export function formatProjectPeriods(p: ResumeProject, lang: Lang): string {
-  return p.periods.map((x) => `${formatPeriod(x.start, x.end, lang)} ${x.label[lang]}`).join(' · ');
+  return p.periods
+    .map((x) => `${formatPeriod(x.start, x.end, lang)}${x.label ? ` (${x.label[lang]})` : ''}`)
+    .join(' · ');
 }
+
+/** 이력서·PDF에 싣는 프로젝트(게시 보류 제외) */
+export const publishedResumeProjects = (): ResumeProject[] => resumeProjects.filter((p) => !p.hold);
 
 /* ───────────────────────── About 여정 ───────────────────────── */
 

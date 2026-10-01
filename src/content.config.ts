@@ -40,6 +40,8 @@ const projects = defineCollection({
     ogImage: z.string().optional(),
     /** src/data/profile.ts의 awards id (날짜·명칭은 profile에서 가져온다) */
     award: z.enum(AWARD_IDS).optional(),
+    /** true면 어디에도 싣지 않는다(게시 보류). 목록·홈·상세 페이지 모두 제외 */
+    draft: z.boolean().default(false),
     /** 짧은 항목 아래에 붙일 한 줄 고지 (예: 투자 자문이 아닙니다) */
     disclaimer: z.string().optional(),
     roleBreakdown: z

@@ -22,6 +22,41 @@ function publishedPostCount() {
 }
 const hasPosts = publishedPostCount() > 0;
 
+/**
+ * 표의 각 td에 같은 열의 머리글을 data-label로 붙인다.
+ * 좁은 화면에서 표를 카드로 쌓을 때 CSS(.prose td::before)가 이 값을 라벨로 보여 준다.
+ */
+function rehypeTableLabels() {
+  /** @param {any} n @returns {string} */
+  const text = (n) => (n.type === 'text' ? n.value : (n.children ?? []).map(text).join(''));
+  /** @param {any} node @param {(n: any) => void} fn */
+  const walk = (node, fn) => {
+    fn(node);
+    for (const c of node.children ?? []) walk(c, fn);
+  };
+  /** @param {any} tree */
+  return (tree) => {
+    walk(tree, (table) => {
+      if (table.type !== 'element' || table.tagName !== 'table') return;
+      /** @type {string[]} */
+      const heads = [];
+      walk(table, (n) => {
+        if (n.type === 'element' && n.tagName === 'th') heads.push(text(n).trim());
+      });
+      if (heads.length === 0) return;
+      walk(table, (tr) => {
+        if (tr.type !== 'element' || tr.tagName !== 'tr') return;
+        let i = 0;
+        for (const td of tr.children ?? []) {
+          if (td.type !== 'element' || td.tagName !== 'td') continue;
+          td.properties = { ...(td.properties ?? {}), dataLabel: heads[i] ?? '' };
+          i += 1;
+        }
+      });
+    });
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://betterworldwithlucas.com',
@@ -46,6 +81,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   markdown: {
+    rehypePlugins: [rehypeTableLabels],
     shikiConfig: {
       theme: 'github-light',
       wrap: true,

@@ -1,10 +1,10 @@
 ---
 title: BARO FARM
-summary: Backend for an agri-fisheries commerce service. In a Spring Cloud Gateway·Redis·Kafka·OPA-based MSA I owned the member/auth service, the Gateway and OPA-based authorization, traced intermittent 403s to the lag between permissions in already-issued tokens and the actual user state, and reduced that lag to within the OPA polling interval (10–60s).
+summary: Backend for an agri-fisheries commerce service. In a Spring Cloud Gateway·Redis·Kafka·OPA-based MSA I owned the member/auth service, the Gateway and OPA-based authorization. I traced intermittent 403s to the lag between permissions in already-issued tokens and the actual user state, and designed and implemented a hotlist-event → OPA-bundle-refresh path meant to cut that lag to within the polling interval (the policy rule ran 2026-01-22 to 01-25). The day before the deadline the policy default was switched to allow, and main still has it, so this blocking does not run on main.
 role: Backend — member/auth service, Gateway, OPA authorization
 period: 2025.11.29–2026.01.27 team project (semi & final) · 2026.02–03 solo refactoring
 tech: [Java, Spring, Spring Cloud Gateway, Redis, Kafka, OPA, JWT, Resilience4j, Kubernetes, MySQL]
-highlight: Diagnosed intermittent 403s as a "permission-vs-user-state mismatch" and reduced the lag to within the OPA polling interval (10–60s)
+highlight: Diagnosed intermittent 403s not as a gateway error but as a structural lag between JWT permissions and the latest user state
 featured: true
 order: 2
 cover: /img/projects/baro-farm/cover.webp
@@ -12,16 +12,13 @@ coverWidth: 1258
 coverHeight: 708
 coverAlt: BARO FARM web main page hero — Korean headline "Trusted fresh food, all at BARO FARM" with a farm photo (team project screen)
 ogImage: /img/projects/baro-farm/og.jpg
-roleBreakdown:
-  - { area: "Auth / Authorization (Gateway · JWT · OPA)", pct: 100 }
-  - { area: "Event sync (Kafka)", pct: 80 }
 metrics:
-  - value: 403 lag reduced
-    label: Intermittent auth errors
-    note: lag reduced to within OPA polling (10–60s)
   - value: JWT + OPA
-    label: Policy-based authorization
-    note: state synced via Kafka events
+    label: Policy-based authorization design
+    note: hotlist events → OPA bundle refresh (default allow on main)
+  - value: Outbox
+    label: Member-withdrawal event
+    note: written inside the withdrawal transaction · FAILED after 5 failures
   - value: MSA
     label: Gateway · Redis · Kafka · OPA
     note: distributed auth flow
@@ -35,7 +32,7 @@ import Figure from '../../../components/Figure.astro';
 
 ## Problem
 
-While owning the member/auth service, the Gateway and OPA authorization in an MSA environment, **intermittent 403 (Forbidden)** errors appeared in our integration-test and demo environments. They were hard to reproduce, and viewing them as a mere gateway response error led nowhere. They clustered right after user-state changes such as seller approval.
+While owning the member/auth service, the Gateway and OPA authorization in an MSA environment, **intermittent 403 (Forbidden)** errors appeared during development. They were hard to reproduce, and viewing them as a mere gateway response error led nowhere. They clustered right after user-state changes such as seller approval.
 
 ## Cause — a state mismatch, not the surface
 
@@ -53,58 +50,61 @@ The bundle endpoint only accepts private-network (private IP/CIDR) clients, with
 
 <Figure
   src="/img/projects/baro-farm/s22-gateway-opa-routing.webp"
-  width={752}
-  height={423}
+  width={751}
+  height={384}
   alt="API gateway authorization and routing sequence: Client → API Gateway → service lookup in Eureka → authorization check to OPA when required (Allow/Deny) → forward to the service; on the right, a capture of the OPA policy directory. Slide text in Korean"
   caption="Gateway–Eureka–OPA authorization and routing — my area in the team presentation"
 />
 
 <Figure
   src="/img/projects/baro-farm/s23-opa-flow.webp"
-  width={752}
-  height={423}
+  width={751}
+  height={384}
   alt="Two sequences: OPA authorization (Gateway → OPA → evaluate gateway_authz.rego → true/false) and policy bundle publish/refresh (OpaBundleApplication publishes a policy + data bundle → OPA polls the bundle and activates the policy). Slide title in Korean"
   caption="OPA authorization flow and policy-bundle publish/refresh flow — my area in the team presentation"
 />
 
-This **reduced the lag between permission info and user state to within the OPA polling interval (10–60s)** — it did not eliminate the lag.
+I **designed and implemented this path to cut the lag between permission info and user state to within the OPA polling interval (10–60s)**, and the policy rule ran from 2026-01-22 to 01-25. It was never meant to eliminate the lag.
+
+On main, however, this blocking does not run. On 2026-01-26, the day before the project ended, the policy default was switched to allow (`default allow := true`), and main still has it; the gateway routes on main also have no OPA filter attached. Even while the rule ran, the downstream product service checked seller status from the role header in the token, so 403s right after approval remained on that path. The accurate summary is "diagnosed the cause and designed and implemented a path to shrink the lag, but it is inactive on main," not "reduced the lag."
 
 ## Result
 
-I gained the perspective of seeing a failure not as a visible symptom (403) but as a **data-consistency and event-propagation** problem. Auth/authorization isn't a single service — it works only when the state across multiple components stays consistent.
+I gained the perspective of seeing a failure not as a visible symptom (403) but as a **data-consistency and event-propagation** problem. Auth/authorization isn't a single service — it works only when the state across multiple components stays consistent. I also learned that unless a policy is pinned by tests that actually run, a one-line change right before a deadline (default allow) can switch the whole design off.
 
 ## Gateway filter order and token storage
 
-A request passes the Gateway's global filters (Rate Limit → Retry → Circuit Breaker → Timeout); then the authentication filter enriches the request headers and the OPA authorization filter gets an allow/deny before the request goes downstream. Auth tokens are issued as HttpOnly cookies instead of localStorage so scripts can't read them, and the cookies carry `SameSite=Strict` so they are not sent on requests started from other sites.
+The designed filter order is: the Gateway's global filters (Rate Limit → Retry → Circuit Breaker → Timeout), then the authentication filter enriches the request headers and the OPA authorization filter gets an allow/deny before the request goes downstream (per the team presentation). The routes on main currently have no OPA authorization filter attached. Auth tokens are issued as HttpOnly cookies instead of localStorage so scripts can't read them, and the cookies carry `SameSite=Strict` so they are not sent on requests started from other sites.
 
 <Figure
   src="/img/projects/baro-farm/s26-gateway-filters.webp"
-  width={752}
-  height={423}
+  width={751}
+  height={384}
   alt="Gateway filter sequence: RateLimiter, Retry, CircuitBreaker and Timeout global filters → Authentication filter enriches headers → OPA authz filter allow/deny → forward downstream. Slide notes in Korean"
   caption="Gateway filter chain — my area in the team presentation"
 />
 
 <Figure
   src="/img/projects/baro-farm/s27-security-xss-csrf.webp"
-  width={752}
-  height={423}
+  width={751}
+  height={384}
   alt="Security slide in Korean: for XSS, code that issues tokens as HttpOnly cookies instead of localStorage; for CSRF, a config capture setting the cookie to SameSite=Strict"
   caption="HttpOnly and SameSite settings on the token cookies — my area in the team presentation"
 />
 
-## Choosing the delivery method by the cost of losing each event
+## How seller approval and member withdrawal are delivered
 
-I implemented the withdrawal outbox on main during the project (2026.01). Separating seller-approval propagation was solo refactoring after the project (2026.02–03), and I recorded the reasoning in an [ADR (link pinned to commit `59f643a6`)](https://github.com/dogs-team/baro-farm-be/blob/59f643a6de76442c4e14fb97b8221dab99d7bfd0/docs/ADR_SELLER_APPROVAL_AFTER_COMMIT.md). The seller-approval change and the ADR live on the `test/issue-103-integration-test-payment` branch and are not merged into main.
+I implemented the withdrawal outbox on main during the project (2026.01). Separating seller-approval propagation was solo refactoring after the project (2026.02–03), and I recorded that decision in an [ADR (link pinned to commit `59f643a6`)](https://github.com/dogs-team/baro-farm-be/blob/59f643a6de76442c4e14fb97b8221dab99d7bfd0/docs/ADR_SELLER_APPROVAL_AFTER_COMMIT.md) (the ADR covers seller approval only). The seller-approval change and the ADR live on the `test/issue-103-integration-test-payment` branch and are not merged into main.
 
 - **Problem** — Seller approval handled "state change → permission change → Kafka publish" as a single unit, so if the broker paused or slowed briefly, the approval itself failed or the request timed out.
-- **Seller approval (solo refactoring)** — The approval is committed first, and OPA propagation is sent on a separate thread after commit. Even if propagation is lost, there is a recovery path (permissions are applied on the next token refresh), so I accepted eventual consistency.
-- **Member withdrawal (implemented during the project)** — Other services must know about it, and there is no recovery path if it is lost. Inside the withdrawal transaction, together with anonymizing personal data and deleting credentials/tokens, the event is written to an outbox table; a scheduler publishes it and updates its status based on the result. After 5 failures it is marked FAILED.
+- **Seller approval (solo refactoring)** — On the admin approval path, the approval is committed first and OPA propagation is sent on a separate thread after commit. The other entry point (`grantSeller`) still publishes synchronously inside the transaction, and this change has no tests. If propagation is lost, the next token refresh re-reads the role from the database, so I accepted eventual consistency — but tokens live for 7 days, so the worst-case recovery time is also 7 days.
+- **Member withdrawal (implemented during the project)** — I designed it as an event other services would be told about (no service consumes it yet; design only), and a lost event cannot be rebuilt, so inside the withdrawal transaction, together with anonymizing personal data and deleting credentials/tokens, the event is written to an outbox table; a scheduler publishes it and updates its status based on the result. After 5 failures it is marked FAILED.
 
 ## Limitations & next steps
 
 | Current state | Next |
 |---|---|
-| Suspension/withdrawal still has the OPA polling lag (10–60s) | Consider immediate bundle refresh or short token expiry only for states that need instant blocking |
-| A lost seller-approval propagation only leaves a log; the outbox stops at FAILED after 5 failures | Add a hotlist resync job and a reprocessing path for FAILED events |
-| On 2026-01-26, the day before the project ended, the policy default was switched to allow (`default allow := true`), and main still has it | Revert to default-deny and restore the policy tests |
+| On 2026-01-26, the day before the project ended, the policy default was switched to allow (`default allow := true`), and main still has it; the gateway routes on main have no OPA filter. So on main, the hotlist-based blocking for approval, suspension and withdrawal does not run | Revert to default-deny, attach the OPA filter to the routes, and restore the policy tests so they actually run |
+| Even while the rule ran (2026-01-22 to 01-25) there was the OPA polling lag (10–60s), and the downstream product service checked seller status from the role header in the token | Consider immediate bundle refresh or short token expiry only for states that need instant blocking, and align the downstream check |
+| A lost seller-approval propagation only leaves a log (tokens live 7 days, so worst-case recovery is 7 days); the outbox stops at FAILED after 5 failures | Add a hotlist resync job and a reprocessing path for FAILED events |
+| Propagate-after-commit only applies to the admin approval path (`grantSeller` still publishes synchronously inside the transaction), with no tests | Make both entry points work the same way and pin them with tests |

@@ -1,6 +1,6 @@
 ---
 title: HeatTrip
-summary: An emotion-centered mobile travel service that recommends destinations based on the user's emotional state and connects itineraries, emotion diaries and retrospectives. As team lead of the three-person team Hit다Heat I handled most of the backend and deployment; my backend share is about 85% by commits (all of main, including my solo refactoring). For place recommendation I split roles so that the LLM picks only categories (cat3) and Spring does the ranking, and in a later solo refactoring I redesigned the search query based on execution plans and added observability.
+summary: An emotion-centered mobile travel service that recommends destinations based on the user's emotional state and connects itineraries, emotion diaries and retrospectives. As team lead of Hit다Heat, a three-person team, I handled most of the backend and deployment; my backend share is about 85% by commits (all of main, including my solo refactoring). For place recommendation I split roles so that the LLM picks only categories (cat3) and Spring does the ranking, and in a later solo refactoring I redesigned the search query based on execution plans and added tests and observability code.
 role: Team Lead · Backend-focused
 period: 2025.07–11 competition (team Hit다Heat, 3 people) · 2026.03–06 solo refactoring
 tech: [Java 21, Spring Boot 3.5, Spring Security, JPA, MySQL 8, OAuth2 / JWT, OpenAI API, AWS S3 / CloudFront, Docker]
@@ -13,15 +13,10 @@ coverWidth: 1600
 coverHeight: 900
 coverAlt: Five HeatTrip app screens — Explore, emotion input (PAD sliders), For You analysis result, recommended destinations, Diary
 ogImage: /img/projects/heat-trip/og.jpg
-roleBreakdown:
-  - { area: "Backend (auth·search·recommendation·diary) — by commits, all of main incl. solo refactoring", pct: 85 }
-  - { area: "Infra · Deploy (full FE/BE)", pct: 100 }
-  - { area: "ML / AI (crawling·LLM·prompting)", pct: 100 }
-  - { area: "Frontend (home·search·recommend·diary)", pct: 65 }
 metrics:
   - value: Scoped LLM role
     label: Picks categories (cat3), not places
-    note: ranking in Spring (emotion · popularity · distance)
+    note: ranking in Spring (emotion · popularity · distance) — see the emotion-input limitation below
   - value: Offset + Cursor
     label: Split pagination strategy
     note: createdtime + contentid composite key
@@ -35,7 +30,7 @@ import Callout from '../../../components/Callout.astro';
 import ArchitectureHeatTrip from '../../../components/ArchitectureHeatTrip.astro';
 import Figure from '../../../components/Figure.astro';
 
-As **team lead**, I designed and built the emotion-based recommendation logic, the LLM recommender integration, place search & pagination, operational observability, and the auth/security structure. Below is not "I added features" but **what problem I solved, on what basis, and how**.
+As **team lead**, I designed and built the emotion-based recommendation logic, the LLM recommender integration, place search & pagination, and the auth/security structure, and later added observability code in a solo refactoring. Below is not "I added features" but **what problem I solved, on what basis, and how**.
 
 ## System architecture
 
@@ -81,7 +76,7 @@ I split responsibilities between the LLM and Spring. The LLM recommends only a *
 
 - Convert the LLM's category label into the Tour API's internal `cat3` code
 - Filter actual places by `cat3`, then rank on the backend by combining **emotion features · popularity · distance scores**
-- When the frontend sends back the initial `cat3` code as `cat3Filter`, **the LLM step is skipped and only ranking runs**
+- When a request sends back the initial `cat3` code as `cat3Filter`, **the LLM step is skipped and only ranking runs** (server path only; the current app does not send it)
 
 </Callout>
 
@@ -95,9 +90,11 @@ I split responsibilities between the LLM and Spring. The LLM recommends only a *
 
 <Callout kind="result">
 
-Emotion-based personalized recommendations became possible without feeding tens of thousands of places into the LLM.
+This gave a recommendation structure that does not feed tens of thousands of places into the LLM.
 
-**Limitation:** there is no fallback response when the LLM call fails, and a long timeout applies to every retry. The next step is to shorten the timeout and add a rule-based fallback so request threads aren't held up. Redis caching (same-input LLM output) and a VectorDB-based RAG approach are further improvements I'm considering.
+**Limitation — emotion-input contract mismatch:** the app sends emotion values (PAD and energy) as floats from -1 to 1, but the server DTOs take integers, so most values truncate to 0 (e.g. 0.7 / -0.4 / 1.0 / 0.9 → 0 / 0 / 1 / 0). Right now emotion features barely affect the ranking. The planned fix is to write a contract test first and then align the types on both sides.
+
+**Limitation — LLM failure handling:** there is no fallback response when the LLM call fails, and a long timeout applies to every retry. The next step is to shorten the timeout and add a rule-based fallback so request threads aren't held up. Redis caching (same-input LLM output) and a VectorDB-based RAG approach are further improvements I'm considering.
 
 </Callout>
 
@@ -133,9 +130,9 @@ Infinite scroll gets stable next-page fetching, and even with identical `created
 
 <Callout kind="problem">
 
-Over roughly 49k places, a text search such as `q=카페` ("cafe") was implemented as four `LOWER(col) LIKE '%카페%'` conditions plus an `EXISTS` correlated subquery to match category names.
+Over roughly 49k places (estimated), a text search such as `q=카페` ("cafe") was implemented as four `LOWER(col) LIKE '%카페%'` conditions plus an `EXISTS` correlated subquery to match category names.
 
-`EXPLAIN ANALYZE` showed the real bottleneck was not the list query but the **count query**: a full table scan with the subquery repeated about 49k times, taking **about 755ms**. Because of the leading wildcard and `LOWER()`, adding a B-Tree index could not fix the text-search path.
+`EXPLAIN ANALYZE` showed the real bottleneck was not the list query but the **count query**: per the documented execution plan, a full table scan with the subquery repeated about 49k times, taking **about 755ms**. Because of the leading wildcard and `LOWER()`, adding a B-Tree index could not fix the text-search path.
 
 </Callout>
 
@@ -147,19 +144,19 @@ I **denormalized** place name, category and category name into a `search_text` c
 
 <Callout kind="result">
 
-After the change, the list query finds candidates (about 3,468 rows) directly from the fulltext index, **about 4.9ms** end to end, and the count query no longer does a full scan or repeats the subquery.
+After the change, the list query finds candidates (about 3,468 rows) directly from the fulltext index, **about 4.9ms** end to end (a single measurement for '카페', including the `contentid` sort), and per the documented execution plan the count query no longer does a full scan or repeats the subquery. The count SQL in the code has a LEFT JOIN, though, so I still need to re-measure to confirm the documented plan is for the same SQL.
 
-Caveat: 755ms (count, before) and 4.9ms (list, after) measure different queries. Comparing only the old `LIMIT 20` list query in isolation can make the old approach look faster, so since the API runs both list and count, I judged by the whole search path rather than a single number. I documented the migration steps, SQL-log tests and before/after execution plans in [8 documents](https://github.com/sanghyunbang/Heat_Trip_Spring_Boot_BE/tree/main/docs/database/sql-query-optimization-search) (Korean).
+Caveat: 755ms (count, before) and 4.9ms (list, after) measure different queries. Comparing only the old `LIMIT 20` list query in isolation can make the old approach look faster, so since the API runs both list and count, I judged by the whole search path rather than a single number. I documented the migration steps and before/after execution plans in [8 documents](https://github.com/sanghyunbang/Heat_Trip_Spring_Boot_BE/tree/main/docs/database/sql-query-optimization-search) (Korean). The search API test currently checks only the response code (200), so it still passes if the code is reverted to `LIKE`; I plan to replace it with a test that checks the FULLTEXT path on real MySQL.
 
 **Limitation:** FULLTEXT results are not identical to `LIKE` (single-character and special-character queries). I treat this as a trade-off between performance and search semantics; finishing result comparisons for short queries and condition combinations is the next step.
 
 </Callout>
 
-## Contribution 4 (solo refactoring) — Building a quality & observability foundation
+## Contribution 4 (solo refactoring) — Adding unit tests and observability code
 
 <Callout kind="problem">
 
-External APIs, the LLM server, image uploads and auth were all failure-prone, and the recommendation/auth flows were core paths prone to regression on change. I needed **fast detection during development and a way to trace causes in production**.
+External APIs, the LLM server, image uploads and auth were all failure-prone, and the recommendation/auth flows were core paths prone to regression on change. I needed a way to **catch problems early and trace the cause when an error happens**.
 
 </Callout>
 
@@ -174,7 +171,9 @@ External APIs, the LLM server, image uploads and auth were all failure-prone, an
 
 <Callout kind="result">
 
-Core flows (recommendation · LLM DTO · auth) are guarded against regression by tests, and production errors can be noticed and traced faster via Slack alerts and `correlation id`. Qodana/JaCoCo are still at the visibility stage, but they're a starting point for tightening quality gates around core packages.
+I wrote unit tests for recommendation orchestration, the LLM-response DTO and the auth service, and added observability code (AOP collection, fingerprint-deduplicated Slack alerts, `correlation id`). Qodana/JaCoCo are still at the visibility stage.
+
+**Limitation:** some tests stay green even when the change they cover is reverted (e.g. the LLM-response DTO deserialization test and the search adapter test), so they are not real regression guards yet; I plan to replace them with tests that fail on revert. The observability code has no tests yet and no record of an alert actually being sent, and it has design flaws to fix — the OpenAI and Slack calls run synchronously on the request path, and 4xx responses also trigger alerts.
 
 </Callout>
 

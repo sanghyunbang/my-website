@@ -1,10 +1,10 @@
 ---
 title: BARO FARM
-summary: 농수산물 커머스 서비스의 백엔드. Spring Cloud Gateway·Redis·Kafka·OPA 기반 MSA에서 회원·인증 서비스, Gateway, OPA 인가를 맡았고, 간헐적 403의 원인(발급된 토큰의 옛 권한과 실제 사용자 상태의 시차)을 찾아 그 시차를 OPA 폴링 주기(10~60초) 안으로 줄였습니다.
+summary: 농수산물 커머스 서비스의 백엔드. Spring Cloud Gateway·Redis·Kafka·OPA 기반 MSA에서 회원·인증 서비스, Gateway, OPA 인가를 맡았습니다. 간헐적 403의 원인을 발급된 토큰의 옛 권한과 실제 사용자 상태의 시차로 진단하고, hotlist 이벤트 → OPA 번들 갱신으로 그 시차를 폴링 주기 안으로 줄이도록 설계·구현했습니다(정책 규칙은 2026-01-22–25에 동작). 마감 전날 정책 기본값을 허용으로 바꾼 상태가 main에 남아 있어, main에서는 이 차단이 동작하지 않습니다.
 role: 백엔드 — 회원·인증 서비스, Gateway, OPA 인가
 period: 2025.11.29–2026.01.27 팀 프로젝트(세미·파이널) · 2026.02–03 개인 리팩토링
 tech: [Java, Spring, Spring Cloud Gateway, Redis, Kafka, OPA, JWT, Resilience4j, Kubernetes, MySQL]
-highlight: 간헐적 403을 "권한 정보와 사용자 상태 불일치" 구조 문제로 진단하고, 시차를 OPA 폴링 주기(10~60초) 안으로 줄임
+highlight: 간헐적 403을 게이트웨이 오류가 아니라 "JWT 권한 정보와 최신 사용자 상태의 시차"라는 구조 문제로 진단
 featured: true
 order: 2
 cover: /img/projects/baro-farm/cover.webp
@@ -12,16 +12,13 @@ coverWidth: 1258
 coverHeight: 708
 coverAlt: BARO FARM 웹 메인 화면 상단 — "믿을 수 있는 신선식품 바로팜에서 한 번에" 문구와 농장 사진 (팀 프로젝트 화면)
 ogImage: /img/projects/baro-farm/og.jpg
-roleBreakdown:
-  - { area: "인증 / 인가 (Gateway · JWT · OPA)", pct: 100 }
-  - { area: "이벤트 동기화 (Kafka)", pct: 80 }
 metrics:
-  - value: 403 시차 축소
-    label: 간헐적 인증/인가 오류
-    note: OPA 폴링 주기(10~60초) 안으로 시차를 줄임
   - value: JWT + OPA
-    label: 정책 기반 인가
-    note: Kafka 이벤트로 상태 동기화
+    label: 정책 기반 인가 설계
+    note: hotlist 이벤트 → OPA 번들 갱신 (main에서는 기본 허용)
+  - value: Outbox
+    label: 회원탈퇴 이벤트
+    note: 탈퇴 트랜잭션 안에서 적재 · 5회 실패 시 FAILED
   - value: MSA
     label: Gateway · Redis · Kafka · OPA
     note: 분산 인증 흐름
@@ -35,7 +32,7 @@ import Figure from '../../../components/Figure.astro';
 
 ## 문제
 
-MSA 환경에서 회원·인증 서비스와 Gateway, OPA 인가를 맡던 중, 통합 테스트·시연 환경에서 **간헐적으로 403(Forbidden)** 이 발생했습니다. 재현이 어렵고, 게이트웨이의 응답 오류로만 보면 원인이 잡히지 않는 종류의 문제였습니다. 판매자 승인처럼 사용자 상태가 바뀐 직후에 집중됐습니다.
+MSA 환경에서 회원·인증 서비스와 Gateway, OPA 인가를 맡던 중, 개발 과정에서 **간헐적으로 403(Forbidden)** 이 발생했습니다. 재현이 어렵고, 게이트웨이의 응답 오류로만 보면 원인이 잡히지 않는 종류의 문제였습니다. 판매자 승인처럼 사용자 상태가 바뀐 직후에 집중됐습니다.
 
 ## 원인 — 표면이 아니라 상태 불일치
 
@@ -53,58 +50,61 @@ MSA 환경에서 회원·인증 서비스와 Gateway, OPA 인가를 맡던 중, 
 
 <Figure
   src="/img/projects/baro-farm/s22-gateway-opa-routing.webp"
-  width={752}
-  height={423}
+  width={751}
+  height={384}
   alt="API 게이트웨이 정책 인가와 라우팅 시퀀스: Client → API Gateway → Eureka에서 서비스 인스턴스 조회 → 필요하면 OPA에 인가 질의(Allow/Deny) → 서비스로 요청 전달, 오른쪽에 OPA 정책 디렉터리 캡처"
   caption="Gateway–Eureka–OPA 인가·라우팅 — 팀 발표 자료 중 본인 담당 영역"
 />
 
 <Figure
   src="/img/projects/baro-farm/s23-opa-flow.webp"
-  width={752}
-  height={423}
+  width={751}
+  height={384}
   alt="OPA 인가 흐름(Gateway → OPA → gateway_authz.rego 평가 → true/false)과 정책 번들 배포·갱신 흐름(OpaBundleApplication이 정책+데이터 번들 게시 → OPA가 번들을 폴링해 정책 적용) 시퀀스"
   caption="OPA 인가 흐름과 정책 번들 배포·갱신 흐름 — 팀 발표 자료 중 본인 담당 영역"
 />
 
-권한 정보와 사용자 상태가 어긋나는 시차를 **OPA 폴링 주기(10~60초) 안으로 줄였습니다.** 시차를 없앤 것은 아닙니다.
+이 경로로 권한 정보와 사용자 상태의 시차를 **OPA 폴링 주기(10~60초) 안으로 줄이도록 설계·구현**했고, 정책 규칙은 2026-01-22–25에 동작했습니다. 시차를 없애는 설계는 아니었습니다.
+
+다만 지금 main에서는 이 차단이 동작하지 않습니다. 프로젝트 마감 전날(2026-01-26) 정책 기본값을 허용(`default allow := true`)으로 바꾼 상태가 main에 남아 있고, main의 게이트웨이 라우트에는 OPA 필터가 연결돼 있지 않습니다. 규칙이 돌던 때에도 하류 상품 서비스는 판매자 여부를 토큰의 역할 헤더로 검사해서, 승인 직후의 403이 그 경로에서는 남아 있었습니다. 그래서 이 사례는 "시차를 줄였다"가 아니라 "원인을 진단하고 줄이는 경로를 설계·구현했으나 main에서는 비활성"이 정확합니다.
 
 ## 결과
 
-장애를 눈에 보이는 증상(403)이 아니라 **데이터 정합성과 이벤트 전파 흐름**의 문제로 바라보는 시각을 얻었습니다. 인증/인가는 단일 서비스가 아니라 여러 컴포넌트의 상태가 일관되게 유지되어야 동작한다는 것을 체감했습니다.
+장애를 눈에 보이는 증상(403)이 아니라 **데이터 정합성과 이벤트 전파 흐름**의 문제로 바라보는 시각을 얻었습니다. 인증/인가는 단일 서비스가 아니라 여러 컴포넌트의 상태가 일관되게 유지되어야 동작한다는 것을 체감했습니다. 정책을 실제로 도는 테스트로 고정하지 않으면 마감 직전의 한 줄 변경(기본 허용)으로 설계 전체가 꺼질 수 있다는 것도 배웠습니다.
 
 ## Gateway 필터 순서와 토큰 보관
 
-요청은 Gateway의 글로벌 필터(Rate Limit → Retry → Circuit Breaker → Timeout)를 지난 뒤, 인증 필터가 요청 헤더를 보강하고 OPA 인가 필터가 허용/거부를 받아 하류 서비스로 넘깁니다. 인증 토큰은 localStorage 대신 HttpOnly 쿠키로 내려 스크립트가 읽지 못하게 했고, 쿠키에 `SameSite=Strict`를 걸어 다른 사이트에서 시작된 요청에는 실리지 않게 했습니다.
+설계한 필터 순서는 Gateway의 글로벌 필터(Rate Limit → Retry → Circuit Breaker → Timeout)를 지난 뒤, 인증 필터가 요청 헤더를 보강하고 OPA 인가 필터가 허용/거부를 받아 하류 서비스로 넘기는 것입니다(팀 발표 자료 기준). 지금 main의 라우트에는 OPA 인가 필터가 연결돼 있지 않습니다. 인증 토큰은 localStorage 대신 HttpOnly 쿠키로 내려 스크립트가 읽지 못하게 했고, 쿠키에 `SameSite=Strict`를 걸어 다른 사이트에서 시작된 요청에는 실리지 않게 했습니다.
 
 <Figure
   src="/img/projects/baro-farm/s26-gateway-filters.webp"
-  width={752}
-  height={423}
+  width={751}
+  height={384}
   alt="게이트웨이 필터 시퀀스: RateLimiter, Retry, CircuitBreaker, Timeout 글로벌 필터 → Authentication 필터가 헤더 보강 → OPA 인가 필터 allow/deny → Downstream 전달"
   caption="게이트웨이 필터 체인 — 팀 발표 자료 중 본인 담당 영역"
 />
 
 <Figure
   src="/img/projects/baro-farm/s27-security-xss-csrf.webp"
-  width={752}
-  height={423}
+  width={751}
+  height={384}
   alt="보안 고려사항 슬라이드: XSS 대응으로 토큰을 localStorage 대신 HttpOnly 쿠키로 발급하는 코드, CSRF 대응으로 쿠키 SameSite=Strict 설정 캡처"
   caption="토큰 쿠키의 HttpOnly·SameSite 설정 — 팀 발표 자료 중 본인 담당 영역"
 />
 
-## 이벤트마다 유실 비용을 따져 전달 방식을 골랐다
+## 판매자 승인과 회원탈퇴의 전달 방식
 
-회원탈퇴 outbox는 프로젝트 중(2026.01) main에 구현했고, 판매자 승인 전파 분리는 프로젝트 이후 개인 리팩토링(2026.02–03)으로 진행해 결정 이유를 [ADR(커밋 `59f643a6` 고정 링크)](https://github.com/dogs-team/baro-farm-be/blob/59f643a6de76442c4e14fb97b8221dab99d7bfd0/docs/ADR_SELLER_APPROVAL_AFTER_COMMIT.md)로 남겼습니다. 판매자 승인 변경과 ADR은 `test/issue-103-integration-test-payment` 브랜치에 있고 main에는 병합되지 않았습니다.
+회원탈퇴 outbox는 프로젝트 중(2026.01) main에 구현했고, 판매자 승인 전파 분리는 프로젝트 이후 개인 리팩토링(2026.02–03)으로 진행해 그 결정을 [ADR(커밋 `59f643a6` 고정 링크)](https://github.com/dogs-team/baro-farm-be/blob/59f643a6de76442c4e14fb97b8221dab99d7bfd0/docs/ADR_SELLER_APPROVAL_AFTER_COMMIT.md)로 남겼습니다(ADR은 판매자 승인만 다룹니다). 판매자 승인 변경과 ADR은 `test/issue-103-integration-test-payment` 브랜치에 있고 main에는 병합되지 않았습니다.
 
 - **문제** — 판매자 승인이 "상태 변경 → 권한 변경 → Kafka 발행"을 한 덩어리로 처리해서, 브로커가 잠깐 멈추거나 느리면 승인 자체가 실패하거나 요청이 타임아웃됐습니다.
-- **판매자 승인 (개인 리팩토링)** — 승인을 먼저 커밋하고, OPA 전파는 커밋 뒤 별도 스레드에서 보냅니다. 전파가 유실돼도 다음 토큰 갱신 때 권한이 반영되는 복구 경로가 있어서, 최종적 일관성을 받아들였습니다.
-- **회원탈퇴 (프로젝트 중 구현)** — 다른 서비스가 반드시 알아야 하고, 유실되면 복구 경로가 없는 사건입니다. 탈퇴 트랜잭션 안에서 개인정보 익명화, 자격 증명·토큰 삭제와 함께 outbox 테이블에 이벤트를 적재하고, 스케줄러가 발행 결과를 확인해 상태를 바꿉니다. 5회 실패하면 FAILED로 고정합니다.
+- **판매자 승인 (개인 리팩토링)** — 관리자 승인 경로에서는 승인을 먼저 커밋하고, OPA 전파는 커밋 뒤 별도 스레드에서 보냅니다. 다른 진입점(`grantSeller`)은 아직 트랜잭션 안에서 동기로 발행하고, 이 변경에는 테스트가 없습니다. 전파가 유실돼도 다음 토큰 갱신 때 DB에서 역할을 다시 읽는 복구 경로가 있어 최종적 일관성을 받아들였지만, 토큰 유효기간이 7일이라 최악의 복구 시간도 7일입니다.
+- **회원탈퇴 (프로젝트 중 구현)** — 다른 서비스에 알릴 사건으로 설계했고(이 이벤트를 소비하는 서비스는 아직 없음, 설계만), 유실되면 다시 만들 방법이 없어 탈퇴 트랜잭션 안에서 개인정보 익명화, 자격 증명·토큰 삭제와 함께 outbox 테이블에 이벤트를 적재하고, 스케줄러가 발행 결과를 확인해 상태를 바꿉니다. 5회 실패하면 FAILED로 고정합니다.
 
 ## 한계와 다음 단계
 
 | 지금 상태 | 다음에 할 것 |
 |---|---|
-| 정지·탈퇴 반영에 OPA 폴링 시차(10~60초)가 남음 | 즉시 차단이 필요한 상태만 번들 즉시 갱신 또는 짧은 토큰 만료로 보완 검토 |
-| 판매자 승인 전파가 유실되면 로그만 남고, outbox는 5회 실패 시 FAILED에서 멈춤 | hotlist 재동기화 작업과 FAILED 이벤트 재처리 경로 추가 |
-| 프로젝트 종료 전날(2026-01-26) 정책 기본값을 허용(`default allow := true`)으로 바꾼 상태가 main에 남아 있다 | 기본 거부로 되돌리고 정책 테스트를 복원 |
+| 프로젝트 종료 전날(2026-01-26) 정책 기본값을 허용(`default allow := true`)으로 바꾼 상태가 main에 남아 있고, main의 게이트웨이 라우트에는 OPA 필터가 없다. 그래서 main에서는 hotlist로 승인·정지·탈퇴를 반영하는 차단이 동작하지 않는다 | 기본 거부로 되돌리고 라우트에 OPA 필터를 연결한 뒤, 정책 테스트가 실제로 돌게 복원 |
+| 규칙이 돌던 때(2026-01-22–25)에도 OPA 폴링 시차(10~60초)가 있었고, 하류 상품 서비스는 판매자 여부를 토큰의 역할 헤더로 검사했다 | 즉시 차단이 필요한 상태만 번들 즉시 갱신 또는 짧은 토큰 만료로 보완 검토, 하류 검사 기준도 맞춤 |
+| 판매자 승인 전파가 유실되면 로그만 남고(토큰 유효기간 7일 — 최악의 복구 시간도 7일), outbox는 5회 실패 시 FAILED에서 멈춤 | hotlist 재동기화 작업과 FAILED 이벤트 재처리 경로 추가 |
+| 커밋 후 전파 분리는 관리자 승인 경로에만 적용됐고(`grantSeller`는 트랜잭션 안 동기 발행), 테스트가 없다 | 두 진입점을 같은 방식으로 맞추고 테스트로 고정 |

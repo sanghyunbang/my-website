@@ -10,7 +10,7 @@ interface Props {
   title?: string;
   description?: string;
   canonical?: string;
-  /** og:image (public 절대경로 또는 URL). 없으면 site.ogImage */
+  /** og:image (public 절대경로 또는 URL). 없으면 언어별 site.ogImage */
   image?: string;
   imageAlt?: string;
   /** ko/en 짝 페이지가 있을 때 hreflang alternate를 넣는다 (블로그·404는 false) */
@@ -39,7 +39,7 @@ const fullTitle = title
 
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
 const canonicalUrl = canonical ?? pageUrl;
-const ogImage = new URL(image ?? site.ogImage, Astro.site).href;
+const ogImage = new URL(image ?? site.ogImage[lang], Astro.site).href;
 const ogImageAlt = image ? (imageAlt ?? title ?? person.latinName) : `${person.latinName} — ${positioning.role[lang]}`;
 const ogLocale = lang === 'ko' ? 'ko_KR' : 'en_US';
 const ogLocaleAlt = lang === 'ko' ? 'en_US' : 'ko_KR';

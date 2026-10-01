@@ -8,7 +8,7 @@ export async function getPublishedPosts(): Promise<CollectionEntry<'blog'>[]> {
   );
 }
 
-/** 언어별 프로젝트. kind를 주면 case(상세 페이지 있음) / brief(짧은 항목)만 */
+/** 언어별 공개 프로젝트(draft 제외). kind를 주면 case(상세 페이지 있음) / brief(짧은 항목)만 */
 export async function getProjects(
   lang: Lang,
   kind?: 'case' | 'brief'
@@ -16,7 +16,7 @@ export async function getProjects(
   return (
     await getCollection(
       'projects',
-      ({ id, data }) => id.startsWith(`${lang}/`) && (!kind || data.kind === kind)
+      ({ id, data }) => id.startsWith(`${lang}/`) && !data.draft && (!kind || data.kind === kind)
     )
   ).sort((a, b) => a.data.order - b.data.order);
 }

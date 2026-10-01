@@ -36,13 +36,13 @@ import Gallery from '../../../components/Gallery.astro';
 An app for logging dog walks, finding places you can go with your dog, and sharing care within the family. I handled planning, the Flutter app, the Spring Boot server and AWS deployment on my own. Below is **where data could drift on the server, how I blocked it, and what I used to check it**.
 
 <Gallery
-  caption="ONE store listing screenshots (demo data, Korean UI)"
+  caption="ONE store listing screenshots (Korean UI; map areas blurred)"
+  cols={4}
   images={[
-    { src: '/img/projects/pawloop/01-map.webp', alt: 'Map screen: pet-friendly places filtered by category (walking trails, vets, cafés & restaurants, destinations)', caption: 'Map', width: 720, height: 1560 },
+    { src: '/img/projects/pawloop/01-map.webp', alt: 'Map screen: pet-friendly places filtered by category (walking trails, vets, cafés & restaurants, destinations); the map itself is blurred', caption: 'Map', width: 720, height: 1560 },
     { src: '/img/projects/pawloop/02-home.webp', alt: "Home screen: the dog's profile, today's walk count, distance and time, and today's care items", caption: 'Home', width: 720, height: 1560 },
-    { src: '/img/projects/pawloop/03-walk.webp', alt: 'Walk recording screen: route on the map with distance, time and pace, plus buttons to log poop, marking, water and photos', caption: 'Walk', width: 720, height: 1560 },
+    { src: '/img/projects/pawloop/03-walk.webp', alt: 'Walk recording screen: route on the map with distance, time and pace, plus buttons to log poop, marking, water and photos; the map itself is blurred', caption: 'Walk', width: 720, height: 1560 },
     { src: '/img/projects/pawloop/04-family.webp', alt: "My family screen: family members, today's care, walk notes and a shortcut to family chat", caption: 'Family care', width: 720, height: 1560 },
-    { src: '/img/projects/pawloop/05-community.webp', alt: 'Community screen: a neighborhood story feed with a write button', caption: 'Community', width: 720, height: 1560 },
   ]}
 />
 
@@ -107,7 +107,7 @@ A modular monolith on Spring Modulith (22 top-level modules). The Modulith check
 
 - **Boundary-violation ratchet** — I introduced boundary checks after the fact, cut violations from **620 to 107**, and locked them with a ratchet so the test fails if they grow.
 - **Cycles and cross-module references** — zero dependency cycles between modules (`ModuleCycleTest`). Foreign keys and joins that cross modules are held at a baseline by tests so they cannot grow.
-- **Tests on a real database** — full backend test run: 1,994 tests, 0 failures (2026-09-30, GitHub main, about 18 minutes).
+- **Full test run** — 1,994 backend tests, 0 failures (2026-09-30, GitHub main, about 18 minutes).
 - **Production setup** — production is a single EC2 instance provisioned with Terraform, with Caddy as the only entry point handling TLS. Prometheus and Grafana exist only in staging and locally.
 - **Decision records** — 23 (18 of them compare alternatives).
 
@@ -118,7 +118,7 @@ A modular monolith on Spring Modulith (22 top-level modules). The Modulith check
 | Early after launch, one server, no load test yet. The chat sequence timer (`chat.seq.assign`) is already recorded, but histograms are off, so p99 can't be computed | Turn on histograms and measure response time (p99) and sequence-lock waits under real traffic. No cache or message queue until a need is measured |
 | Deploys recreate containers, causing a short outage. The container start command is `sh -c` without exec, so the stop signal (SIGTERM) may not reach the JVM. In an experiment with the same base image PID 1 was the shell; not yet checked with the actual app image | Measure and fix the signal path first (exec form). Then tune the stop grace period, move to blue/green deploys and measure the error rate during a deploy |
 | On logout and account deletion, device push-token cleanup runs on an async queue after commit. It can be lost if the queue is full or the process stops for a deploy | Move cleanup that must not be lost into the transaction, and pin it with a test that injects queue saturation |
-| The chat read-marking path locks in the opposite order to the documented lock order, so it can deadlock when it coincides with a send in the same room (reproduced). It currently responds with 500 | Reproduction test → unify the lock order → confirm the 20-thread test stays green → update the lock-order comments |
+| The chat read-marking path locks in the opposite order to the documented lock order, so it can deadlock when it coincides with a send in the same room (reproduced in code review; a reproduction test is still to be written). It currently responds with 500 | Reproduction test → unify the lock order → confirm the 20-thread test stays green → update the lock-order comments |
 | Production has no metrics collector (Prometheus/Grafana are staging and local only) | Add production collection and build a chat-metrics panel |
 | 107 module-boundary violations remain | Keep reducing them with the ratchet |
 
