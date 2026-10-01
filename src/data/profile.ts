@@ -613,6 +613,19 @@ export const resumeProjects: ResumeProject[] = [
     },
   },
   {
+    // 공개 범위: project-briefs.md §1 — 레포 링크·종목명·수치·호스팅 정보 없음
+    id: 'scout',
+    slug: 'scout',
+    name: { ko: 'SCOUT', en: 'SCOUT' },
+    periods: [{ start: '2026-05', end: 'present', label: { ko: '1인 개발 · 출시 전', en: 'solo · pre-launch' } }],
+    size: 'line',
+    summary: {
+      ko: '공개 가치평가 방법론(DCF · 몬테카를로)으로 적정가치 범위를 계산하는 서비스(AI 코딩 에이전트와 함께 작성, 커밋 공저 표기). 순수 Kotlin 엔진 + Spring Boot API(PostgreSQL · Testcontainers) + Flutter 앱. 사업화를 준비 중인 비공개 프로젝트라 소스는 공개하지 않습니다.',
+      en: 'A valuation service that estimates a fair-value range with public valuation methods (DCF · Monte Carlo), written with an AI coding agent (co-authorship marked in commits). Pure Kotlin engine + Spring Boot API (PostgreSQL · Testcontainers) + Flutter app. A private project being prepared as a business; the source is not public.',
+    },
+    disclaimer: { ko: '투자 자문이 아닙니다.', en: 'Not investment advice.' },
+  },
+  {
     id: 'baro-farm',
     slug: 'baro-farm',
     name: {
@@ -693,18 +706,6 @@ export const resumeProjects: ResumeProject[] = [
         'Curation posts keep post metadata in MySQL and route segments (GeoJSON coordinates) in MongoDB, linked by postId and drawn as a route on the map',
       ],
     },
-  },
-  {
-    // 공개 범위: project-briefs.md §1 — 레포 링크·종목명·수치·호스팅 정보 없음
-    id: 'scout',
-    name: { ko: 'SCOUT', en: 'SCOUT' },
-    periods: [{ start: '2026-05', end: 'present', label: { ko: '1인 개발 · 출시 전', en: 'solo · pre-launch' } }],
-    size: 'line',
-    summary: {
-      ko: '공개 가치평가 방법론(DCF · 몬테카를로)으로 적정가치 범위를 계산하는 서비스(AI 코딩 에이전트와 함께 작성, 커밋 공저 표기). 순수 Kotlin 엔진 + Spring Boot API(PostgreSQL · Testcontainers) + Flutter 앱. 사업화를 준비 중인 비공개 프로젝트라 소스는 공개하지 않습니다.',
-      en: 'A valuation service that estimates a fair-value range with public valuation methods (DCF · Monte Carlo), written with an AI coding agent (co-authorship marked in commits). Pure Kotlin engine + Spring Boot API (PostgreSQL · Testcontainers) + Flutter app. A private project being prepared as a business; the source is not public.',
-    },
-    disclaimer: { ko: '투자 자문이 아닙니다.', en: 'Not investment advice.' },
   },
 ];
 

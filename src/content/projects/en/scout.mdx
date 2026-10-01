@@ -8,7 +8,7 @@ summary: A valuation service that shows a stock's fair value as a range and a di
 role: Solo — planning, engine, backend, app, admin console
 tech: [Kotlin, Spring Boot, PostgreSQL, Flyway, Testcontainers, Flutter, React, Next.js]
 highlight: Model inputs change only after passing an approval gate, and the LLM advisor can only submit proposals to that gate
-order: 4
+order: 2
 cover: /img/projects/scout/architecture.svg
 coverWidth: 1200
 coverHeight: 700
@@ -21,7 +21,7 @@ import Gallery from '../../../components/Gallery.astro';
 
 SCOUT is a valuation service built on public methodology: Damodaran-style DCF and Monte Carlo simulation. It shows a stock's fair value as a range and a distribution instead of a single number. It is a solo project and has not launched yet.
 
-The valuation engine is a pure Kotlin module with no Spring dependency. A Spring Boot API, a Flutter app, a React operations console and a Next.js web front sit on top of it. Model inputs change only after filing ingestion, a freshness check and an update proposal, and then only if the proposal passes an approval gate. The LLM advisor can submit proposals to that gate but cannot change values itself.
+The valuation engine is a pure Kotlin module with no Spring dependency. A Spring Boot API, a Flutter app, a React operations console and a Next.js web front sit on top of it. Model inputs enter only as proposals, whatever the source (manual entry, filing ingestion, reference data, the LLM advisor), and change only if the proposal passes an approval gate. The filing-ingestion path creates an update proposal when the freshness check finds a stock behind. The LLM advisor can submit proposals to that gate but cannot change values itself.
 
 In the app, a margin-of-safety view shows whether a price is worth acting on, and a pause prompt steps in when the user is about to chase a stock.
 
@@ -61,7 +61,7 @@ The console screens run on mock data (note the `MOCK` badge at the top right). S
   width={1600}
   height={880}
   alt="Data freshness: each stock is judged by the gap between the parameter's base quarter and the latest filed quarter (Korean UI)."
-  caption="Data freshness — each stock is judged by the gap between the parameter's base quarter and the latest filed quarter (behind, unknown, not collected, fresh). Ingestion status separates missing data from not-yet-loaded data (Korean UI)."
+  caption="Data freshness — each stock is judged by the gap between the parameter's base quarter and the latest filed quarter (behind by two or more quarters — proposal target, one quarter behind — warning, unknown, not collected, fresh). Ingestion status separates missing data from not-yet-loaded data (Korean UI)."
 />
 
 <Figure
