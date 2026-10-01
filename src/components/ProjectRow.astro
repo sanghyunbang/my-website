@@ -13,11 +13,13 @@ interface Props {
   award?: AwardId;
   cover?: string;
   coverAlt?: string;
+  coverWidth?: number;
+  coverHeight?: number;
   index?: number;
   lang?: Lang;
   cta?: string;
 }
-const { title, slug, summary, tech, highlight, award, cover, coverAlt, index = 0, lang = 'ko', cta } =
+const { title, slug, summary, tech, highlight, award, cover, coverAlt, coverWidth, coverHeight, index = 0, lang = 'ko', cta } =
   Astro.props;
 const t = useT(lang);
 const href = localize(`/projects/${slug}`, lang);
@@ -42,6 +44,8 @@ const monogram = title.trim().charAt(0).toUpperCase();
       <img
         src={cover}
         alt={coverAlt ?? title}
+        width={coverWidth}
+        height={coverHeight}
         class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]"
         loading="lazy"
         decoding="async"

@@ -560,6 +560,7 @@ export const resumeProjects: ResumeProject[] = [
     // 문장 근거: project-briefs.md §3 (14장이 '반대 증거'로 판정한 PDF 문장은 쓰지 않음:
     // "UPDATE와 SELECT 사이 끼어듦", "잠금 순서로 교착 회피", "통합 테스트 112", "되돌리면 실패", "App Store 심사 중")
     id: 'pawloop',
+    slug: 'pawloop',
     name: {
       ko: 'Pawloop (포루프) — 반려견 산책·가족 케어 앱 (1인 개발)',
       en: 'Pawloop — dog-walking & family-care app (solo)',
@@ -621,7 +622,7 @@ export const resumeProjects: ResumeProject[] = [
       en: 'HeatTrip — Emotion-based travel recommendation (Team Lead)',
     },
     periods: [
-      { start: '2025-07', end: '2025-11', label: { ko: '공모전 (3인 팀)', en: 'competition (team of 3)' } },
+      { start: '2025-07', end: '2025-11', label: { ko: '공모전 (팀 Hit다Heat, 3인)', en: 'competition (team Hit다Heat, 3 people)' } },
       { start: '2026-03', end: '2026-06', label: { ko: '개인 리팩토링', en: 'solo refactoring' } },
     ],
     award: 'tour-data-2025',

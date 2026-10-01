@@ -33,6 +33,11 @@ const projects = defineCollection({
     /** public 절대경로 (예: /img/projects/<slug>/cover.webp), 16:9 권장 */
     cover: z.string().optional(),
     coverAlt: z.string().optional(),
+    /** cover의 실제 픽셀 크기 (img width/height 속성 — 레이아웃 이동 방지) */
+    coverWidth: z.number().int().positive().optional(),
+    coverHeight: z.number().int().positive().optional(),
+    /** og:image 전용 1200×630 JPEG (webp를 못 읽는 공유 미리보기 대비). 없으면 cover */
+    ogImage: z.string().optional(),
     /** src/data/profile.ts의 awards id (날짜·명칭은 profile에서 가져온다) */
     award: z.enum(AWARD_IDS).optional(),
     /** 짧은 항목 아래에 붙일 한 줄 고지 (예: 투자 자문이 아닙니다) */

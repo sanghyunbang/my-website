@@ -52,6 +52,8 @@ npm run pdf       # 빌드 → preview → 로컬 Chrome(없으면 Edge) headles
   - `kind: case`(기본) → `/projects/<slug>` 상세 페이지, `featured: true`면 홈에 노출, `order`로 정렬.
   - `kind: brief` → 상세 페이지 없이 `/projects` 하단 “그 밖의 프로젝트”에 한 단락으로.
   - `award`는 `profile.ts`의 수상 id(예: `tour-data-2025`)를 씁니다. 명칭과 날짜는 profile에서 가져옵니다.
-  - `cover`: `public/img/projects/<slug>/cover.webp` 같은 public 절대경로(16:9 권장). 카드·상세 히어로·og:image에 쓰입니다.
-  - 본문 이미지(.mdx): `Figure`(한 장), `Gallery`(세로 폰 스크린샷 여러 장).
+  - `cover`: `public/img/projects/<slug>/cover.webp` 같은 public 절대경로(16:9 권장). 카드·상세 히어로에 쓰입니다. `coverWidth`·`coverHeight`에 실제 픽셀 크기를 적습니다(img width/height 속성).
+  - `ogImage`: 공유 미리보기용 1200×630 JPEG(`public/img/projects/<slug>/og.jpg`). 없으면 `cover`가 og:image가 됩니다.
+  - 본문 이미지(.mdx): `Figure`(한 장), `Gallery`(세로 폰 스크린샷 여러 장). 둘 다 `alt`와 `width`·`height`를 적고, 지연 로딩됩니다(상세 히어로 cover만 즉시 로딩).
+  - 이미지 출처는 본인 스토어 그래픽, 본인 앱 캡처, 본인이 그린 구조도, 팀 발표 자료 중 본인 담당 장(캡션에 "팀 발표 자료 중 본인 담당 영역" 표기)만 씁니다. 팀원 실명·연락처·인프라 식별자가 보이는 장은 쓰지 않습니다.
 - **블로그**: `src/content/blog/`. `draft: true`면 목록·홈·사이트맵·상세 페이지 모두에서 빠지고, 공개 글이 0편이면 헤더의 Blog 메뉴도 숨겨집니다.

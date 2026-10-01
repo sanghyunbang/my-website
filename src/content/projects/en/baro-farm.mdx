@@ -7,6 +7,11 @@ tech: [Java, Spring, Spring Cloud Gateway, Redis, Kafka, OPA, JWT, Resilience4j,
 highlight: Diagnosed intermittent 403s as a "permission-vs-user-state mismatch" and reduced the lag to within the OPA polling interval (10–60s)
 featured: true
 order: 2
+cover: /img/projects/baro-farm/cover.webp
+coverWidth: 1258
+coverHeight: 708
+coverAlt: BARO FARM web main page hero — Korean headline "Trusted fresh food, all at BARO FARM" with a farm photo (team project screen)
+ogImage: /img/projects/baro-farm/og.jpg
 roleBreakdown:
   - { area: "Auth / Authorization (Gateway · JWT · OPA)", pct: 100 }
   - { area: "Event sync (Kafka)", pct: 80 }
@@ -23,9 +28,10 @@ metrics:
 links:
   - label: GitHub (baro-farm-be)
     href: https://github.com/dogs-team/baro-farm-be
-  - label: ADR — seller approval after commit
-    href: https://github.com/dogs-team/baro-farm-be/blob/test/issue-103-integration-test-payment/docs/ADR_SELLER_APPROVAL_AFTER_COMMIT.md
+  - label: ADR — seller approval after commit (commit 59f643a6)
+    href: https://github.com/dogs-team/baro-farm-be/blob/59f643a6de76442c4e14fb97b8221dab99d7bfd0/docs/ADR_SELLER_APPROVAL_AFTER_COMMIT.md
 ---
+import Figure from '../../../components/Figure.astro';
 
 ## Problem
 
@@ -45,15 +51,51 @@ Permissions are issued inside the JWT, but when approval, suspension or withdraw
 
 The bundle endpoint only accepts private-network (private IP/CIDR) clients, with an optional internal-token check that can be enabled by config.
 
+<Figure
+  src="/img/projects/baro-farm/s22-gateway-opa-routing.webp"
+  width={752}
+  height={423}
+  alt="API gateway authorization and routing sequence: Client → API Gateway → service lookup in Eureka → authorization check to OPA when required (Allow/Deny) → forward to the service; on the right, a capture of the OPA policy directory. Slide text in Korean"
+  caption="Gateway–Eureka–OPA authorization and routing — my area in the team presentation"
+/>
+
+<Figure
+  src="/img/projects/baro-farm/s23-opa-flow.webp"
+  width={752}
+  height={423}
+  alt="Two sequences: OPA authorization (Gateway → OPA → evaluate gateway_authz.rego → true/false) and policy bundle publish/refresh (OpaBundleApplication publishes a policy + data bundle → OPA polls the bundle and activates the policy). Slide title in Korean"
+  caption="OPA authorization flow and policy-bundle publish/refresh flow — my area in the team presentation"
+/>
+
 This **reduced the lag between permission info and user state to within the OPA polling interval (10–60s)** — it did not eliminate the lag.
 
 ## Result
 
 I gained the perspective of seeing a failure not as a visible symptom (403) but as a **data-consistency and event-propagation** problem. Auth/authorization isn't a single service — it works only when the state across multiple components stays consistent.
 
+## Gateway filter order and token storage
+
+A request passes the Gateway's global filters (Rate Limit → Retry → Circuit Breaker → Timeout); then the authentication filter enriches the request headers and the OPA authorization filter gets an allow/deny before the request goes downstream. Auth tokens are issued as HttpOnly cookies instead of localStorage so scripts can't read them, and the cookies carry `SameSite=Strict` so they are not sent on requests started from other sites.
+
+<Figure
+  src="/img/projects/baro-farm/s26-gateway-filters.webp"
+  width={752}
+  height={423}
+  alt="Gateway filter sequence: RateLimiter, Retry, CircuitBreaker and Timeout global filters → Authentication filter enriches headers → OPA authz filter allow/deny → forward downstream. Slide notes in Korean"
+  caption="Gateway filter chain — my area in the team presentation"
+/>
+
+<Figure
+  src="/img/projects/baro-farm/s27-security-xss-csrf.webp"
+  width={752}
+  height={423}
+  alt="Security slide in Korean: for XSS, code that issues tokens as HttpOnly cookies instead of localStorage; for CSRF, a config capture setting the cookie to SameSite=Strict"
+  caption="HttpOnly and SameSite settings on the token cookies — my area in the team presentation"
+/>
+
 ## Choosing the delivery method by the cost of losing each event
 
-I implemented the withdrawal outbox on main during the project (2026.01). Separating seller-approval propagation was solo refactoring after the project (2026.02–03), and I recorded the reasoning in an [ADR](https://github.com/dogs-team/baro-farm-be/blob/test/issue-103-integration-test-payment/docs/ADR_SELLER_APPROVAL_AFTER_COMMIT.md). The seller-approval change and the ADR live on the `test/issue-103-integration-test-payment` branch and are not merged into main.
+I implemented the withdrawal outbox on main during the project (2026.01). Separating seller-approval propagation was solo refactoring after the project (2026.02–03), and I recorded the reasoning in an [ADR (link pinned to commit `59f643a6`)](https://github.com/dogs-team/baro-farm-be/blob/59f643a6de76442c4e14fb97b8221dab99d7bfd0/docs/ADR_SELLER_APPROVAL_AFTER_COMMIT.md). The seller-approval change and the ADR live on the `test/issue-103-integration-test-payment` branch and are not merged into main.
 
 - **Problem** — Seller approval handled "state change → permission change → Kafka publish" as a single unit, so if the broker paused or slowed briefly, the approval itself failed or the request timed out.
 - **Seller approval (solo refactoring)** — The approval is committed first, and OPA propagation is sent on a separate thread after commit. Even if propagation is lost, there is a recovery path (permissions are applied on the next token refresh), so I accepted eventual consistency.
@@ -65,3 +107,4 @@ I implemented the withdrawal outbox on main during the project (2026.01). Separa
 |---|---|
 | Suspension/withdrawal still has the OPA polling lag (10–60s) | Consider immediate bundle refresh or short token expiry only for states that need instant blocking |
 | A lost seller-approval propagation only leaves a log; the outbox stops at FAILED after 5 failures | Add a hotlist resync job and a reprocessing path for FAILED events |
+| On 2026-01-26, the day before the project ended, the policy default was switched to allow (`default allow := true`), and main still has it | Revert to default-deny and restore the policy tests |

@@ -7,6 +7,11 @@ tech: [Java, Spring, Spring Cloud Gateway, Redis, Kafka, OPA, JWT, Resilience4j,
 highlight: 간헐적 403을 "권한 정보와 사용자 상태 불일치" 구조 문제로 진단하고, 시차를 OPA 폴링 주기(10~60초) 안으로 줄임
 featured: true
 order: 2
+cover: /img/projects/baro-farm/cover.webp
+coverWidth: 1258
+coverHeight: 708
+coverAlt: BARO FARM 웹 메인 화면 상단 — "믿을 수 있는 신선식품 바로팜에서 한 번에" 문구와 농장 사진 (팀 프로젝트 화면)
+ogImage: /img/projects/baro-farm/og.jpg
 roleBreakdown:
   - { area: "인증 / 인가 (Gateway · JWT · OPA)", pct: 100 }
   - { area: "이벤트 동기화 (Kafka)", pct: 80 }
@@ -23,9 +28,10 @@ metrics:
 links:
   - label: GitHub (baro-farm-be)
     href: https://github.com/dogs-team/baro-farm-be
-  - label: ADR — 판매자 승인 커밋 후 전파
-    href: https://github.com/dogs-team/baro-farm-be/blob/test/issue-103-integration-test-payment/docs/ADR_SELLER_APPROVAL_AFTER_COMMIT.md
+  - label: ADR — 판매자 승인 커밋 후 전파 (커밋 59f643a6)
+    href: https://github.com/dogs-team/baro-farm-be/blob/59f643a6de76442c4e14fb97b8221dab99d7bfd0/docs/ADR_SELLER_APPROVAL_AFTER_COMMIT.md
 ---
+import Figure from '../../../components/Figure.astro';
 
 ## 문제
 
@@ -45,15 +51,51 @@ MSA 환경에서 회원·인증 서비스와 Gateway, OPA 인가를 맡던 중, 
 
 번들 엔드포인트는 내부 대역(사설 IP·CIDR)에서만 받도록 막고, 내부 토큰 검사도 설정으로 켤 수 있게 했습니다.
 
+<Figure
+  src="/img/projects/baro-farm/s22-gateway-opa-routing.webp"
+  width={752}
+  height={423}
+  alt="API 게이트웨이 정책 인가와 라우팅 시퀀스: Client → API Gateway → Eureka에서 서비스 인스턴스 조회 → 필요하면 OPA에 인가 질의(Allow/Deny) → 서비스로 요청 전달, 오른쪽에 OPA 정책 디렉터리 캡처"
+  caption="Gateway–Eureka–OPA 인가·라우팅 — 팀 발표 자료 중 본인 담당 영역"
+/>
+
+<Figure
+  src="/img/projects/baro-farm/s23-opa-flow.webp"
+  width={752}
+  height={423}
+  alt="OPA 인가 흐름(Gateway → OPA → gateway_authz.rego 평가 → true/false)과 정책 번들 배포·갱신 흐름(OpaBundleApplication이 정책+데이터 번들 게시 → OPA가 번들을 폴링해 정책 적용) 시퀀스"
+  caption="OPA 인가 흐름과 정책 번들 배포·갱신 흐름 — 팀 발표 자료 중 본인 담당 영역"
+/>
+
 권한 정보와 사용자 상태가 어긋나는 시차를 **OPA 폴링 주기(10~60초) 안으로 줄였습니다.** 시차를 없앤 것은 아닙니다.
 
 ## 결과
 
 장애를 눈에 보이는 증상(403)이 아니라 **데이터 정합성과 이벤트 전파 흐름**의 문제로 바라보는 시각을 얻었습니다. 인증/인가는 단일 서비스가 아니라 여러 컴포넌트의 상태가 일관되게 유지되어야 동작한다는 것을 체감했습니다.
 
+## Gateway 필터 순서와 토큰 보관
+
+요청은 Gateway의 글로벌 필터(Rate Limit → Retry → Circuit Breaker → Timeout)를 지난 뒤, 인증 필터가 요청 헤더를 보강하고 OPA 인가 필터가 허용/거부를 받아 하류 서비스로 넘깁니다. 인증 토큰은 localStorage 대신 HttpOnly 쿠키로 내려 스크립트가 읽지 못하게 했고, 쿠키에 `SameSite=Strict`를 걸어 다른 사이트에서 시작된 요청에는 실리지 않게 했습니다.
+
+<Figure
+  src="/img/projects/baro-farm/s26-gateway-filters.webp"
+  width={752}
+  height={423}
+  alt="게이트웨이 필터 시퀀스: RateLimiter, Retry, CircuitBreaker, Timeout 글로벌 필터 → Authentication 필터가 헤더 보강 → OPA 인가 필터 allow/deny → Downstream 전달"
+  caption="게이트웨이 필터 체인 — 팀 발표 자료 중 본인 담당 영역"
+/>
+
+<Figure
+  src="/img/projects/baro-farm/s27-security-xss-csrf.webp"
+  width={752}
+  height={423}
+  alt="보안 고려사항 슬라이드: XSS 대응으로 토큰을 localStorage 대신 HttpOnly 쿠키로 발급하는 코드, CSRF 대응으로 쿠키 SameSite=Strict 설정 캡처"
+  caption="토큰 쿠키의 HttpOnly·SameSite 설정 — 팀 발표 자료 중 본인 담당 영역"
+/>
+
 ## 이벤트마다 유실 비용을 따져 전달 방식을 골랐다
 
-회원탈퇴 outbox는 프로젝트 중(2026.01) main에 구현했고, 판매자 승인 전파 분리는 프로젝트 이후 개인 리팩토링(2026.02–03)으로 진행해 결정 이유를 [ADR](https://github.com/dogs-team/baro-farm-be/blob/test/issue-103-integration-test-payment/docs/ADR_SELLER_APPROVAL_AFTER_COMMIT.md)로 남겼습니다. 판매자 승인 변경과 ADR은 `test/issue-103-integration-test-payment` 브랜치에 있고 main에는 병합되지 않았습니다.
+회원탈퇴 outbox는 프로젝트 중(2026.01) main에 구현했고, 판매자 승인 전파 분리는 프로젝트 이후 개인 리팩토링(2026.02–03)으로 진행해 결정 이유를 [ADR(커밋 `59f643a6` 고정 링크)](https://github.com/dogs-team/baro-farm-be/blob/59f643a6de76442c4e14fb97b8221dab99d7bfd0/docs/ADR_SELLER_APPROVAL_AFTER_COMMIT.md)로 남겼습니다. 판매자 승인 변경과 ADR은 `test/issue-103-integration-test-payment` 브랜치에 있고 main에는 병합되지 않았습니다.
 
 - **문제** — 판매자 승인이 "상태 변경 → 권한 변경 → Kafka 발행"을 한 덩어리로 처리해서, 브로커가 잠깐 멈추거나 느리면 승인 자체가 실패하거나 요청이 타임아웃됐습니다.
 - **판매자 승인 (개인 리팩토링)** — 승인을 먼저 커밋하고, OPA 전파는 커밋 뒤 별도 스레드에서 보냅니다. 전파가 유실돼도 다음 토큰 갱신 때 권한이 반영되는 복구 경로가 있어서, 최종적 일관성을 받아들였습니다.
@@ -65,3 +107,4 @@ MSA 환경에서 회원·인증 서비스와 Gateway, OPA 인가를 맡던 중, 
 |---|---|
 | 정지·탈퇴 반영에 OPA 폴링 시차(10~60초)가 남음 | 즉시 차단이 필요한 상태만 번들 즉시 갱신 또는 짧은 토큰 만료로 보완 검토 |
 | 판매자 승인 전파가 유실되면 로그만 남고, outbox는 5회 실패 시 FAILED에서 멈춤 | hotlist 재동기화 작업과 FAILED 이벤트 재처리 경로 추가 |
+| 프로젝트 종료 전날(2026-01-26) 정책 기본값을 허용(`default allow := true`)으로 바꾼 상태가 main에 남아 있다 | 기본 거부로 되돌리고 정책 테스트를 복원 |

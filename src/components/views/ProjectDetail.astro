@@ -35,7 +35,7 @@ const other: Lang = lang === 'ko' ? 'en' : 'ko';
 const hasOther = (await getProjects(other, 'case')).some((p) => projectSlug(p) === slug);
 ---
 
-<BaseLayout title={data.title} description={data.summary} image={data.cover} imageAlt={data.coverAlt} alternates={hasOther} type="article">
+<BaseLayout title={data.title} description={data.summary} image={data.ogImage ?? data.cover} imageAlt={data.coverAlt} alternates={hasOther} type="article">
   <article class="pt-28 pb-14 sm:pt-32">
     <a href={localize('/projects', lang)} class="font-mono text-sm text-muted transition-colors hover:text-ink">
       {t('proj.detail.back')}
@@ -84,6 +84,8 @@ const hasOther = (await getProjects(other, 'case')).some((p) => projectSlug(p) =
       <img
         src={data.cover}
         alt={data.coverAlt ?? data.title}
+        width={data.coverWidth}
+        height={data.coverHeight}
         class="mt-10 aspect-video w-full rounded-2xl border border-line bg-neutral-100 object-contain"
         loading="eager"
         decoding="async"

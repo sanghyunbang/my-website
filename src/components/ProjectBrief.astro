@@ -19,10 +19,12 @@ interface Props {
   award?: AwardId;
   cover?: string;
   coverAlt?: string;
+  coverWidth?: number;
+  coverHeight?: number;
   disclaimer?: string;
   links: { label: string; href: string }[];
 }
-const { slug, lang, title, summary, period, role, tech, award, cover, coverAlt, disclaimer, links } = Astro.props;
+const { slug, lang, title, summary, period, role, tech, award, cover, coverAlt, coverWidth, coverHeight, disclaimer, links } = Astro.props;
 const rp = resumeProjects.find((p) => p.id === slug);
 const periodText = period ?? (rp ? formatProjectPeriods(rp, lang) : undefined);
 const awardText = award ? formatAward(getAward(award), lang) : undefined;
@@ -61,6 +63,8 @@ const awardText = award ? formatAward(getAward(award), lang) : undefined;
     <img
       src={cover}
       alt={coverAlt ?? title}
+      width={coverWidth}
+      height={coverHeight}
       class="aspect-video w-full rounded-xl border border-line bg-neutral-100 object-contain sm:w-48"
       loading="lazy"
       decoding="async"

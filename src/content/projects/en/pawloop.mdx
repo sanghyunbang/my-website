@@ -1,0 +1,129 @@
+---
+# Source: _site-refresh/project-briefs.md §3 (only the sentences corrected after the chapter-14 review)
+# Not used: "112 integration test classes", "avoided deadlock by lock order", "another request can slip in
+#   between UPDATE and SELECT", "confirmed it fails when reverted", "17 of 20 failed", App Store, recovery time,
+#   "no incidents since", user counts / downloads / ratings
+# Links: source is private. The ONE store link is appended from src/data/profile.ts (links.apps).
+kind: case
+title: Pawloop
+summary: A dog-walking and family-care app that brings together walk logs, a map of pet-friendly places, shared family care, schedules, a community and chat. I planned and built it alone — Flutter app, Spring Boot server and AWS deployment — and released it on ONE store. The server enforces module boundaries with tests and pins behavior with tests that run on real MySQL.
+role: Solo — planning, Flutter app, Spring Boot server, AWS deployment
+period: 2026.06 – present · first production deploy 2026.09 · listed on ONE store
+tech: [Java 21, Spring Boot 3.5, Spring Modulith, JPA, MySQL 8, Testcontainers, Docker, Caddy, AWS EC2, Terraform, Flutter]
+highlight: Per-room chat sequence numbers issued atomically with the row lock + LAST_INSERT_ID(expr), pinned by a 20-thread concurrent-send test on real MySQL
+featured: true
+order: 1
+cover: /img/projects/pawloop/cover.webp
+coverWidth: 1024
+coverHeight: 576
+coverAlt: Pawloop ONE store feature graphic — map and home screens
+ogImage: /img/projects/pawloop/og.jpg
+metrics:
+  - value: "1,994 · 0 failed"
+    label: Full backend test run
+    note: GitHub main as of 2026-09-30, about 18 min
+  - value: "0 cycles"
+    label: Dependency cycles between modules
+    note: Spring Modulith check pinned by a test
+  - value: "620 → 107"
+    label: Module-boundary violations (ratchet)
+    note: test fails if they grow; the remaining 107 are disclosed
+links: []
+---
+import Callout from '../../../components/Callout.astro';
+import Gallery from '../../../components/Gallery.astro';
+
+An app for logging dog walks, finding places you can go with your dog, and sharing care within the family. I handled planning, the Flutter app, the Spring Boot server and AWS deployment on my own. Below is **where data could drift on the server, how I blocked it, and what I used to check it**.
+
+<Gallery
+  caption="ONE store listing screenshots (demo data, Korean UI)"
+  images={[
+    { src: '/img/projects/pawloop/01-map.webp', alt: 'Map screen: pet-friendly places filtered by category (walking trails, vets, cafés & restaurants, destinations)', caption: 'Map', width: 720, height: 1560 },
+    { src: '/img/projects/pawloop/02-home.webp', alt: "Home screen: the dog's profile, today's walk count, distance and time, and today's care items", caption: 'Home', width: 720, height: 1560 },
+    { src: '/img/projects/pawloop/03-walk.webp', alt: 'Walk recording screen: route on the map with distance, time and pace, plus buttons to log poop, marking, water and photos', caption: 'Walk', width: 720, height: 1560 },
+    { src: '/img/projects/pawloop/04-family.webp', alt: "My family screen: family members, today's care, walk notes and a shortcut to family chat", caption: 'Family care', width: 720, height: 1560 },
+    { src: '/img/projects/pawloop/05-community.webp', alt: 'Community screen: a neighborhood story feed with a write button', caption: 'Community', width: 720, height: 1560 },
+  ]}
+/>
+
+## Contribution 1 — Per-room chat sequence: concurrent messages getting the same number
+
+<Callout kind="problem">
+
+Each chat room numbers its messages 1, 2, 3… Reading the room and writing +1 lets two requests read the same value, so they hit the per-room sequence unique constraint.
+
+</Callout>
+
+<Callout kind="solution">
+
+Reading with `SELECT … FOR UPDATE` and writing +1 also serializes the requests. But it has to read the row again, and it risks reading a stale value from the JPA first-level cache. So I bundled the increment and "get my number" with `LAST_INSERT_ID(expr)`.
+
+```sql
+UPDATE chat_room SET last_seq = LAST_INSERT_ID(last_seq + 1) WHERE id = ?;
+SELECT CAST(LAST_INSERT_ID() AS SIGNED);   -- same transaction, before the INSERT
+```
+
+What serializes the requests is the UPDATE's row lock. `LAST_INSERT_ID(expr)` leaves the incremented value in my session, so I get my number without reading the row again.
+
+When a mobile client resends the same message, a unique constraint per room and sender — `(room_id, sender_user_id, client_msg_id)` — stops the duplicate. On a constraint violation, the server returns 200 only if a row with that key actually exists.
+
+</Callout>
+
+<Callout kind="result">
+
+A test on real MySQL (Testcontainers) pins that when 20 threads send to the same room at once, sequence numbers 1–20 each come out exactly once. The default connection pool is 10, so at most 10 transactions actually run concurrently.
+
+Resend idempotency is pinned by three cases: same ID duplicated / same key from another member / no key.
+
+</Callout>
+
+## Contribution 2 — First production deploy: a passing test was agreeing with a broken config
+
+<Callout kind="problem">
+
+On the first production boot on 2026-09-17, every container came up but ports 80 and 443 did not respond. Caddy had exited right after start on a config parse error (two path matchers listed on one `handle`).
+
+The test guarding the config checked strings in the Caddyfile, so it passed the broken config because "the string is there."
+
+</Callout>
+
+<Callout kind="solution">
+
+I replaced it with a test that starts the same Caddy image as production via Testcontainers and actually runs `caddy validate`.
+
+Mount paths and health checks were reinforced with static checks that read the compose files, and the docs site is checked by actually rendering it.
+
+</Callout>
+
+<Callout kind="result">
+
+That same week I learned that even an execution test gives a false green if it runs differently from production (by copying files in), so I changed the bar from "does it execute" to "does it run under the same conditions as production."
+
+</Callout>
+
+## Contribution 3 — Module boundaries and test structure
+
+A modular monolith on Spring Modulith (22 top-level modules). The Modulith checks run in tests; only the annotation API is a runtime dependency.
+
+- **Boundary-violation ratchet** — I introduced boundary checks after the fact, cut violations from **620 to 107**, and locked them with a ratchet so the test fails if they grow.
+- **Cycles and cross-module references** — zero dependency cycles between modules (`ModuleCycleTest`). Foreign keys and joins that cross modules are held at a baseline by tests so they cannot grow.
+- **Tests on a real database** — full backend test run: 1,994 tests, 0 failures (2026-09-30, GitHub main, about 18 minutes).
+- **Production setup** — production is a single EC2 instance provisioned with Terraform, with Caddy as the only entry point handling TLS. Prometheus and Grafana exist only in staging and locally.
+- **Decision records** — 23 (18 of them compare alternatives).
+
+## Limitations & next steps
+
+| Current state | Next |
+|---|---|
+| Early after launch, one server, no load test yet. The chat sequence timer (`chat.seq.assign`) is already recorded, but histograms are off, so p99 can't be computed | Turn on histograms and measure response time (p99) and sequence-lock waits under real traffic. No cache or message queue until a need is measured |
+| Deploys recreate containers, causing a short outage. The container start command is `sh -c` without exec, so the stop signal (SIGTERM) may not reach the JVM. In an experiment with the same base image PID 1 was the shell; not yet checked with the actual app image | Measure and fix the signal path first (exec form). Then tune the stop grace period, move to blue/green deploys and measure the error rate during a deploy |
+| On logout and account deletion, device push-token cleanup runs on an async queue after commit. It can be lost if the queue is full or the process stops for a deploy | Move cleanup that must not be lost into the transaction, and pin it with a test that injects queue saturation |
+| The chat read-marking path locks in the opposite order to the documented lock order, so it can deadlock when it coincides with a send in the same room (reproduced). It currently responds with 500 | Reproduction test → unify the lock order → confirm the 20-thread test stays green → update the lock-order comments |
+| Production has no metrics collector (Prometheus/Grafana are staging and local only) | Add production collection and build a chat-metrics panel |
+| 107 module-boundary violations remain | Keep reducing them with the ratchet |
+
+## AI use disclosure
+
+Of 550 commits, 445 (about 81%) were written with an AI coding agent and are marked with a commit trailer (`Co-Authored-By`). That is why I look at what a test actually verifies before trusting a "tests passed" report. The first-deploy incident above is what set that bar.
+
+The source is private. I'm happy to give a demo and a code walkthrough on request.

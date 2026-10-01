@@ -31,6 +31,8 @@ const briefs = await getProjects(lang, 'brief');
         award={p.data.award}
         cover={p.data.cover}
         coverAlt={p.data.coverAlt}
+        coverWidth={p.data.coverWidth}
+        coverHeight={p.data.coverHeight}
         index={i}
         lang={lang}
         cta={t('proj.viewmore')}
@@ -55,6 +57,8 @@ const briefs = await getProjects(lang, 'brief');
             award={p.data.award}
             cover={p.data.cover}
             coverAlt={p.data.coverAlt}
+            coverWidth={p.data.coverWidth}
+            coverHeight={p.data.coverHeight}
             disclaimer={p.data.disclaimer}
             links={p.data.links}
           />

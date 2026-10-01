@@ -1,15 +1,20 @@
 ---
 title: HeatTrip
-summary: An emotion-centered mobile travel service that recommends destinations based on the user's emotional state and connects itineraries, emotion diaries and retrospectives. As team lead I handled most of the backend (about 85% of commits) and deployment, and split roles so that for place recommendation the LLM picks only categories (cat3) and Spring does the ranking. In a later solo refactoring I redesigned the search query based on execution plans and added observability.
+summary: An emotion-centered mobile travel service that recommends destinations based on the user's emotional state and connects itineraries, emotion diaries and retrospectives. As team lead of the three-person team Hit다Heat I handled most of the backend and deployment; my backend share is about 85% by commits (all of main, including my solo refactoring). For place recommendation I split roles so that the LLM picks only categories (cat3) and Spring does the ranking, and in a later solo refactoring I redesigned the search query based on execution plans and added observability.
 role: Team Lead · Backend-focused
-period: 2025.07–11 competition (team of 3) · 2026.03–06 solo refactoring
+period: 2025.07–11 competition (team Hit다Heat, 3 people) · 2026.03–06 solo refactoring
 tech: [Java 21, Spring Boot 3.5, Spring Security, JPA, MySQL 8, OAuth2 / JWT, OpenAI API, AWS S3 / CloudFront, Docker]
 highlight: Kept tens of thousands of places out of the LLM — it picks categories (cat3) only; Excellence Award at the 2025 Tourism Data Utilization Competition (Korea Tourism Organization)
 featured: true
-order: 1
+order: 3
 award: tour-data-2025
+cover: /img/projects/heat-trip/cover.webp
+coverWidth: 1600
+coverHeight: 900
+coverAlt: Five HeatTrip app screens — Explore, emotion input (PAD sliders), For You analysis result, recommended destinations, Diary
+ogImage: /img/projects/heat-trip/og.jpg
 roleBreakdown:
-  - { area: "Backend (auth·search·recommendation·diary)", pct: 85 }
+  - { area: "Backend (auth·search·recommendation·diary) — by commits, all of main incl. solo refactoring", pct: 85 }
   - { area: "Infra · Deploy (full FE/BE)", pct: 100 }
   - { area: "ML / AI (crawling·LLM·prompting)", pct: 100 }
   - { area: "Frontend (home·search·recommend·diary)", pct: 65 }
@@ -28,6 +33,7 @@ links:
 ---
 import Callout from '../../../components/Callout.astro';
 import ArchitectureHeatTrip from '../../../components/ArchitectureHeatTrip.astro';
+import Figure from '../../../components/Figure.astro';
 
 As **team lead**, I designed and built the emotion-based recommendation logic, the LLM recommender integration, place search & pagination, operational observability, and the auth/security structure. Below is not "I added features" but **what problem I solved, on what basis, and how**.
 
@@ -36,6 +42,24 @@ As **team lead**, I designed and built the emotion-based recommendation logic, t
 A Flutter client talks to the Spring Boot backend over REST, and the backend communicates with MySQL, S3/CloudFront and external APIs. The **LLM recommendation is split into a Python server** and connected via a Port/Adapter.
 
 <ArchitectureHeatTrip />
+
+The data model splits into places and place traits (`places`, `place_traits`, etc.), users · bookmarks · collections, schedules (`schedule`) and diary entries (`journey`), and emotion feedback. A diary entry can be attached to a schedule or written on its own, and entries are gathered in the schedule detail and the Diary tab.
+
+<Figure
+  src="/img/projects/heat-trip/erd.webp"
+  width={1600}
+  height={1136}
+  alt="HeatTrip ERD: tables such as users, places, place_traits, place_features, schedule, journey, bookmarks, collections, emotion_feedbacks, emotion_reviews and media_objects, with their relations"
+  caption="HeatTrip ERD (team design artifact, MySQL Workbench)"
+/>
+
+<Figure
+  src="/img/projects/heat-trip/flow-diary.webp"
+  width={1600}
+  height={718}
+  alt="Emotion diary (Diary) flow, five app screens in Korean: add a diary entry from the Diary tab → attach it to a schedule or write it on its own → enter title, date and mood emoji → see it in the schedule detail and the Diary tab"
+  caption="Emotion diary (Diary) flow — from the competition feature document (team-authored, Korean)"
+/>
 
 ## Contribution 1 — Not feeding tens of thousands of places to the LLM: it recommends categories (cat3) only
 
@@ -61,6 +85,14 @@ I split responsibilities between the LLM and Spring. The LLM recommends only a *
 
 </Callout>
 
+<Figure
+  src="/img/projects/heat-trip/flow-foryou.webp"
+  width={1600}
+  height={718}
+  alt="Emotion-based recommendation (For You) flow, five app screens in Korean: open emotion insight → pick an emoji and adjust intensity with PAD sliders → choose energy, sociability and trip goal → see personalized travel categories and places → open details or bookmark"
+  caption="Emotion-based recommendation (For You) flow — from the competition feature document (team-authored, Korean)"
+/>
+
 <Callout kind="result">
 
 Emotion-based personalized recommendations became possible without feeding tens of thousands of places into the LLM.
@@ -76,6 +108,14 @@ Emotion-based personalized recommendations became possible without feeding tens 
 The place list had two different usage patterns: **regular page browsing** and **mobile infinite scroll**. Using offset alone would degrade performance and cause duplicate/missing rows in infinite scroll as data grows.
 
 </Callout>
+
+<Figure
+  src="/img/projects/heat-trip/flow-explore.webp"
+  width={1600}
+  height={718}
+  alt="Place exploration (Explore) flow, five app screens in Korean: pick a theme or search → place list → detail page → save a bookmark → check it in the profile's bookmark tab"
+  caption="Place exploration (Explore) flow — from the competition feature document (team-authored, Korean)"
+/>
 
 <Callout kind="solution">
 
