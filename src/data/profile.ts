@@ -664,11 +664,9 @@ export const resumeProjects: ResumeProject[] = [
     disclaimer: { ko: '투자 자문이 아닙니다.', en: 'Not investment advice.' },
   },
   {
-    // project-briefs.md §2 — 레포 링크 없음
-    // 게시 보류: §4 #1(오름 레포 키 폐기·교체)과 #2(팀 인원 "4인")가 본인 확인 전이다.
-    // 확인되면 hold를 지우고 src/content/projects/{ko,en}/oreum.md의 draft도 지운다.
+    // project-briefs.md §2 — 레포 링크 없음. 4인 팀은 팀 발표 자료(팀 구성 슬라이드)로 확인.
+    // 2026-10-01 본인이 키 폐기 완료를 알려 와 게시.
     id: 'oreum',
-    hold: true,
     name: { ko: '오름 (OREUM)', en: 'OREUM' },
     periods: [{ start: '2025-06', end: '2025-07', label: { ko: 'KDT 졸업 프로젝트 · 4인 팀', en: 'KDT graduation project · team of 4' } }],
     award: 'kdt-2025',
