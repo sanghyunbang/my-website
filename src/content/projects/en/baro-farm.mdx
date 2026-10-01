@@ -1,6 +1,6 @@
 ---
 title: BARO FARM
-summary: Backend for an agri-fisheries commerce service. In a Spring Cloud Gateway·Redis·Kafka·OPA-based MSA I owned the member/auth service, the Gateway and OPA-based authorization. I traced intermittent 403s to the lag between permissions in already-issued tokens and the actual user state, and designed and implemented a hotlist-event → OPA-bundle-refresh path meant to cut that lag to within the polling interval (the policy rule ran 2026-01-22 to 01-25). The day before the deadline the policy default was switched to allow, and main still has it, so this blocking does not run on main.
+summary: Backend for an agri-fisheries commerce service. In a Spring Cloud Gateway·Redis·Kafka·OPA-based MSA I owned the member/auth service, the Gateway and OPA-based authorization. I traced intermittent 403s to the lag between permissions in already-issued tokens and the actual user state, and designed and implemented a hotlist-event → OPA-bundle-refresh path meant to cut that lag to within the polling interval (10–60s). The current policy state on main and the remaining work are in the limitations table below.
 role: Backend — member/auth service, Gateway, OPA authorization
 period: 2025.11.29–2026.01.27 team project (semi & final) · 2026.02–03 solo refactoring
 tech: [Java, Spring, Spring Cloud Gateway, Redis, Kafka, OPA, JWT, Resilience4j, Kubernetes, MySQL]

@@ -1,6 +1,6 @@
 ---
 title: BARO FARM
-summary: 농수산물 커머스 서비스의 백엔드. Spring Cloud Gateway·Redis·Kafka·OPA 기반 MSA에서 회원·인증 서비스, Gateway, OPA 인가를 맡았습니다. 간헐적 403의 원인을 발급된 토큰의 옛 권한과 실제 사용자 상태의 시차로 진단하고, hotlist 이벤트 → OPA 번들 갱신으로 그 시차를 폴링 주기 안으로 줄이도록 설계·구현했습니다(정책 규칙은 2026-01-22–25에 동작). 마감 전날 정책 기본값을 허용으로 바꾼 상태가 main에 남아 있어, main에서는 이 차단이 동작하지 않습니다.
+summary: 농수산물 커머스 서비스의 백엔드. Spring Cloud Gateway·Redis·Kafka·OPA 기반 MSA에서 회원·인증 서비스, Gateway, OPA 인가를 맡았습니다. 간헐적 403의 원인을 발급된 토큰의 옛 권한과 실제 사용자 상태의 시차로 진단하고, hotlist 이벤트 → OPA 번들 갱신으로 그 시차를 폴링 주기(10~60초) 안으로 줄이도록 설계·구현했습니다. 현재 main의 정책 상태와 남은 일은 아래 한계 표에 적었습니다.
 role: 백엔드 — 회원·인증 서비스, Gateway, OPA 인가
 period: 2025.11.29–2026.01.27 팀 프로젝트(세미·파이널) · 2026.02–03 개인 리팩토링
 tech: [Java, Spring, Spring Cloud Gateway, Redis, Kafka, OPA, JWT, Resilience4j, Kubernetes, MySQL]
