@@ -1,6 +1,6 @@
 ---
 title: BARO FARM
-summary: Backend for an agri-fisheries commerce service. In a Spring Cloud Gateway·Redis·Kafka·OPA-based MSA I owned the member/auth service, the Gateway and OPA-based authorization. I traced intermittent 403s to the lag between permissions in already-issued tokens and the actual user state, and designed and implemented a hotlist-event → OPA-bundle-refresh path meant to cut that lag to within the polling interval (10–60s). The current policy state on main and the remaining work are in the limitations table below.
+summary: Backend for an agri-fisheries commerce service. In a Spring Cloud Gateway·Redis·Kafka·OPA-based MSA I was responsible for the member/auth service, the Gateway and OPA-based authorization. I traced intermittent 403s to the lag between permissions in already-issued tokens and the actual user state, and designed and implemented a hotlist-event → OPA-bundle-refresh path meant to cut that lag to within the polling interval (10–60s). The current policy state on main and the remaining work are in the limitations table below.
 role: Backend — member/auth service, Gateway, OPA authorization
 period: 2025.11.29–2026.01.27 team project (semi & final) · 2026.02–03 solo refactoring
 tech: [Java, Spring, Spring Cloud Gateway, Redis, Kafka, OPA, JWT, Resilience4j, Kubernetes, MySQL]
@@ -31,11 +31,11 @@ import Figure from '../../../components/Figure.astro';
 
 ## Problem
 
-While owning the member/auth service, the Gateway and OPA authorization in an MSA environment, **intermittent 403 (Forbidden)** errors appeared during development. They were hard to reproduce, and viewing them as a mere gateway response error led nowhere. They clustered right after user-state changes such as seller approval.
+While I was responsible for the member/auth service, the Gateway and OPA authorization in an MSA environment, **intermittent 403 (Forbidden)** errors appeared during development. They were hard to reproduce, and viewing them as a mere gateway response error led nowhere. They clustered right after user-state changes such as seller approval.
 
 ## Cause — a state mismatch, not the surface
 
-I chose not to treat this as a gateway response error, and hypothesized a **structural problem: the permission info carried in the JWT diverging from the latest user state**.
+The working hypothesis was not a gateway response error but a **structural problem: the permission info carried in the JWT diverging from the latest user state**.
 
 Permissions are issued inside the JWT, but when approval, suspension or withdrawal changes the user's state, already-issued tokens stay the same. Until the token was refreshed, the gateway decided with the old permissions, producing 403s during that **lag window**.
 
@@ -63,13 +63,13 @@ The bundle endpoint only accepts private-network (private IP/CIDR) clients, with
   caption="OPA authorization flow and policy-bundle publish/refresh flow — my area in the team presentation"
 />
 
-I **designed and implemented this path to cut the lag between permission info and user state to within the OPA polling interval (10–60s)**, and the policy rule ran from 2026-01-22 to 01-25. It was never meant to eliminate the lag.
+The goal of this path was to cut the lag between permission info and user state to within the OPA polling interval (10–60s), and the policy rule ran from 2026-01-22 to 01-25. It was never meant to eliminate the lag.
 
 On main, however, this blocking does not run. On 2026-01-26, the day before the project ended, the policy default was switched to allow (`default allow := true`), and main still has it; the gateway routes on main also have no OPA filter attached. Even while the rule ran, the downstream product service checked seller status from the role header in the token, so 403s right after approval remained on that path. The accurate summary is "diagnosed the cause and designed and implemented a path to shrink the lag, but it is inactive on main," not "reduced the lag."
 
-## Result
+## Lessons
 
-I gained the perspective of seeing a failure not as a visible symptom (403) but as a **data-consistency and event-propagation** problem. Auth/authorization isn't a single service — it works only when the state across multiple components stays consistent. I also learned that unless a policy is pinned by tests that actually run, a one-line change right before a deadline (default allow) can switch the whole design off.
+The 403 was the symptom; the cause lay in **data consistency and event propagation**. Auth/authorization isn't a single service — it works only when the state across multiple components stays consistent. And unless a policy is pinned by tests that actually run, a one-line change right before a deadline (default allow) can switch the whole design off.
 
 ## Gateway filter order and token storage
 

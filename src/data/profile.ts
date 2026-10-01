@@ -96,17 +96,17 @@ export const positioning = {
   intro: {
     ko: [
       'Java · Spring Boot로 서비스를 만들며, 동시에 온 요청이 같은 번호를 받는 문제, 권한이 바뀌었는데 이미 발급된 토큰은 그대로인 문제, 이벤트가 사라져 서비스 사이 데이터가 어긋나는 문제처럼 "기능은 동작하는데 데이터가 틀리는" 지점을 주로 다뤄 왔습니다. 개인 프로젝트는 AI 코딩 에이전트와 함께 만들었기 때문에, "통과했다"는 보고보다 테스트가 실제로 무엇을 확인하는지를 먼저 봅니다.',
-      "경영·경제를 먼저 공부한 덕에 '왜 이 데이터가 필요한가'를 함께 생각하고, 데이터 분석 경험으로 정량적으로 문제를 바라보는 습관을 들였습니다. 단순히 동작하는 코드가 아니라 동작 이후의 구조까지 확인합니다.",
+      "경영·경제를 먼저 공부한 덕에 '왜 이 데이터가 필요한가'를 함께 생각하고, 데이터 분석 경험으로 정량적으로 문제를 바라보는 습관을 들였습니다.",
     ],
     en: [
       'I build services with Java and Spring Boot, and most of my work has been on spots where “the feature works but the data is wrong” — concurrent requests getting the same sequence number, permissions that changed while already-issued tokens stayed the same, events that went missing and left services out of sync. I built my personal projects together with AI coding agents, so I look at what a test actually verifies before trusting a “passed” report.',
-      'Studying business and economics first taught me to ask “why is this data needed,” and data analysis gave me the habit of looking at problems quantitatively. I check not just that code runs, but the structure behind how it runs.',
+      'Studying business and economics first taught me to ask “why is this data needed,” and data analysis gave me the habit of looking at problems quantitatively.',
     ],
   } satisfies L10nList,
   /** About 이미지 hover 키워드 */
   keywords: {
-    ko: ['#구조적사고', '#데이터기반', '#집요한디버깅', '#끝까지책임', '#계속만든다'],
-    en: ['#StructuralThinking', '#DataDriven', '#RelentlessDebugging', '#OwnItFully', '#AlwaysBuilding'],
+    ko: ['#구조적사고', '#데이터기반', '#계속만든다'],
+    en: ['#StructuralThinking', '#DataDriven', '#AlwaysBuilding'],
   } satisfies L10nList,
   /** 페이지별 meta description */
   meta: {
@@ -591,7 +591,7 @@ export const resumeProjects: ResumeProject[] = [
     note: { ko: '소스 비공개 · 요청 시 시연', en: 'Source is private · demo on request' },
     bullets: {
       ko: [
-        '기획부터 Flutter 앱, Spring Boot 서버, AWS 배포까지 혼자 맡아 원스토어에 출시 (2026.09)',
+        '기획, Flutter 앱, Spring Boot 서버, AWS 배포 담당 · 원스토어 출시 (2026.09)',
         '채팅 방별 순번 — 방을 읽고 +1 해서 쓰는 방식은 두 요청이 같은 값을 읽을 수 있어 방별 순번 유니크 제약에 걸림. 증가와 "내 번호 받기"를 UPDATE … SET last_seq = LAST_INSERT_ID(last_seq + 1)로 묶어, 요청은 UPDATE의 행 잠금으로 한 줄로 서고 증가한 값은 세션에 남아 행을 다시 읽지 않고 받음',
         '실제 MySQL(Testcontainers)에서 스레드 20개가 같은 방에 동시에 보내 순번 1–20이 각각 한 번씩 나오는지 테스트로 고정(커넥션 풀 10 — 동시 트랜잭션은 최대 10). 재전송 멱등은 (room_id, sender_user_id, client_msg_id) 유니크 제약으로 두고 같은 ID 중복 / 다른 멤버의 같은 키 / 키 없음 세 경우를 테스트로 고정',
         '첫 운영 배포(2026.09.17)에서 Caddy가 설정 파싱 오류로 종료돼 80·443이 응답하지 않음 — Caddyfile 문자열만 검사하던 테스트가 틀린 설정도 통과시킨 것이 원인. 운영과 같은 Caddy 이미지를 Testcontainers로 띄워 caddy validate를 실제로 실행하는 테스트로 교체',
@@ -600,7 +600,7 @@ export const resumeProjects: ResumeProject[] = [
         'Java 21 / Spring Boot 3.5 / Spring Modulith / JPA / MySQL 8 / Testcontainers / Docker Compose · Caddy / AWS EC2 · Terraform / Flutter',
       ],
       en: [
-        'Planned and built it alone — Flutter app, Spring Boot server and AWS deployment — and released it on ONE store (2026.09)',
+        'Planning, Flutter app, Spring Boot server and AWS deployment · released on ONE store (2026.09)',
         'Per-room chat sequence — reading the room and writing +1 lets two requests read the same value and hit the per-room unique constraint. Bundled the increment and "get my number" into UPDATE … SET last_seq = LAST_INSERT_ID(last_seq + 1): the UPDATE’s row lock serializes the requests, and the incremented value stays in the session, so the number comes back without re-reading the row',
         'Pinned with a test on real MySQL (Testcontainers): 20 threads sending to the same room get sequence numbers 1–20 exactly once each (connection pool of 10, so at most 10 concurrent transactions). Resend idempotency uses a (room_id, sender_user_id, client_msg_id) unique constraint, with three cases fixed by tests: same ID duplicated / same key from another member / no key',
         'First production deploy (2026.09.17): Caddy exited on a config parse error and ports 80/443 did not respond — the test guarding the config only checked Caddyfile strings and passed a broken config. Replaced it with a test that runs caddy validate in the production Caddy image via Testcontainers',
@@ -627,7 +627,7 @@ export const resumeProjects: ResumeProject[] = [
         '(이후 개인 리팩토링 2026.02–03) 판매자 승인의 관리자 경로를 커밋 후 비동기 전파로 분리하고 결정을 ADR로 기록',
       ],
       en: [
-        'Owned the member/auth service, the Gateway and OPA authorization in an MSA on Spring Cloud Gateway·Redis·Kafka·OPA',
+        'Member/auth service, Gateway and OPA authorization in an MSA on Spring Cloud Gateway·Redis·Kafka·OPA',
         'Diagnosed intermittent 403s as a structural "JWT permission vs user-state mismatch," not a gateway error, and designed and implemented a Kafka hotlist event → OPA bundle refresh path to cut the permission lag to within the polling interval (10–60s)',
         'Wrote the member-withdrawal event to an outbox inside the withdrawal transaction, published by a scheduler (FAILED after 5 failures)',
         '(Later solo refactoring, 2026.02–03) Split the admin seller-approval path into commit-then-async propagation and recorded the decision in an ADR',
