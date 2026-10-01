@@ -1,0 +1,42 @@
+---
+/**
+ * 본문 시연 클립 한 개(무음 mp4). .mdx에서:
+ *   import Clip from '../../../components/Clip.astro';
+ *   <Clip src="/img/projects/oreum/demo-map.mp4" poster="/img/projects/oreum/demo-map-poster.webp"
+ *         width={1280} height={714} label="…" caption="…" />
+ *
+ * 자동 재생하지 않는다. 재생 버튼을 눌러야 내려받기 시작한다(preload="none").
+ * 소리가 없는 클립이라 muted, 모바일에서 전체 화면으로 튀지 않게 playsinline.
+ */
+interface Props {
+  src: string;
+  poster: string;
+  width: number;
+  height: number;
+  /** 화면 낭독기용 설명(무엇을 보여 주는 클립인지) */
+  label: string;
+  caption?: string;
+}
+const { src, poster, width, height, label, caption } = Astro.props;
+---
+
+<figure class="my-6">
+  <video
+    class="clip-video w-full rounded-2xl border border-line bg-surface"
+    width={width}
+    height={height}
+    poster={poster}
+    aria-label={label}
+    controls
+    muted
+    playsinline
+    preload="none"
+  >
+    <source src={src} type="video/mp4" />
+  </video>
+  {caption && <figcaption class="mt-2 text-center font-mono text-xs text-muted">{caption}</figcaption>}
+</figure>
+
+<style>
+  .clip-video { height: auto; display: block; margin: 0; }
+</style>
